@@ -140,6 +140,7 @@ def init_request(request):
 def gdi(request=None):
 	init_request(request)
 	domain=GG()
+	# TODO; Theese settings should be configured in an "environment" config file
 	if is_sdk:
 		if request:
 			url=urlparse(request.url)
