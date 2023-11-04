@@ -10,10 +10,16 @@ RUN git clone https://github.com/kaansoral/adventureland-appserver appserver
 # fixing the internal IP address range that wizard put serious limitations on
 # for example, you could have 192.168.1.125 but not 192.168.0.1 /shrug
 RUN sed -i 's/192.168.1\\..?.?.?/192\\.168\\.(0\\.([1-9]|[1-9]\\d|[12]\\d\\d)|([1-9]|[1-9]\\d|[12]\\d\\d)\\.([1-9]?\\d|[12]\\d\\d))/' /appserver/sdk/lib/cherrypy/cherrypy/wsgiserver/wsgiserver2.py
-RUN sed -i 's/allowed_ips=\[/allowed_ips=["^172\\.(16\\.0\\.([1-9]|[1-9]\\d|[12]\\d\\d)|16\\.([1-9]|[1-9]\\d|[12]\\d\\d)\\.([1-9]?\\d|[12]\\d\\d)|(1[7-9]|2\\d|3[01])(\\.([1-9]?\\d|[12]\\d\\d)){2})$",/g'  /appserver/sdk/lib/cherrypy/cherrypy/wsgiserver/wsgiserver2.py
+# RUN sed -i 's/allowed_ips=\[/allowed_ips=["^172\\.(16\\.0\\.([1-9]|[1-9]\\d|[12]\\d\\d)|16\\.([1-9]|[1-9]\\d|[12]\\d\\d)\\.([1-9]?\\d|[12]\\d\\d)|(1[7-9]|2\\d|3[01])(\\.([1-9]?\\d|[12]\\d\\d)){2})$",/g'  /appserver/sdk/lib/cherrypy/cherrypy/wsgiserver/wsgiserver2.py
 # should fix when the game servers are trying to call the server
 # 2023-11-04 00:40:28 INFO     2023-11-03 23:40:28,108 wsgiserver2.py:2136] --- !!! --- !!! --- Not allowed IP: 172.18.0.1 Requested /
 # 2023-11-04 00:40:38 INFO     2023-11-03 23:40:38,250 wsgiserver2.py:2136] --- !!! --- !!! --- Not allowed IP: 172.18.0.1 Requested /
+
+# allow docker ip range
+RUN sed -i 's/allowed_ips=\[/allowed_ips=["^172\\.([0-9])+?\\.([0-9])+?\\.([0-9])+?$",/g'  /appserver/sdk/lib/cherrypy/cherrypy/wsgiserver/wsgiserver2.py
+
+# prevent os.exit when running inside docker and you access /admin
+RUN sed -i 's/logging.info("External Allowed IP Tried to Hack!!! %s Requested %s"%(self.env\["REMOTE_ADDR"],self.env\["REQUEST_URI"])); os._exit(0);/logging.info("External Allowed IP Tried to Hack!!! %s Requested %s"%(self.env\["REMOTE_ADDR"],self.env\["REQUEST_URI"]));/g'  /appserver/sdk/lib/cherrypy/cherrypy/wsgiserver/wsgiserver2.py
 
 # get the dev version of python2 to install the reqs lower <-- because Atlus said so :P
 RUN apt-get install python2-dev -y
