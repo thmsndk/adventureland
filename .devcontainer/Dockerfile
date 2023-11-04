@@ -26,6 +26,15 @@ RUN pip2.7 check
 # use python to install pip
 RUN python2 get-pip.py
 
+# wizard told us to install lxml but python2 can't handle it out with
+# supplimentary libraries
+RUN apt-get install libxml2-dev libxslt-dev
+
+# install lxml
+# TODO: remove lxml since it's not used
+# Imported, not used in config.py: from lxml import etree as lxmletree
+RUN pip install lxml
+
 # why are we copying the current location into adventureland?
 # make the AL directory, and enter it
 # RUN mkdir adventureland && cd adventureland
