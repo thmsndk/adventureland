@@ -17,8 +17,14 @@
 				"dbaeumer.vscode-eslint",
 				"esbenp.prettier-vscode",
 				"ms-python.python",
-				"ms-python.flake8"
-			]
+				"ms-python.flake8",
+				"samuelcolvin.jinjahtml"
+			],
+			"settings": {
+				"files.associations": {
+					"*.html": "jinja-html"
+				}
+			}
 		}
 	}
 	// Features to add to the dev container. More info: https://containers.dev/features.
