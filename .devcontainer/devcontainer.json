@@ -18,7 +18,8 @@
 				"esbenp.prettier-vscode",
 				"ms-python.python",
 				"ms-python.flake8",
-				"samuelcolvin.jinjahtml"
+				"samuelcolvin.jinjahtml",
+				"eamodio.gitlens"
 			],
 			"settings": {
 				"files.associations": {
