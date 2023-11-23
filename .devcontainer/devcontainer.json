@@ -18,7 +18,6 @@
 				"esbenp.prettier-vscode",
 				"ms-python.python",
 				"ms-python.flake8",
-				"samuelcolvin.jinjahtml",
 				"eamodio.gitlens"
 			]
 		}
