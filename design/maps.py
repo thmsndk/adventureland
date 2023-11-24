@@ -1656,6 +1656,45 @@ maps={
 		"unlist":True,
 		"lux":0.4,
 	},
+	"bee_dungeon":{
+		"key":"test", # the map that is rendered
+		"instance":True,
+		# "no_bounds":True, I think this crashes update_instance with spawn mechanics
+		"enter": {
+			# requirements to enter the dungeon
+			# TODO level, class, locations (spawns, doors, quirks?)
+			# "items": [["beekey", 1]], #requires 1 beekey to enter
+			# "spawn": [["cave", 2, 120]] # mapKey, spawn, distance
+
+
+		},
+		"name":"BEEginner Dungeon",
+		"npcs":[
+		],
+		"monsters":[
+			# {"type":"bee","boundary":[10,-10, 0,0],"count":1},
+			{"type":"bee_queen","boundary":[10,-10, 0, 0],"count":1},
+			# {"type":"bee_worker","boundary":[10,-10, 0, 0],"count":5},
+			# {"type":"bee_drone","boundary":[10,-10, 0, 0],"count":1},
+		],
+		"spawns":[
+			[0,0],
+		],
+		"on_death":["cave",2],
+		"on_exit":["cave",2],
+		"doors":[
+			# [-1.54,105.6,126.56,56.96,"cave",2,0],
+		],
+		# "article": "dungeon-crypt", # Unsure if this works
+		# we end up calling open_guide that calls load_article
+		# TODO: Add quirks to main map that descripes entrances to the bee dungeon?
+		"quirks":[
+			# [-192,-1309,48,64,"log","Is this a gateway?"],
+			[0,0,0,0,"info","bee_dungeon"], # TODO: define range? can we make the rendering in render_server dynamic, so we don't have to code something there to show this quirk?
+		],
+		# TODO a info quirk at the entrance that tells about the instance
+		
+	},
 
 }
 for name in maps:
