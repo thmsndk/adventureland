@@ -5400,6 +5400,7 @@ function init_io() {
 			}
 			success_response();
 		});
+
 		socket.on("town", function (data) {
 			var player = players[socket.id];
 			if (!player) {
