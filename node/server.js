@@ -9570,6 +9570,11 @@ function init_io() {
 				player.going_x = x;
 				player.going_y = y;
 				if (smap_data[player.map] != -1 && mode.enforce_smap) {
+					// TODO: This crashes while making a new map if it does not exist in the db
+					if (!smap_data[player.map]) {
+						smap_data[player.map] = {};
+					}
+
 					current = smap_data[player.map][rphash(data.x, data.y)];
 					going = smap_data[player.map][rphash(player.going_x, player.going_y)];
 					// server_log("current:"+current+" going:"+going+" real:"+smap_data[player.map][phash(player.x,player.y)]);
@@ -12248,14 +12253,14 @@ function update_instance(instance) {
 					console.log(`${instance.name} spawning ${spawnAmount} x ${name} near ${player.name}`);
 
 					for (let index = 0; index < spawnAmount; index++) {
-					new_monster(instance.name, {
-						type: name,
-						stype: "spawn",
-						x: spot.x,
-						y: spot.y,
-						target: player.name,
-						master: monster.id,
-					});
+						new_monster(instance.name, {
+							type: name,
+							stype: "spawn",
+							x: spot.x,
+							y: spot.y,
+							target: player.name,
+							master: monster.id,
+						});
 					}
 				}
 			});

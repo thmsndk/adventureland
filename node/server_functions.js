@@ -3970,9 +3970,12 @@ function is_xy_safe(map, x, y) {
 		[-1, -1],
 	].forEach(function (m) {
 		// ,[2,2],[-2,-2],[2,-2],[-2,2]
-		var data = smap_data[map][phash(x + m[0] * smap_step, y + m[1] * smap_step)];
-		if (data || data === undefined) {
-			safe = false;
+		// developing a new map, where i point to another map with key = 'test' without the map existing, seems to crash this
+		if (smap_data[map]) {
+			var data = smap_data[map][phash(x + m[0] * smap_step, y + m[1] * smap_step)];
+			if (data || data === undefined) {
+				safe = false;
+			}
 		}
 	});
 	return safe;
