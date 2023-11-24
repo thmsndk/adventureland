@@ -1,0 +1,85 @@
+<div style='width: 600px'>
+	<p style='font-size: 32px; color: #216D25; text-decoration: underline dotted #B30B1A'>BEEginner [Dungeon]</p>
+
+	<p>
+		<div style='float:left; margin-right: 20px'><span class='eitem1'></span></div> WIP GUIDE FOR BEE You need the Bee Key to enter the instanced crypt dungeon, once a party member has unlocked the dungeon, other party members will be able to directly enter. <br />
+	</p>
+
+	<p><span class='hlabel'>Note:</span> Instances are only alive as long as there's someone inside and online!</p>
+	
+<div class='code'>
+enter("bee_dungeon");
+// To unlock using a key
+
+enter("bee_dungeon",player.in);
+// To enter an already unlocked dungeon
+</div>
+Mechanics notes:
+queen is slow, she spawns eggs, 
+unfertalized eggs spawns drones (males)
+A fertilized bee egg becomes a worker bee (female).
+
+Before leaving, queen cells are left behind. 
+Worker select several cells with fertilized eggs or female larvae.
+
+These larvae are fed a special diet (including royal jelly) that allows them to develop into a reproductive queen. 
+This development time is the shortest of any bee in the hive:16 days from egg to adult.
+
+eggs should get a debuff applied that damages them, upon death a larvae is spawned
+this larvae also get a dmg debuff applied, then a drone or worker is born.
+drones mate with the queen, making sure she can spawn eggs
+
+
+
+
+
+Notes:
+Inside a beehive you will find: a queen, drones and workers. 
+The number of each kind of bee in the hive will vary due to hive conditions and the time of year.
+
+For instance, drone bees are males and will usually not be present in a healthy hive during Winter. 
+However, during Spring and Summer it is common to have several hundred drones. 
+They are needed for mating with new queens.
+
+Queen – one per hive
+Drones – few hundred during Spring/Summer
+Workers – thousands
+A honey bee colony has a remarkable system for communication and division of the tasks for its work force. 
+Each member of the colony has a primary role and are physcially designed for their tasks.
+
+Two types of bees in the hive (queens and drones) are primarily designed for bee reproduction. 
+The colony could not continue without their involvement.
+
+However, it is the female worker bees that perform the great variety of daily tasks needed. 
+
+In addition to egg laying, the queen bee also gives off queen pheromones – often called “queen substance”. 
+These external hormones (chemical messengers) are very important to the honey bee colony.
+
+Queen could have an aura?
+
+Source: https://carolinahoneybees.com/bees-in-a-hive/
+
+chatgpt
+
+In a honey bee hive, there are three main types of bees, each with distinct roles:
+
+Queen Bee: There is only one queen in a hive. 
+Her primary role is to lay eggs, and she is essential for the colony's survival. 
+The queen produces pheromones that help maintain colony cohesion and regulate the behavior of other bees.
+
+Worker Bees: Worker bees are females that do not reproduce. 
+They perform various tasks such as 
+- foraging for nectar and pollen
+- tending to the queen and developing brood
+- cleaning and defending the hive
+- and producing beeswax. 
+Worker bees are the most numerous bees in a hive.
+
+Drone Bees: Drones are male bees, and their primary purpose is to mate with a virgin queen during her nuptial flight. 
+Unlike worker bees, drones do not have stingers and are not involved in foraging or other hive activities. 
+Drones are relatively few in number compared to worker bees.
+
+	<script>
+		$(".eitem1").html(item_container({skin:G.items.beekey.skin},{name:"beekey",q:0}));
+	</script>
+</div>
