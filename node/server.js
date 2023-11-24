@@ -5156,16 +5156,16 @@ function init_io() {
 					instance.players[NPC_prefix + npc.id] = npc;
 				}
 			} else {
-				const map = data.place && G.maps[data.place]
-				if(map?.instance){
-					server_log(`Trying to enter an instance ${data.place}`);
+				const map = data.place && G.maps[data.place];
+				if (map?.instance) {
 					// Generic instance creation and transportation
 					// data.place is the name of the instance e.g bee_dungeon
 					// data.name is the id of the instance usually a number
 
+					const instanceExists = data.name && instances[data.name] && instances[data.name].map == data.place;
+
 					// Requirements for entering
 					if (map.enter) {
-						
 						// TODO: Is there a place you need to be near to use the key
 						// spawns, doors, quirks, specific position
 						// var f = "cave";
@@ -5175,8 +5175,8 @@ function init_io() {
 						// 	return fail_response("transport_cant_reach");
 						// }
 
-						if (map.enter.items) {
-							let hasItems = false;
+						// We check that the instance does not exist so the cost is not paid multiple times.
+						if (map.enter.items && !instanceExists) {
 							const itemsToConsume = [];
 
 							const quantityByItem = {};
@@ -5187,40 +5187,42 @@ function init_io() {
 							for (let i = 0; i < player.items.length; i++) {
 								const item = player.items[i];
 								if (item && quantityByItem[item.name]) {
-									const gItem = G.items[item.name]
+									server_log(`${data.place} player has ${item.q} x ${item.name} in slot ${i}`);
+									const gItem = G.items[item.name];
 									if (gItem.s) {
-										if (item.q <= quantityByItem[item.name]) {
-											const quantity = Math.min(item.q, quantityByItem[item.name])
-											
-											quantityByItem[item.name] -= quantity
+										const quantity = Math.min(item.q, quantityByItem[item.name]);
 
-											itemsToConsume.push([i, quantity])
-										}
-									} else{
+										quantityByItem[item.name] -= quantity;
+										server_log(`${data.place} ${data.name} ${quantity} x ${item.name} to be removed`);
+										itemsToConsume.push([i, quantity]);
+									} else {
 										// TODO: handle non stackable items
+										server_log(
+											`${data.place} player has ${item.name} in slot ${i} that is not stackable, how to handle?`,
+										);
 									}
 
-									if(quantityByItem[item.name] == 0){
+									if (quantityByItem[item.name] == 0) {
 										delete quantityByItem[item.name];
 									}
-									
 								}
 							}
 
 							// validate missing quantities
 							if (Object.keys(quantityByItem).length > 0) {
+								server_log(`${data.place} missing items ${JSON.stringify(quantityByItem)}`);
 								// TODO: tell missing requirements to the client?
-								return fail_response("transport_cant_item");	
+								return fail_response("transport_cant_item");
 							}
 
 							for (const [inventory_index, quantity] of itemsToConsume) {
-								 // TODO: will throw an error if quantity is spread over multiple stacks
-								consume(player, inventory_index, quantity)
+								// TODO: will throw an error if quantity is spread over multiple stacks
+								consume(player, inventory_index, quantity);
 							}
 						}
 					}
 
-					if (data.name && instances[data.name] && instances[data.name].map == data.place) {
+					if (instanceExists) {
 						// transport to an existing instance
 						server_log(`entering existing instance ${data.place} ${data.name}`);
 						transport_player_to(player, data.name);
