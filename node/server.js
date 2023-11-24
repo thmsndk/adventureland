@@ -11999,22 +11999,40 @@ function update_instance(instance) {
 		}
 		if (monster.target && monster.spawns && get_player(monster.target) && !is_disabled(monster)) {
 			monster.spawns.forEach(function (spi) {
-				var interval = spi[0];
-				var name = spi[1];
+				const [interval, name, ...spi2] = spi;
+				let [minSpawnAmount = 1, maxSpawnAmount = 1, range = 400] = spi2;
+
+				if (minSpawnAmount > maxSpawnAmount) {
+					maxSpawnAmount = minSpawnAmount;
+				}
+
 				if (!monster.last[name] || mssince(monster.last[name]) > interval) {
-					var pname = random_one(Object.keys(monster.points));
-					var player = get_player(pname);
-					if (!player || player.npc || distance(monster, player) > 400) {
+					// random number between min and max (included)
+					const spawnAmount = Math.floor(Math.random() * (maxSpawnAmount - minSpawnAmount + 1) + minSpawnAmount);
+					const pname = random_one(Object.keys(monster.points));
+					const player = get_player(pname);
+					if (!player || player.npc || distance(monster, player) > range) {
+						console.log(`${instance.name}`, player, distance(monster, player));
 						return;
 					}
+
 					if (!is_same(player, get_player(monster.target), true)) {
+						console.log(`${instance.name} !is_same`);
 						return;
 					}
+
 					monster.last[name] = new Date();
 					var spot = safe_xy_nearby(player.map, player.x + Math.random() * 20 - 10, player.y + Math.random() * 20 - 10);
 					if (!spot) {
+						console.log(`${instance.name} no safe spot near ${player.name}`);
 						return;
 					}
+
+					// logging seems to make it crash
+					// server_log(`${instance.name} spawning ${spawnAmount} x ${name} near ${player.name}`);
+					console.log(`${instance.name} spawning ${spawnAmount} x ${name} near ${player.name}`);
+
+					for (let index = 0; index < spawnAmount; index++) {
 					new_monster(instance.name, {
 						type: name,
 						stype: "spawn",
@@ -12023,6 +12041,7 @@ function update_instance(instance) {
 						target: player.name,
 						master: monster.id,
 					});
+					}
 				}
 			});
 		}

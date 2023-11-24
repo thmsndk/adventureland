@@ -41,6 +41,52 @@ monsters={
 		],
 		"cute":True,
 	},
+	"bee_queen":{
+		"name":"Queen Bee",
+		"speed":6,"hp":10000,"xp":20000,
+		"attack":0,"damage_type":"physical","range":1,"frequency":0.5,
+		"respawn":2,"gold":40,
+		"aggro":1,"aa":1,"rage":0.1,
+		
+		"skin":"bee", #reuse the bee sprite, seems invisble?
+		"size":1.5,
+		"phresistance":60,
+		"achievements":[
+			# [10,"stat","hp",5],
+			# [100,"stat","mp",5],
+			# [1000,"stat","mp",5],
+			# [10000,"stat","attack",2],
+			# [100000,"stat","apiercing",2],
+			# [1000000,"stat","attack",3],
+			# [10000000,"stat","xp",1],
+		],
+		"spawns":[
+			# spawns 0..2 of theese near a random player within 400 range, targeting them
+			[1000,"bee_worker", 0, 2],
+			[10000,"bee_drone"]
+			# TODO: can we control spawning mechanics more? e.g. a wave with a random amount of monsters of different types
+		],
+	},
+	"bee_worker":{
+		"name":"Worker Bee",
+		"skin": "bee",
+		"speed":12,"hp":300,"xp":400,
+		"attack":16,"damage_type":"physical",
+		"respawn":2,"gold":40,"range":5,"frequency":0.5,
+		"aggro":1,"aa":1,"rage":0.1,
+		"phresistance":60,
+		#TODO: Poison sting ability. Has a chance to kill bee
+	},
+	"bee_drone":{
+		"name":"Drone Bee",
+		"skin": "bee",
+		"speed":12,"hp":300,"xp":400,
+		"attack":0,"damage_type":"physical","range":1,"frequency":0.5,
+		"respawn":2,"gold":40,
+		
+		"aggro":1,"aa":1,"rage":0.1,
+		"phresistance":60,
+	},
 	"squig":{
 		"name":"Squig","speed":10,"hp":1000,"xp":600,"attack":7,"damage_type":"physical","respawn":12,"gold":100,"range":15,"frequency":0.5,"aggro":0,"aa":1,
 		"achievements":[
