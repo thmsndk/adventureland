@@ -1724,7 +1724,83 @@ armor={
 		"name":"Darkforge Gloves",
 		"g":3400000,
 		"a":2,
-	}
+	},
+	"honeycape":{
+		"set":"bee_0",
+		"type":"cape",
+		"skin":"placeholder",
+		"armor":5,
+		"resistance":4,
+		"stat":2,
+		"name":"Honey Cape",
+		"upgrade":{
+			"armor":1.5,
+			"resistance":1,
+			"stat":0.10,
+		},
+		"grades":[0,8],
+		"g":10000,
+	},
+	"honeyhelmet":{
+		"set":"bee_0",
+		"tier":3,
+		"type":"helmet",
+		"skin":"placeholder",
+		"scroll":True,
+		"upgrade":{
+		},
+		"name":"Honey Helmet",
+		"g":320000,
+		"a":2,
+	},
+	"honeychest":{
+		"set":"bee_0",
+		"tier":3,
+		"type":"chest",
+		"skin":"placeholder",
+		"scroll":True,
+		"upgrade":{
+		},
+		"name":"Honey Chest",
+		"g":480000,
+		"a":2,
+	},
+	"honeypants":{
+		"set":"bee_0",
+		"tier":3,
+		"type":"pants",
+		"skin":"placeholder",
+		"scroll":True,
+		"upgrade":{
+		},
+		"name":"Honey Pants",
+		"g":780000,
+		"a":2,
+	},
+	"honeyboots":{
+		"set":"bee_0",
+		"tier":3,
+		"type":"shoes",
+		"skin":"placeholder",
+		"scroll":True,
+		"upgrade":{
+		},
+		"name":"Honey Boots",
+		"g":1240000,
+		"a":2,
+	},
+	"honeygloves":{
+		"set":"bee_0",
+		"tier":3,
+		"type":"gloves",
+		"skin":"placeholder",
+		"scroll":True,
+		"upgrade":{
+		},
+		"name":"Honey Gloves",
+		"g":340000,
+		"a":2,
+	},
 }
 for name in armor.keys():
 	#import logging; logging.info(name)
@@ -2424,6 +2500,17 @@ accessories={
 		"g":50000,
 		"grades":[2,5],
 	},
+	"honeybelt":{
+		"set": "bee_0",
+		"type":"belt",
+		"skin":"placeholder",
+		"hp":160,
+		"compound":{
+			"hp":240,
+		},
+		"name":"Honey Belt",
+		"g":20000,
+	},
 	"ringsj":{
 		"type":"ring",
 		"skin":"ring",
@@ -2577,6 +2664,18 @@ accessories={
 		},
 		"name":"Earring of Vitality",
 		"g":38000,
+		"grades":[2,5],
+	},
+	"honeyearring":{
+		"set":"bee_0",
+		"type":"earring",
+		"skin":"placeholder",
+		"vit":3,
+		# "compound":{
+		# 	"vit":2,
+		# },
+		"name":"Earring of Vitality",
+		"g":14000,
 		"grades":[2,5],
 	},
 }
@@ -6268,6 +6367,22 @@ orbs={
 		"grades":[1,3],
 		"a":True,
 	},
+	"honeyorb":{
+		"set": "bee_0",
+		"type":"orb",
+		"skin":"placeholder",
+		"str":1,
+		"int":1,
+		"dex":1,
+		"compound":{
+			"str":0.5,
+			"int":0.5,
+			"dex":0.5,
+		},
+		"name":"Honey Orb",
+		"g":30000,
+		"grades":[4,6],
+	},
 }
 
 #Orb of Vitality: 120 +120
@@ -7123,6 +7238,27 @@ sets={
 		"6":{
 			"vit":2,
 		},
+	},
+	"bee_0":{
+		"name":"BEEginner Dungeon",
+		"items":["honeyhelmet","honeychest","honeypants","honeyboots","honeygloves","honeyearring","honeybelt","honeycape", "honeyorb"],
+		"explanation":"A Bee themed set from the BEEginner dungeon",
+		"1":{"cuteness":1,},
+		"2":{"cuteness":1,},
+		"3":{"cuteness":1,},
+		"4":{"cuteness":1,},
+		"5":{"cuteness":1,},
+		"6":{"cuteness":1,},
+		"7":{"cuteness":1,},
+		"8":{"cuteness":1,},
+		"9":{"cuteness":1,},
+		"10":{"cuteness":1,},
+		"11":{"cuteness":1,},
+		"12":{"cuteness":1,},
+		"13":{"cuteness":1,},
+		"14":{"cuteness":1,},
+		"15":{"cuteness":1,},
+		"16":{"cuteness":1,},
 	},
 	# "base":{
 	# 	"name":"Base Items",
