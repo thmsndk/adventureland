@@ -5156,10 +5156,92 @@ function init_io() {
 					instance.players[NPC_prefix + npc.id] = npc;
 				}
 			} else {
+				const map = data.place && G.maps[data.place]
+				if(map?.instance){
+					server_log(`Trying to enter an instance ${data.place}`);
+					// Generic instance creation and transportation
+					// data.place is the name of the instance e.g bee_dungeon
+					// data.name is the id of the instance usually a number
+
+					// Requirements for entering
+					if (map.enter) {
+						
+						// TODO: Is there a place you need to be near to use the key
+						// spawns, doors, quirks, specific position
+						// var f = "cave";
+						// var ref = G.maps.cave.spawns[2];
+						// var item = "cryptkey";
+						// if (simple_distance(player, { in: f, map: f, x: ref[0], y: ref[1] }) > 120) {
+						// 	return fail_response("transport_cant_reach");
+						// }
+
+						if (map.enter.items) {
+							let hasItems = false;
+							const itemsToConsume = [];
+
+							const quantityByItem = {};
+							for (const [itemKey, quantity] of map.enter.items) {
+								quantityByItem[itemKey] = quantity;
+							}
+
+							for (let i = 0; i < player.items.length; i++) {
+								const item = player.items[i];
+								if (item && quantityByItem[item.name]) {
+									const gItem = G.items[item.name]
+									if (gItem.s) {
+										if (item.q <= quantityByItem[item.name]) {
+											const quantity = Math.min(item.q, quantityByItem[item.name])
+											
+											quantityByItem[item.name] -= quantity
+
+											itemsToConsume.push([i, quantity])
+										}
+									} else{
+										// TODO: handle non stackable items
+									}
+
+									if(quantityByItem[item.name] == 0){
+										delete quantityByItem[item.name];
+									}
+									
+								}
+							}
+
+							// validate missing quantities
+							if (Object.keys(quantityByItem).length > 0) {
+								// TODO: tell missing requirements to the client?
+								return fail_response("transport_cant_item");	
+							}
+
+							for (const [inventory_index, quantity] of itemsToConsume) {
+								 // TODO: will throw an error if quantity is spread over multiple stacks
+								consume(player, inventory_index, quantity)
+							}
+						}
+					}
+
+					if (data.name && instances[data.name] && instances[data.name].map == data.place) {
+						// transport to an existing instance
+						server_log(`entering existing instance ${data.place} ${data.name}`);
+						transport_player_to(player, data.name);
+					} else {
+						// name is a random generated instance id
+						server_log(`entering new instance ${data.place} ${name}`);
+						instance = create_instance(name, data.place);
+						transport_player_to(player, name);
+					}
+
+					resend(player, "u+cid+reopen");
+					success_response();
+					return;
+				}
+
+				server_log(`no handling for entering ${data.place}`);
 				return fail_response("transport_cant_reach");
 			}
 			success_response();
 		});
+
 		socket.on("town", function (data) {
 			var player = players[socket.id];
 			if (!player) {
