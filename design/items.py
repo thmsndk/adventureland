@@ -5865,6 +5865,16 @@ quest={
 		"explanation":"A key, imbued with magical energy.",
 		"s":10,
 	},
+	"beekey":{
+		"type":"dungeon_key",
+		"skin":"placeholder",
+		"name":"The BEE Key",
+		"opens":"test", #property seems to have no effect, not used, seems more like a note
+		#"ignore":True,
+		"g":500,
+		"explanation":"A key, imbued with magical energy.",
+		"s":25,
+	},
 	"bkey":{
 		"type":"bank_key",
 		"skin":"bkey",
