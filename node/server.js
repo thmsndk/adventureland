@@ -9370,12 +9370,15 @@ function init_io() {
 				data.y = parseFloat(data.y) || 0;
 				player.going_x = x;
 				player.going_y = y;
-				if (smap_data[player.map] != -1 && mode.enforce_smap) {
-					// TODO: This crashes while making a new map if it does not exist in the db
-					if (!smap_data[player.map]) {
-						smap_data[player.map] = {};
-					}
 
+				if (!smap_data[player.map]) {
+					// developing a new map, where i point to another map with key = 'test' without the map existing, seems to crash this
+					// TODO: This crashes while making a new map if smap_data[map] does not exist in the db
+					console.trace(`${map} smap_data[map] is not defined`);
+					return;
+				}
+
+				if (smap_data[player.map] && smap_data[player.map] != -1 && mode.enforce_smap) {
 					current = smap_data[player.map][rphash(data.x, data.y)];
 					going = smap_data[player.map][rphash(player.going_x, player.going_y)];
 					// server_log("current:"+current+" going:"+going+" real:"+smap_data[player.map][phash(player.x,player.y)]);
@@ -12002,6 +12005,8 @@ function update_instance(instance) {
 				set_ghash(aggressives, monster, 32);
 			}
 		}
+
+		// Handle spawning minions from monster.spawns
 		if (monster.target && monster.spawns && get_player(monster.target) && !is_disabled(monster)) {
 			monster.spawns.forEach(function (spi) {
 				const [interval, name, ...spi2] = spi;
@@ -12016,26 +12021,29 @@ function update_instance(instance) {
 					const spawnAmount = Math.floor(Math.random() * (maxSpawnAmount - minSpawnAmount + 1) + minSpawnAmount);
 					const pname = random_one(Object.keys(monster.points));
 					const player = get_player(pname);
+					// TODO: don't spawn monsters at dead players?
 					if (!player || player.npc || distance(monster, player) > range) {
 						console.log(`${instance.name}`, player, distance(monster, player));
 						return;
 					}
 
 					if (!is_same(player, get_player(monster.target), true)) {
-						console.log(`${instance.name} !is_same`);
+						server_log(`${instance.name} !is_same`);
+						// console.log(`${instance.name} !is_same`);
 						return;
 					}
 
 					monster.last[name] = new Date();
 					var spot = safe_xy_nearby(player.map, player.x + Math.random() * 20 - 10, player.y + Math.random() * 20 - 10);
 					if (!spot) {
-						console.log(`${instance.name} no safe spot near ${player.name}`);
+						server_log(`${instance.name} no safe spot near ${player.name}`);
+						// console.log(`${instance.name} no safe spot near ${player.name}`);
 						return;
 					}
 
 					// logging seems to make it crash
-					// server_log(`${instance.name} spawning ${spawnAmount} x ${name} near ${player.name}`);
-					console.log(`${instance.name} spawning ${spawnAmount} x ${name} near ${player.name}`);
+					server_log(`${instance.name} spawning ${spawnAmount} x ${name} near ${player.name}`);
+					// console.log(`${instance.name} spawning ${spawnAmount} x ${name} near ${player.name}`);
 
 					for (let index = 0; index < spawnAmount; index++) {
 						new_monster(instance.name, {
@@ -12050,6 +12058,7 @@ function update_instance(instance) {
 				}
 			});
 		}
+
 		function attack_target_or_move() {
 			var player = players[name_to_id[monster.target]];
 			if (player && ssince(monster.last.attacked) > 20 && Math.random() > monster.rage * 0.99) {
@@ -12725,7 +12734,8 @@ function update_instance(instance) {
 			player.x += (player.vx * ms) / 1000.0;
 			player.y += (player.vy * ms) / 1000.0;
 			player.red_zone *= 0.99;
-			if (smap_data[player.map] != -1 && !player.npc && mode.red_zone && !player.s.dash) {
+			// TODO: smap_data[player.map] does not exist, then what?
+			if (smap_data[player.map] && smap_data[player.map] != -1 && !player.npc && mode.red_zone && !player.s.dash) {
 				var current = smap_data[player.map][phash(player)];
 				if (current === undefined) {
 					current = 8;
