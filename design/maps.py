@@ -1657,9 +1657,10 @@ maps={
 		"lux":0.4,
 	},
 	"bee_dungeon":{
-		"key":"test", # the map that is rendered
+		"key": "thmsn_bee_dungeon",
+		# "key":"jayson_ALMap2_v2", # the map that is rendered
+		"no_bounds":True,
 		"instance":True,
-		# "no_bounds":True, I think this crashes update_instance with spawn mechanics
 		"enter": {
 			# requirements to enter the dungeon
 			# TODO level, class, locations (spawns, doors, quirks?)

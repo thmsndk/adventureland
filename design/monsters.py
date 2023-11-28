@@ -61,9 +61,10 @@ monsters={
 			# [10000000,"stat","xp",1],
 		],
 		"spawns":[
-			# spawns 0..2 of theese near a random player within 400 range, targeting them
-			[1000,"bee_worker", 0, 2],
-			[10000,"bee_drone"]
+			# TODO: Make the UI show the mechanics?
+			# spawns 0..2 of theese near a random player within 400 range (default), targeting them
+			[10000,"bee_worker", 0, 2],
+			[20000,"bee_drone", 0, 1]
 			# TODO: can we control spawning mechanics more? e.g. a wave with a random amount of monsters of different types
 		],
 	},
