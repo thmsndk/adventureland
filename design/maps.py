@@ -1659,7 +1659,7 @@ maps={
 	"bee_dungeon":{
 		"key": "thmsn_bee_dungeon",
 		# "key":"jayson_ALMap2_v2", # the map that is rendered
-		"no_bounds":True,
+		# "no_bounds":True,
 		"instance":True,
 		"enter": {
 			# requirements to enter the dungeon
@@ -1675,8 +1675,8 @@ maps={
 		"monsters":[
 			# {"type":"bee","boundary":[10,-10, 0,0],"count":1},
 			{"type":"bee_queen","boundary":[10,-10, 0, 0],"count":1},
-			# {"type":"bee_worker","boundary":[10,-10, 0, 0],"count":5},
-			# {"type":"bee_drone","boundary":[10,-10, 0, 0],"count":1},
+			{"type":"bee_worker","boundary":[10,-10, 0, 0],"count":2},
+			{"type":"bee_drone","boundary":[10,-10, 0, 0],"count":1},
 		],
 		"spawns":[
 			[0,0],
