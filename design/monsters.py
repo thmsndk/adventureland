@@ -48,7 +48,7 @@ monsters={
 		"respawn":2,"gold":40,
 		"aggro":1,"aa":1,"rage":0.1,
 		
-		"skin":"bee", #reuse the bee sprite, seems invisble?
+		"skin":"bee", #reuse the bee sprite
 		"size":1.5,
 		"phresistance":60,
 		"achievements":[
@@ -62,9 +62,10 @@ monsters={
 		],
 		"spawns":[
 			# TODO: Make the UI show the mechanics?
-			# spawns 0..2 of theese near a random player within 400 range (default), targeting them
-			[10000,"bee_worker", 0, 2],
-			[20000,"bee_drone", 0, 1]
+			# [interval, monsterKey, spawnMode, minSpawnAmount, maxSpawnAmount, range] see update_instance Handle spawning minions from monster.spawns
+			
+			[10000, "bee_worker", "SpawnAtBoss", 0, 2, False], # Spawns 0..2 at the boss ignoring range to the player
+			[20000, "bee_drone", "SpawnAtBoss", 0, 1, False] # Spawns 0..1 at the boss ignoring range to the player
 			# TODO: can we control spawning mechanics more? e.g. a wave with a random amount of monsters of different types
 		],
 		"explanation":"The queen bee",
