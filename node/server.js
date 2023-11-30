@@ -387,8 +387,12 @@ function init_game() {
 					// server_bfs("cgallery");
 
 					// TODO: precompute seems to be messed up? so we hardcode a bfs call on server create?
-					for (var name in G.maps) {
+					for (const name in G.maps) {
 						const gMap = G.maps[name];
+						if (gMap.ignore) {
+							continue;
+						}
+
 						const hasNpcs = gMap.npcs && gMap.npcs.length > 0;
 						const hasMonsters = gMap.monsters && gMap.monsters.length > 0;
 						if (gMap.instance && (hasNpcs || hasMonsters)) {
