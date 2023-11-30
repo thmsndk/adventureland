@@ -67,6 +67,7 @@ monsters={
 			[20000,"bee_drone", 0, 1]
 			# TODO: can we control spawning mechanics more? e.g. a wave with a random amount of monsters of different types
 		],
+		"explanation":"The queen bee",
 	},
 	"bee_worker":{
 		"name":"Worker Bee",
@@ -77,6 +78,7 @@ monsters={
 		"aggro":1,"aa":1,"rage":0.1,
 		"phresistance":60,
 		#TODO: Poison sting ability. Has a chance to kill bee
+		"explanation":"The female worker bee, responsible for both house chores and defending the nest!",
 	},
 	"bee_drone":{
 		"name":"Drone Bee",
@@ -87,6 +89,7 @@ monsters={
 		
 		"aggro":1,"aa":1,"rage":0.1,
 		"phresistance":60,
+		"explanation":"The male bee, does nothing but reproduction.",
 	},
 	"squig":{
 		"name":"Squig","speed":10,"hp":1000,"xp":600,"attack":7,"damage_type":"physical","respawn":12,"gold":100,"range":15,"frequency":0.5,"aggro":0,"aa":1,
