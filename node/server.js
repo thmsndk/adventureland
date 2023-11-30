@@ -401,6 +401,7 @@ function init_game() {
 						}
 					}
 				}
+
 				create_instance("jail");
 				console.log("Calculations took: " + mssince(start) + "ms");
 				shuffle(hiding_places);
@@ -12225,7 +12226,7 @@ function update_instance(instance) {
 		if (monster.target && monster.spawns && get_player(monster.target) && !is_disabled(monster)) {
 			monster.spawns.forEach(function (spi) {
 				const [interval, name, ...spi2] = spi;
-				let [minSpawnAmount = 1, maxSpawnAmount = 1, range = 400] = spi2;
+				let [spawnMode = "SpawnAtRandomPlayer", minSpawnAmount = 1, maxSpawnAmount = 1, range = 400] = spi2;
 
 				if (minSpawnAmount > maxSpawnAmount) {
 					maxSpawnAmount = minSpawnAmount;
@@ -12234,31 +12235,53 @@ function update_instance(instance) {
 				if (!monster.last[name] || mssince(monster.last[name]) > interval) {
 					// random number between min and max (included)
 					const spawnAmount = Math.floor(Math.random() * (maxSpawnAmount - minSpawnAmount + 1) + minSpawnAmount);
+
 					const pname = random_one(Object.keys(monster.points));
 					const player = get_player(pname);
+
 					// TODO: don't spawn monsters at dead players?
-					if (!player || player.npc || distance(monster, player) > range) {
-						console.log(`${instance.name}`, player, distance(monster, player));
+					if (!player || player.npc) {
+						// console.log(`${instance.name}`, player, distance(monster, player));
+						return;
+					}
+
+					// Validate the range between the master monster and the player
+					if (range && distance(monster, player) > range) {
 						return;
 					}
 
 					if (!is_same(player, get_player(monster.target), true)) {
-						server_log(`${instance.name} !is_same`);
-						// console.log(`${instance.name} !is_same`);
+						// Only spawn on players the monster is not targeting
 						return;
+					}
+
+					let spot;
+					switch (spawnMode) {
+						case "SpawnAtBoss":
+							spot = safe_xy_nearby(
+								monster.map,
+								monster.x + Math.random() * 20 - 10, // +/- 10 x position
+								monster.y + Math.random() * 20 - 10, // +/- 10 y position
+							);
+							break;
+
+						// TODO: Spawn modes
+						// spawn at point(s)
+
+						default: {
+							// SpawnAtRandomPlayer
+							spot = safe_xy_nearby(player.map, player.x + Math.random() * 20 - 10, player.y + Math.random() * 20 - 10);
+							break;
+						}
 					}
 
 					monster.last[name] = new Date();
-					var spot = safe_xy_nearby(player.map, player.x + Math.random() * 20 - 10, player.y + Math.random() * 20 - 10);
 					if (!spot) {
-						server_log(`${instance.name} no safe spot near ${player.name}`);
-						// console.log(`${instance.name} no safe spot near ${player.name}`);
+						// server_log(`${instance.name} no safe spot near ${player.name}`);
 						return;
 					}
 
-					// logging seems to make it crash
-					server_log(`${instance.name} spawning ${spawnAmount} x ${name} near ${player.name}`);
-					// console.log(`${instance.name} spawning ${spawnAmount} x ${name} near ${player.name}`);
+					server_log(`${instance.name} spawning ${spawnAmount} x ${name} at [${spot.x},${spot.y}]`);
 
 					for (let index = 0; index < spawnAmount; index++) {
 						new_monster(instance.name, {
