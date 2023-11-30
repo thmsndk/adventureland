@@ -385,6 +385,9 @@ function init_game() {
 					server_bfs("tomb");
 					server_bfs("dungeon0");
 					server_bfs("cgallery");
+					// precompute seems to be messed up? so we hardcode a bfs call on server create
+					// TODO: this should probably not be hardcoded.
+					server_bfs("bee_dungeon");
 				} else if (gameplay == "dungeon") {
 					for (var name in G.maps) {
 						if (G.maps[name].world == "dungeon") {
