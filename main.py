@@ -168,7 +168,10 @@ def serve_datajs():
 		if maps[name].get("ignore"): continue
 		#if name=="test" and not is_sdk: key="test"
 		#logging.info(key)
-		geometry[name]=get_by_iid("map|%s"%key).info.data
+		dbmap=get_by_iid("map|%s"%key)
+			if dbmap:
+				geometry[name]=dbmap.info.data
+				
 	data={
 		"version":game_version,
 		"achievements":achievements,
