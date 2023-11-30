@@ -46,7 +46,8 @@ monsters={
 		"speed":6,"hp":10000,"xp":20000,
 		"attack":0,"damage_type":"physical","range":1,"frequency":0.5,
 		"respawn":2,"gold":40,
-		"aggro":1,"aa":1,"rage":0.1,
+		"aggro":1,"aa":1,
+		"rage":1, # never disengage target
 		
 		"skin":"bee", #reuse the bee sprite
 		"size":1.5,
@@ -76,7 +77,8 @@ monsters={
 		"speed":12,"hp":300,"xp":400,
 		"attack":16,"damage_type":"physical",
 		"respawn":2,"gold":40,"range":5,"frequency":0.5,
-		"aggro":1,"aa":1,"rage":0.1,
+		"aggro":1,"aa":1,
+		"rage":1, # never disengage target
 		"phresistance":60,
 		#TODO: Poison sting ability. Has a chance to kill bee
 		"explanation":"The female worker bee, responsible for both house chores and defending the nest!",
@@ -88,9 +90,10 @@ monsters={
 		"attack":0,"damage_type":"physical","range":1,"frequency":0.5,
 		"respawn":2,"gold":40,
 		
-		"aggro":1,"aa":1,"rage":0.1,
+		"aggro":1,"aa":1,
+		"rage":1, # never disengage target
 		"phresistance":60,
-		"explanation":"The male bee, does nothing but reproduction.",
+		"explanation":"The male bee, exists only for reproduction.",
 	},
 	"squig":{
 		"name":"Squig","speed":10,"hp":1000,"xp":600,"attack":7,"damage_type":"physical","respawn":12,"gold":100,"range":15,"frequency":0.5,"aggro":0,"aa":1,
