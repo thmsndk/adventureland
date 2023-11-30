@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script
+			src="/js/jquery/jquery-{{domain.jquery_version}}.min.js"
+			{%if
+			domain.electron%}
+			onload="if(typeof require!=='undefined') window.$=window.jQuery=module.exports;"
+			{%endif%}
+		></script>
+		<script src="/js/common_functions.js?v={{domain.v}}"></script>
+		<script src="/js/functions.js?v={{domain.v}}"></script>
+		<script src="/js/html.js?v={{domain.v}}"></script>
+		<script src="/data.js?v={{domain.v}}"></script>
+		<link href="/css/index.css?v={{domain.v}}" rel="stylesheet" type="text/css" />
+		<link href="/css/common.css?v={{domain.v}}" rel="stylesheet" type="text/css" />
+		<style>
+			html,
+			body {
+				background: black;
+			}
+			body {
+				overflow: scroll;
+			}
+
+			table.sticky-header th {
+				position: sticky;
+				top: 0;
+			}
+
+			tr td:nth-child(1),
+			tr td:nth-child(2) {
+				position: sticky;
+				left: 0;
+			}
+
+			tr th:nth-child(2),
+			tr td:nth-child(2) {
+				left: 95px;
+			}
+
+			/* table tr:nth-child(odd) {
+				background: grey;
+			} */
+
+			table tr:hover {
+				background: silver;
+				/* cursor: pointer; */
+				color: black;
+			}
+		</style>
+		<script>
+			document.addEventListener("DOMContentLoaded", function (event) {
+				// TODO: a table of items with relevant attributes for comparison
+				// TODO: Ability to edit an items data
+				// TODO: Filter by type e.g. head, weapon
+				// TODO: Ability to mark items as baseline for comparison so we can make a diff
+
+				// 				{
+				//     "type": "type",
+				//     "s": "s",
+				//     "name": "name",
+				//     "stat": "stat",
+				//     "g": "g",
+				//     "multiplier": "multiplier",
+				//     "a": "a",
+				//     "dex": "dex",
+				//     "int": "int",
+				//     "str": "str",
+				//     "vit": "vit",
+				//     "speed": "speed",
+				//     "grades": "grades",
+				//     "armor": "armor",
+				//     "throw": "throw",
+				//     "action": "action",
+				//     "onclick": "onclick",
+				//     "tier": "tier",
+				//     "damage_type": "damage_type",
+				//     "wtype": "wtype",
+				//     "class": "class",
+				//     "attack": "attack",
+				//     "range": "range",
+				//     "apiercing": "apiercing",
+				//     "resistance": "resistance",
+				//     "extra_stat": "extra_stat",
+				//     "scroll": "scroll",
+				//     "set": "set",
+				//     "rpiercing": "rpiercing",
+				//     "legacy": "legacy",
+				//     "crit": "crit",
+				//     "gold": "gold",
+				//     "ability": "ability",
+				//     "hat": "hat",
+				//     "grade": "grade",
+				//     "monster": "monster",
+				//     "cuteness": "cuteness",
+				//     "frequency": "frequency",
+				//     "credit": "credit",
+				//     "edge": "edge",
+				//     "duration": "duration",
+				//     "reflection": "reflection",
+				//     "hp": "hp",
+				//     "skin_a": "skin_a",
+				//     "eat": "eat",
+				//     "attr0": "attr0",
+				//     "explosion": "explosion",
+				//     "lifesteal": "lifesteal",
+				//     "charge": "charge",
+				//     "e": "e",
+				//     "miss": "miss",
+				//     "event": "event",
+				//     "luck": "luck",
+				//     "evasion": "evasion",
+				//     "projectile": "projectile",
+				//     "breaks": "breaks",
+				//     "rare": "rare",
+				//     "exclusive": "exclusive",
+				//     "spawn": "spawn",
+				//     "note": "note",
+				//     "xp": "xp",
+				//     "quest": "quest",
+				//     "protection": "protection",
+				//     "pnresistance": "pnresistance",
+				//     "special": "special",
+				//     "acolor": "acolor",
+				//     "fzresistance": "fzresistance",
+				//     "cash": "cash",
+				//     "mp_cost": "mp_cost",
+				//     "mp_reduction": "mp_reduction",
+				//     "cooldown": "cooldown",
+				//     "gives": "gives",
+				//     "reward": "reward",
+				//     "unlocks": "unlocks",
+				//     "trex": "trex",
+				//     "skin_r": "skin_r",
+				//     "skin_c": "skin_c",
+				//     "charisma": "charisma",
+				//     "for": "for",
+				//     "nopo": "nopo",
+				//     "projectile_test": "projectile_test",
+				//     "winterland": "winterland",
+				//     "dreturn": "dreturn",
+				//     "manasteal": "manasteal",
+				//     "delia": "delia",
+				//     "attr1": "attr1",
+				//     "withdrawal": "withdrawal",
+				//     "offering": "offering",
+				//     "output": "output",
+				//     "firesistance": "firesistance",
+				//     "gain": "gain",
+				//     "days": "days",
+				//     "stun": "stun",
+				//     "debuff": "debuff",
+				//     "xscroll": "xscroll",
+				//     "critdamage": "critdamage",
+				//     "opens": "opens",
+				//     "blast": "blast",
+				//     "mp": "mp",
+				//     "courage": "courage",
+				//     "stand": "stand",
+				//     "xcx": "xcx",
+				//     "rogue": "rogue",
+				//     "aura": "aura",
+				//     "markup": "markup",
+				//     "bling": "bling",
+				//     "mcourage": "mcourage",
+				//     "pcourage": "pcourage",
+				//     "awesomeness": "awesomeness",
+				//     "npc": "npc"
+				// }
+				const property_ignore = ["skin", "cx", "ignore", "explanation"];
+				const property_columns = {};
+				for (const gItem of Object.values(G.items)) {
+					for (const key in gItem) {
+						if (property_ignore.includes(key)) {
+							continue;
+						}
+
+						if (key === "upgrade") {
+							continue;
+						}
+
+						if (key === "compound") {
+							continue;
+						}
+
+						if (!property_columns[key]) {
+							property_columns[key] = key;
+						}
+
+						// TODO: handle upgrade property and add them as well
+					}
+				}
+
+				console.log(property_columns);
+
+				const items = Object.entries(G.items);
+
+				// Sorting by multiple properties (e.g., wtype and value)
+				items.sort(([aKey, aItem], [bKey, bItem]) => {
+					// TODO: sort by wtype
+					// if (a.type === b.type) {
+					// 	return a.value - b.value;
+					// }
+
+					// TODO: sort by name or key
+					return aItem.type > bItem.type ? 1 : -1;
+				});
+
+				let html = "";
+				// Draw item table
+				html += "<table class='sticky-header'>";
+				html += "<tr>";
+				html += `<th>itemKey</th>`;
+				html += `<th>itemName</th>`;
+				html += `<th>Type</th>`;
+
+				for (const key in property_columns) {
+					html += `<th>${key}</th>`;
+				}
+
+				html += "</tr>";
+				// TODO: What attribute columns are interesting to compare?
+				for (const [itemKey, gItem] of items) {
+					// TODO: How to visualize each item and their upgraded version, could append it in the same column? perhaps a sub table?
+
+					// html += "<tr>";
+					// html += `<td>${itemKey}</td>`;
+					// html += `<td>${gItem.name}</td>`;
+					// html += `<td>${gItem.type}</td>`;
+
+					// html += "</tr>";
+
+					// TODO: ability to toggle if leveled items should be shown
+					let maxLevel = 0;
+					// if (gItem.compound) maxLevel = 5;
+					// if (gItem.upgrade) maxLevel = 13;
+
+					const styles = "vertical-align: top; margin-right: 10px";
+					for (let level = 0; level <= maxLevel; level++) {
+						// calculate stats for upgrade
+						const actual = { name: itemKey, level };
+						const prop = calculate_item_properties(
+							actual,
+							// TODO: class & map can have an effect on stats
+							// { def: item, class: window.character && character.ctype, map: window.character && character.map },
+							{ def: gItem },
+						);
+
+						const grade = calculate_item_grade(gItem, actual);
+
+						let name = gItem.name;
+						if (level > 0) {
+							// TODO: look at render_item and extract it out
+							name += " +" + level;
+						}
+
+						// Render item icon like in inventory
+						const icon = item_container({ skin: gItem.skin, size: 25 }, actual);
+
+						html += "<tr>";
+						html += `<td>${itemKey}</td>`;
+						html += `<td title='${name}'>${icon}</td>`;
+						html += `<td>${gItem.type}</td>`;
+
+						for (const key in property_columns) {
+							const value = prop[key];
+							html += `<td>${value ?? ""}</td>`;
+						}
+
+						html += "</tr>";
+
+						// html += render_item("html", {
+						// 	item: gItem,
+						// 	name: itemKey,
+						// 	styles: styles,
+						// 	actual: { name: itemKey, level },
+						// 	sell: 1,
+						// });
+					}
+
+					// render_item experiment, takes too much space
+					// // TODO: dynamic colspawn
+					// html += "<tr><td colspan='10'>";
+					// let maxLevel = 0;
+					// if (gItem.compound) maxLevel = 5;
+					// if (gItem.upgrade) maxLevel = 13;
+
+					// const styles = "vertical-align: top; margin-right: 10px";
+					// for (let level = 0; level < maxLevel; level++) {
+					// 	html += render_item("html", {
+					// 		item: gItem,
+					// 		name: itemKey,
+					// 		styles: styles,
+					// 		actual: { name: itemKey, level },
+					// 		sell: 1,
+					// 	});
+					// }
+					// html += "</td></tr>";
+
+					// if(filter && !in_arr(name,filter)) continue;
+					// var def=G.items[name];
+					// if(mode=="to_convert" && (def.ignore || G.positions[def.skin][0]=="pack_20")) continue;
+					// var html="";
+					// if(!only_list) html+="<div style='margin-bottom: 15px'>";
+					// console.log(def);
+					// if(def.compound && !only_list)
+					// {
+					// 	html+=render_item("html",{item:def,name:name,styles:styles,actual:{name:name,level:0},sell:1});
+					// 	html+=render_item("html",{item:def,name:name,styles:styles,actual:{name:name,level:1},sell:1});
+					// 	html+=render_item("html",{item:def,name:name,styles:styles,actual:{name:name,level:2},sell:1});
+					// 	html+=render_item("html",{item:def,name:name,styles:styles,actual:{name:name,level:3},sell:1});
+					// 	html+=render_item("html",{item:def,name:name,styles:styles,actual:{name:name,level:4},sell:1});
+					// 	html+=render_item("html",{item:def,name:name,styles:styles,actual:{name:name,level:5},sell:1});
+					// }
+					// else if(def.upgrade && !only_list)
+					// {
+					// 	html+="<div style='margin-bottom: 15px'>";
+					// 		html+=render_item("html",{item:def,name:name,styles:styles,actual:{name:name,level:0},sell:1});
+					// 		html+=render_item("html",{item:def,name:name,styles:styles,actual:{name:name,level:1},sell:1});
+					// 		html+=render_item("html",{item:def,name:name,styles:styles,actual:{name:name,level:2},sell:1});
+					// 		html+=render_item("html",{item:def,name:name,styles:styles,actual:{name:name,level:3},sell:1});
+					// 		html+=render_item("html",{item:def,name:name,styles:styles,actual:{name:name,level:4},sell:1});
+					// 	html+="</div>";
+					// 	html+="<div style='margin-bottom: 15px'>";
+					// 		html+=render_item("html",{item:def,name:name,styles:styles,actual:{name:name,level:5},sell:1});
+					// 		html+=render_item("html",{item:def,name:name,styles:styles,actual:{name:name,level:6},sell:1});
+					// 		html+=render_item("html",{item:def,name:name,styles:styles,actual:{name:name,level:7},sell:1});
+					// 		html+=render_item("html",{item:def,name:name,styles:styles,actual:{name:name,level:8},sell:1});
+					// 		html+=render_item("html",{item:def,name:name,styles:styles,actual:{name:name,level:9},sell:1});
+					// 		html+=render_item("html",{item:def,name:name,styles:styles,actual:{name:name,level:10},sell:1});
+					// 	html+="</div>";
+					// }
+					// else
+					// {
+					// 	html+=render_item("html",{item:def,name:name,thumbnail:only_list});
+					// }
+					// if(!only_list) html+="</div>";
+				}
+				$("#items").append(html);
+				html += "</table>";
+			});
+		</script>
+		<style>
+			.buyitem {
+				display: inline-block;
+				margin: 6px;
+				vertical-align: top;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="items"></div>
+	</body>
+</html>
