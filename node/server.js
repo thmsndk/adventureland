@@ -380,14 +380,21 @@ function init_game() {
 					create_instance("d_b1");
 					create_instance("d_a1");
 					create_instance("d_a2");
-					server_bfs("crypt");
-					server_bfs("winter_instance");
-					server_bfs("tomb");
-					server_bfs("dungeon0");
-					server_bfs("cgallery");
-					// precompute seems to be messed up? so we hardcode a bfs call on server create
-					// TODO: this should probably not be hardcoded.
-					server_bfs("bee_dungeon");
+					// server_bfs("crypt");
+					// server_bfs("winter_instance");
+					// server_bfs("tomb");
+					// server_bfs("dungeon0");
+					// server_bfs("cgallery");
+
+					// TODO: precompute seems to be messed up? so we hardcode a bfs call on server create?
+					for (var name in G.maps) {
+						const gMap = G.maps[name];
+						const hasNpcs = gMap.npcs && gMap.npcs.length > 0;
+						const hasMonsters = gMap.monsters && gMap.monsters.length > 0;
+						if (gMap.instance && (hasNpcs || hasMonsters)) {
+							server_bfs(name);
+						}
+					}
 				} else if (gameplay == "dungeon") {
 					for (var name in G.maps) {
 						if (G.maps[name].world == "dungeon") {
