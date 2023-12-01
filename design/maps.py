@@ -1675,9 +1675,9 @@ maps={
 		],
 		"monsters":[
 			# {"type":"bee","boundary":[10,-10, 0,0],"count":1},
-			{"type":"bee_queen","boundary":[-44.5, -419.5, 40.5, -364],"count":1},
-			{"type":"bee_worker","boundary":[-34, -267.5, 36.5, -136.5],"count":3},
-			{"type":"bee_drone","boundary":[-34, -267.5, 36.5, -136.5],"count":1},
+			{"type":"bee_queen","boundary":[-44.5, -419.5, 40.5, -364],"count":1, "roam": True},
+			{"type":"bee_worker","boundary":[-34, -267.5, 36.5, -136.5],"count":3, "roam": True},
+			{"type":"bee_drone","boundary":[-34, -267.5, 36.5, -136.5],"count":1, "roam": True},
 		],
 		"spawns":[
 			[0,0],
