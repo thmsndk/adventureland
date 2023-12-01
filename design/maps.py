@@ -712,6 +712,7 @@ maps={
 			[294,-347,1], #16-mtunnel
 			[968,-577], #17-mtunnel
 			[1471,-424], #18-mtunnel
+			[460,-690], #19-log near mansion
 		],
 		"quirks":[
 			[-236,-189,24,24,"upgrade"],
@@ -1681,8 +1682,8 @@ maps={
 		"spawns":[
 			[0,0],
 		],
-		"on_death":["cave",2],
-		"on_exit":["cave",2],
+		"on_death":["main",19], # log near mansion
+		"on_exit":["main",19], # log near mansion
 		"doors":[
 			# [-1.54,105.6,126.56,56.96,"cave",2,0],
 		],
