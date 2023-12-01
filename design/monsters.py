@@ -45,9 +45,9 @@ monsters={
 		"name":"Queen Bee",
 		"speed":6,"hp":10000,"xp":20000, "gold":40,
 		"attack":0,"damage_type":"physical","range":1,"frequency":0.5,
-		# "grow": True # Respawns monsters untill the .count property on the map.monsters entry is reached
-		# respawn > 200 respawns the monster +720ms..1200ms
-		# respawn <= 200 respawns the monster +1000ms..1900ms
+		# "grow": True # can be defined in map.monsters respawns monsters untill the .count property on the map.monsters entry is reached
+		# respawn > 200 respawns the monster 200 * 720ms..1200ms = 144.000s..240.000s = 2.4m .. 4m after death
+		# respawn <= 200 respawns the monster 200 * 1000 + 0ms..900ms  = 200000ms .. 200900ms = 200s .. 200.9s = 3.3m .. 3,348m
 		"respawn":-1, # should not respawn on death
 		"roam":True, # Roams around the map
 		
@@ -59,6 +59,7 @@ monsters={
 		"phresistance":60,
 		"achievements":[
 			# [10,"stat","hp",5],
+			[50,"stat","armor",5],
 			# [100,"stat","mp",5],
 			# [1000,"stat","mp",5],
 			# [10000,"stat","attack",2],
@@ -70,11 +71,11 @@ monsters={
 			# TODO: Make the UI show the mechanics?
 			# [interval, monsterKey, spawnMode, minSpawnAmount, maxSpawnAmount, range] see update_instance Handle spawning minions from monster.spawns
 			
-			[10000, "bee_worker", "SpawnAtBoss", 0, 2, False], # Spawns 0..2 at the boss ignoring range to the player
-			[20000, "bee_drone", "SpawnAtBoss", 0, 1, False] # Spawns 0..1 at the boss ignoring range to the player
+			[10000, "bee_worker", "SpawnAtBoss", 0, 2, False], # Spawns 0..2 every 10s at the boss ignoring range to the player
+			[20000, "bee_drone", "SpawnAtBoss", 0, 1, False] # Spawns 0..1 every 20s at the boss ignoring range to the player
 			# TODO: can we control spawning mechanics more? e.g. a wave with a random amount of monsters of different types
 		],
-		"explanation":"The queen bee",
+		"explanation":"Her primary role is to lay eggs, and she is essential for the colony's survival. The queen produces pheromones that help maintain colony cohesion and regulate the behavior of other bees.",
 	},
 	"bee_worker":{
 		"name":"Worker Bee",
@@ -87,7 +88,7 @@ monsters={
 		"rage":1, # never disengage target
 		"phresistance":60,
 		#TODO: Poison sting ability. Has a chance to kill bee
-		"explanation":"The female worker bee, responsible for both house chores and defending the nest!",
+		"explanation":"Worker bees are females that do not reproduce. They perform various tasks such as foraging for nectar and pollen, tending to the queen and developing brood, cleaning and defending the hive, and producing beeswax. Worker bees are the most numerous bees in a hive.",
 	},
 	"bee_drone":{
 		"name":"Drone Bee",
@@ -100,7 +101,7 @@ monsters={
 		"aggro":1,"aa":1,
 		"rage":1, # never disengage target
 		"phresistance":60,
-		"explanation":"The male bee, exists only for reproduction.",
+		"explanation":"Drones are male bees, and their primary purpose is to mate with a virgin queen during her nuptial flight. Unlike worker bees, drones do not have stingers and are not involved in foraging or other hive activities. Drones are relatively few in number compared to worker bees.",
 	},
 	"squig":{
 		"name":"Squig","speed":10,"hp":1000,"xp":600,"attack":7,"damage_type":"physical","respawn":12,"gold":100,"range":15,"frequency":0.5,"aggro":0,"aa":1,
