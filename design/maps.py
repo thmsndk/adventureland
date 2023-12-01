@@ -1664,9 +1664,15 @@ maps={
 		"instance":True,
 		"enter": {
 			# requirements to enter the dungeon
-			# TODO level, class, locations (spawns, doors, quirks?)
+			# TODO level, class, 
 			# "items": [["beekey", 1]], #requires 1 beekey to enter
-			# "spawn": [["cave", 2, 120]] # mapKey, spawn, distance
+			
+			# [mapKey, locationType, locationIndex, range]
+			# "locations": [
+			# 	["main", "spawns", 19, 120], # log near mansion
+			# 	["main", "quirks", 10, 120], # log near mansion
+			# 	["main", "doors", 13, 120] # log near mansion
+			# ]
 
 
 		},
