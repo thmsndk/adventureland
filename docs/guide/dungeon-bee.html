@@ -1,19 +1,94 @@
-<div style='width: 600px'>
-	<p style='font-size: 32px; color: #216D25; text-decoration: underline dotted #B30B1A'>BEEginner [Dungeon]</p>
+<div style="width: 600px">
+	<p style="font-size: 32px; color: #216d25; text-decoration: underline dotted #b30b1a">BEEginner [Dungeon]</p>
 
-	<p>
-		<div style='float:left; margin-right: 20px'><span class='eitem1'></span></div> WIP GUIDE FOR BEE You need the Bee Key to enter the instanced crypt dungeon, once a party member has unlocked the dungeon, other party members will be able to directly enter. <br />
-	</p>
+	<div>
+		<div style="float: left; margin-right: 20px"><span class="eitem1"></span></div>
+		ou need The BEE Key to enter the instanced bee dungeon, once a party member has unlocked the dungeon, other party
+		members will be able to directly enter.
+		<br />
+	</div>
 
-	<p><span class='hlabel'>Note:</span> Instances are only alive as long as there's someone inside and online!</p>
-	
-<div class='code'>
-enter("bee_dungeon");
-// To unlock using a key
+	<!-- TODO: Is this even true anymore? -->
+	<p><span class="hlabel">Note:</span> Instances are only alive as long as there's someone inside and online!</p>
 
-enter("bee_dungeon",player.in);
+	<!-- prettier-ignore -->
+	<div class="code">
+enter("bee_dungeon"); 
+// To unlock using a key 
+
+enter("bee_dungeon",player.in); 
 // To enter an already unlocked dungeon
+	</div>
+
+	<hr />
+	<!-- <h1>Monsters:</h1> -->
+	<div style="width: 480px">
+		<div
+			style="
+				background-color: #575983;
+				border: 2px solid #9f9fb0;
+				position: relative;
+				display: inline-block;
+				margin: 2px;
+			"
+		>
+			<span class="bee_queen"></span>
+		</div>
+		TODO: Text about queen bee
+		<span class="jlabel" onclick="code_eval('show_json('+$(this).html()+')')">G.monsters.bee_queen</span>
+	</div>
+
+	<div style="width: 480px">
+		<div
+			style="
+				background-color: #575983;
+				border: 2px solid #9f9fb0;
+				position: relative;
+				display: inline-block;
+				margin: 2px;
+			"
+		>
+			<span class="bee_worker"></span>
+		</div>
+		TODO: Text about workers
+		<span class="jlabel" onclick="code_eval('show_json('+$(this).html()+')')">G.monsters.bee_worker</span>
+	</div>
+
+	<div style="width: 480px">
+		<div
+			style="
+				background-color: #575983;
+				border: 2px solid #9f9fb0;
+				position: relative;
+				display: inline-block;
+				margin: 2px;
+			"
+		>
+			<span class="bee_drone"></span>
+		</div>
+		TODO: Text about drones
+		<span class="jlabel" onclick="code_eval('show_json('+$(this).html()+')')">G.monsters.bee_drone</span>
+	</div>
+
+	<script>
+		$(".eitem1").html(item_container({ skin: G.items.beekey.skin }, { name: "beekey", q: 0 }));
+
+		["bee_queen", "bee_worker", "bee_drone"].forEach((monsterKey) => {
+			// TODO: Extract out monster description
+			// TODO: Render monster name from G
+			// make sprite clickable and render the monster info
+			$(`.${monsterKey}`)
+				.on("click", () => render_monster_info(monsterKey))
+				.addClass("clickable");
+			// render monster icon
+			$(`.${monsterKey}`).html(sprite(`${monsterKey}`, { width: 50, height: 70 }));
+		});
+	</script>
 </div>
+
+<!-- TODO: smart move to dungeon -->
+
+<!-- 
 Mechanics notes:
 queen is slow, she spawns eggs, 
 unfertalized eggs spawns drones (males)
@@ -77,9 +152,4 @@ Worker bees are the most numerous bees in a hive.
 
 Drone Bees: Drones are male bees, and their primary purpose is to mate with a virgin queen during her nuptial flight. 
 Unlike worker bees, drones do not have stingers and are not involved in foraging or other hive activities. 
-Drones are relatively few in number compared to worker bees.
-
-	<script>
-		$(".eitem1").html(item_container({skin:G.items.beekey.skin},{name:"beekey",q:0}));
-	</script>
-</div>
+Drones are relatively few in number compared to worker bees. -->
