@@ -687,6 +687,10 @@ maps={
 			[312,-335,32,32,"mtunnel",0,16],
 			[967,-584,32,32,"mtunnel",1,17],
 			[1472,-434,32,32,"mtunnel",2,18],
+			# [x,y,w,h, mapKey, s?, spawnsIndex, mode, key? - unused?]
+			# mode can be protected and a .gatekeeper mob needs to be killed before you can continue
+			# mode can be ulocked and the user needs to have the place unlocked
+			[1048,635,32,32,"bee_dungeon",0,19,"key","beekey"], #13 log near mansion
 		],
 		"traps":[
 			{"type":"spikes","position":[-472,286]},
@@ -712,19 +716,20 @@ maps={
 			[294,-347,1], #16-mtunnel
 			[968,-577], #17-mtunnel
 			[1471,-424], #18-mtunnel
-			[460,-690], #19-log near mansion
+			[1048,635], #19-log near mansion
 		],
 		"quirks":[
-			[-236,-189,24,24,"upgrade"],
-			[-179,-189,24,24,"compound"],
-			[350,424,30,24,"list_pvp"],
-			[-200,15,24,42,"log","A relic from an old era"],
-			[200,15,24,42,"log","A relic from an old era"],
-			[1689,-494,20,16,"note","The Dark Forest. A curious place."],
-			[681,624,20,16,"sign","The Mansion"],
-			[65,544,20,16,"sign","Welcome to The New Town!"],
-			[-150,154,20,16,"sign","Town Square"],
-			[-365,144,20,16,"sign","Tavern"],
+			[-236,-189,24,24,"upgrade"], #0
+			[-179,-189,24,24,"compound"], #1
+			[350,424,30,24,"list_pvp"], #2
+			[-200,15,24,42,"log","A relic from an old era"], #3
+			[200,15,24,42,"log","A relic from an old era"], #4
+			[1689,-494,20,16,"note","The Dark Forest. A curious place."], #5
+			[681,624,20,16,"sign","The Mansion"], #6
+			[65,544,20,16,"sign","Welcome to The New Town!"], #7
+			[-150,154,20,16,"sign","Town Square"], #8
+			[-365,144,20,16,"sign","Tavern"], #9
+			[1048,635,20,16,"log","You hear a strange buzzing sound."], #10 log near mansion
 		],
 		"animatables":{
 			"the_door":{"x":888,"y":-672,"position":"door0"},
@@ -1695,7 +1700,6 @@ maps={
 		],
 		# "article": "dungeon-crypt", # Unsure if this works
 		# we end up calling open_guide that calls load_article
-		# TODO: Add quirks to main map that descripes entrances to the bee dungeon?
 		"quirks":[
 			# [-192,-1309,48,64,"log","Is this a gateway?"],
 			[0,0,0,0,"info","bee_dungeon"], # TODO: define range? can we make the rendering in render_server dynamic, so we don't have to code something there to show this quirk?
