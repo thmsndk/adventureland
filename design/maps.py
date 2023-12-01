@@ -690,7 +690,8 @@ maps={
 			# [x,y,w,h, mapKey, s?, spawnsIndex, mode, key? - unused?]
 			# mode can be protected and a .gatekeeper mob needs to be killed before you can continue
 			# mode can be ulocked and the user needs to have the place unlocked
-			[1048,635,32,32,"bee_dungeon",0,19,"key","beekey"], #13 log near mansion
+			# "bee_dungeon_door": [442.5,661.5,487,682.5]
+			[465, 680, 60, 16, "bee_dungeon", 0, 19, "key", "beekey"], #13 log near mansion
 		],
 		"traps":[
 			{"type":"spikes","position":[-472,286]},
@@ -716,7 +717,7 @@ maps={
 			[294,-347,1], #16-mtunnel
 			[968,-577], #17-mtunnel
 			[1471,-424], #18-mtunnel
-			[1048,635], #19-log near mansion
+			[465, 690], #19-log near mansion
 		],
 		"quirks":[
 			[-236,-189,24,24,"upgrade"], #0
@@ -729,7 +730,9 @@ maps={
 			[65,544,20,16,"sign","Welcome to The New Town!"], #7
 			[-150,154,20,16,"sign","Town Square"], #8
 			[-365,144,20,16,"sign","Tavern"], #9
-			[1048,635,20,16,"log","You hear a strange buzzing sound."], #10 log near mansion
+			# TODO: sound & message type based on range?
+			# [465, 680, 60, 16, "log","You hear a strange buzzing sound."], #10 log near mansion
+			[465, 680, 60, 16, "info","bee_dungeon", 50], #10 log near mansion, show if in 50 range of quirk
 		],
 		"animatables":{
 			"the_door":{"x":888,"y":-672,"position":"door0"},
