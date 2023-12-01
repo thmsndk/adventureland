@@ -5744,7 +5744,12 @@ function create_map()
 		map.addChild(nsprite);
 		map_doors.push(nsprite);
 		map_entities.push(nsprite);
-		if(border_mode) border_logic(nsprite);
+		if(border_mode) {
+			border_logic(nsprite, 0x007fff);
+			var c=draw_circle(door[0],door[1],2.5,0x007fff);
+			map.addChild(c);
+		}
+		
 	}
 
 	machines=map_info.machines||[];
@@ -5770,7 +5775,11 @@ function create_map()
 		map.addChild(nsprite);
 		map_entities.push(nsprite);
 		// map_doors.push(nsprite);
-		if(border_mode) border_logic(nsprite);
+		if(border_mode) {
+			border_logic(nsprite, 0x00ff00);
+			var c=draw_circle(quirk[0],quirk[1],2.5,0x00ff00);
+			map.addChild(c);
+		}
 	}
 
 	if(log_flags.map) console.log("Map created: "+current_map);
@@ -5796,6 +5805,7 @@ function create_map()
 			var c=draw_circle(spawn[0],spawn[1],10,0xFD7188);
 			map.addChild(c);
 		});
+
 		(G.maps[current_map].monsters||[]).forEach(function(mdef){
 			if(mdef.boundary)
 			{
@@ -5813,10 +5823,12 @@ function create_map()
 				map.addChild(e);
 			});
 		});
+		
 		M.x_lines.forEach(function(line){
 			var l=draw_line(line[0],line[1],line[0],line[2],2);
 			map.addChild(l);
 		});
+
 		M.y_lines.forEach(function(line){
 			var l=draw_line(line[1],line[0],line[2],line[0],2);
 			map.addChild(l);
