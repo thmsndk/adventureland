@@ -12040,7 +12040,7 @@ function update_instance(instance) {
 							stype: "spawn",
 							x: spot.x,
 							y: spot.y,
-							target: player.name,
+							target: player.name, // TODO: Targeting players might terrify them.
 							master: monster.id,
 						});
 					}
