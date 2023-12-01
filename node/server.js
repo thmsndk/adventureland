@@ -5186,9 +5186,49 @@ function init_io() {
 						// var f = "cave";
 						// var ref = G.maps.cave.spawns[2];
 						// var item = "cryptkey";
-						// if (simple_distance(player, { in: f, map: f, x: ref[0], y: ref[1] }) > 120) {
-						// 	return fail_response("transport_cant_reach");
-						// }
+						const validateRange = map.enter.locations && map.enter.locations.length > 0;
+						let inRange = !validateRange;
+
+						if (validateRange) {
+							server_log(`${map.enter.locations.length} locations to validate`);
+							for (const [locationsMapKey, locationType, locationIndex, range = 120] of map.enter.locations) {
+								if (!G.maps[locationsMapKey]) {
+									server_log(`G.maps.${locationsMapKey} does not exist`);
+									continue;
+								}
+
+								if (!G.maps[locationsMapKey][locationType]) {
+									server_log(`G.maps.${locationsMapKey}.${locationType} does not exist`);
+									continue;
+								}
+
+								if (!G.maps[locationsMapKey][locationType][locationIndex]) {
+									server_log(`G.maps.${locationsMapKey}.${locationType}.${locationIndex} does not exist`);
+									continue;
+								}
+
+								const location = G.maps[locationsMapKey][locationType][locationIndex];
+								const distanceToLocation = simple_distance(player, {
+									in: locationsMapKey,
+									map: locationsMapKey,
+									x: location[0],
+									y: location[1],
+								});
+
+								server_log(
+									`G.maps.${locationsMapKey}.${locationType}.${locationIndex} ${distanceToLocation} <= ${range}`,
+								);
+
+								if (distanceToLocation <= range) {
+									inRange = true;
+									break;
+								}
+							}
+						}
+
+						if (!inRange) {
+							return fail_response("transport_cant_reach");
+						}
 
 						// We check that the instance does not exist so the cost is not paid multiple times.
 						if (map.enter.items && !instanceExists) {
