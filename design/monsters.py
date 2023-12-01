@@ -43,13 +43,18 @@ monsters={
 	},
 	"bee_queen":{
 		"name":"Queen Bee",
-		"speed":6,"hp":10000,"xp":20000,
+		"speed":6,"hp":10000,"xp":20000, "gold":40,
 		"attack":0,"damage_type":"physical","range":1,"frequency":0.5,
-		"respawn":2,"gold":40,
+		# "grow": True # Respawns monsters untill the .count property on the map.monsters entry is reached
+		# respawn > 200 respawns the monster +720ms..1200ms
+		# respawn <= 200 respawns the monster +1000ms..1900ms
+		"respawn":-1, # should not respawn on death
+		"roam":True, # Roams around the map
+		
 		"aggro":1,"aa":1,
 		"rage":1, # never disengage target
 		
-		"skin":"bee", #reuse the bee sprite
+		"skin":"bee", # reuse the bee sprite
 		"size":1.5,
 		"phresistance":60,
 		"achievements":[
@@ -74,9 +79,10 @@ monsters={
 	"bee_worker":{
 		"name":"Worker Bee",
 		"skin": "bee",
-		"speed":12,"hp":300,"xp":400,
-		"attack":16,"damage_type":"physical",
-		"respawn":2,"gold":40,"range":5,"frequency":0.5,
+		"speed":12,"hp":300,"xp":400,"gold":40,
+		"attack":16,"damage_type":"physical","range":5,"frequency":0.5,
+		"respawn":-1, # should not respawn on death
+		"roam":True, # Roams around the map
 		"aggro":1,"aa":1,
 		"rage":1, # never disengage target
 		"phresistance":60,
@@ -86,9 +92,10 @@ monsters={
 	"bee_drone":{
 		"name":"Drone Bee",
 		"skin": "bee",
-		"speed":12,"hp":300,"xp":400,
+		"speed":12,"hp":300,"xp":400,"gold":40,
 		"attack":0,"damage_type":"physical","range":1,"frequency":0.5,
-		"respawn":2,"gold":40,
+		"respawn":-1, # should not respawn on death
+		"roam":True, # Roams around the map
 		
 		"aggro":1,"aa":1,
 		"rage":1, # never disengage target
