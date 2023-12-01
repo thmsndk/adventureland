@@ -5872,7 +5872,7 @@ quest={
 		"opens":"test", #property seems to have no effect, not used, seems more like a note
 		#"ignore":True,
 		"g":500,
-		"explanation":"A key, imbued with magical energy.",
+		"explanation":"A key, imbued with magical energy. It smells strangely like a tree log",
 		"s":25,
 	},
 	"bkey":{
