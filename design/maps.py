@@ -732,7 +732,7 @@ maps={
 			[-365,144,20,16,"sign","Tavern"], #9
 			# TODO: sound & message type based on range?
 			# [465, 680, 60, 16, "log","You hear a strange buzzing sound."], #10 log near mansion
-			[465, 680, 60, 16, "info","bee_dungeon", 50], #10 log near mansion, show if in 50 range of quirk
+			[485, 680, 16, 16, "info","bee_dungeon", 120], #10 log near mansion, show if in 50 range of quirk
 		],
 		"animatables":{
 			"the_door":{"x":888,"y":-672,"position":"door0"},
