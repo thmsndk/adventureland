@@ -687,7 +687,7 @@ maps={
 			[312,-335,32,32,"mtunnel",0,16],
 			[967,-584,32,32,"mtunnel",1,17],
 			[1472,-434,32,32,"mtunnel",2,18],
-			# [x,y,w,h, mapKey, s?, spawnsIndex, mode, key? - unused?]
+			# [x,y,w,h, mapKey, remoteSpawnsIndex, localSpawnsIndex mode, key? - unused?]
 			# mode can be protected and a .gatekeeper mob needs to be killed before you can continue
 			# mode can be ulocked and the user needs to have the place unlocked
 			# "bee_dungeon_door": [442.5,661.5,487,682.5]
@@ -1699,7 +1699,7 @@ maps={
 		"on_death":["main",19], # log near mansion
 		"on_exit":["main",19], # log near mansion
 		"doors":[
-			# [-1.54,105.6,126.56,56.96,"cave",2,0],
+			[0,0, 10, 10, "main", 19, 0], # log near mansion
 		],
 		# "article": "dungeon-crypt", # Unsure if this works
 		# we end up calling open_guide that calls load_article
