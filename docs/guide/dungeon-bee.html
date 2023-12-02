@@ -85,7 +85,7 @@
 	<!-- TODO: I think this is only true for .solo instances -->
 	<!-- <p><span class="hlabel">Note:</span> Instances are only alive as long as there's someone inside and online!</p> -->
 
-	<h3>Automation Challenges</h3>
+	<h1>Automation Challenges</h1>
 	Here are some automation challenges you can try and accomplish
 	<ul>
 		<li><a href="#challenge-enter-dungeon">Entering the dungeon</a></li>
@@ -103,6 +103,7 @@
 		 -->
 		<li><a href="#challenge-key-crafting">Automated crafting of the key</a></li>
 
+		<li>Kiting</li>
 		<!-- <li>Debug visualizations</li> -->
 	</ul>
 
@@ -113,7 +114,7 @@
 		<li>smart_move failing to find the monster</li>
 	</ul> -->
 
-	<h4 id="challenge-enter-dungeon">Entering a dungeon</h4>
+	<h2 id="challenge-enter-dungeon">Entering a dungeon</h2>
 	<div>
 		<p><span class="hlabel">Note:</span> Most Instances lives untill the server restarts</p>
 		<!-- prettier-ignore -->
@@ -129,7 +130,7 @@ enter("bee_dungeon", character.in);
 		</div>
 	</div>
 
-	<h4 id="challenge-party">Making a party</h4>
+	<h2 id="challenge-party">Making a party</h2>
 	<div>
 		<!-- prettier-ignore -->
 		<div class="code">
@@ -154,7 +155,7 @@ function on_party_request(name)
 		</div>
 	</div>
 
-	<h4 id="challenge-leave-dungeon">Leaving a dungeon</h4>
+	<h2 id="challenge-leave-dungeon">Leaving a dungeon</h2>
 	<div>
 		<!-- TODO describe this better -->
 		maps, events, dungeons and instances all behave differently. You can check
@@ -167,7 +168,7 @@ smart_move('main')
 		</div>
 	</div>
 
-	<h4 id="challenge-key-crafting">Key Crafting</h4>
+	<h2 id="challenge-key-crafting">Key Crafting</h2>
 	<div>
 		<!-- render_data_reference(["craft"],"beekey") -->
 		<!-- onclick="render_function_reference("craft")" can we make links inside a code block? -->
@@ -186,13 +187,13 @@ craft(locate_item("beewings"))
 		</div>
 	</div>
 
-	<h3>General Mechanics</h3>
+	<h1>General Mechanics</h1>
 	<ul>
 		<li><a href="#challenge-fear">Fear</a></li>
 		<li>Stacked damage, mobbing?,</li>
 	</ul>
 
-	<h4 id="challenge-fear">Fear</h4>
+	<h2 id="challenge-fear">Fear</h2>
 	<div>
 		Your character can get feared. There are 3 stages of fear:
 		<ul>
@@ -338,6 +339,8 @@ if (character.fear > 2) {
 
 			$(element).html($div);
 		});
+
+		// TODO: gpath show_json on click
 
 		$(`.gPath`).each((i, element) => {
 			const gPath = $(element).html();
