@@ -40,6 +40,12 @@ monsters={
 			[20,"stat","for",1],
 		],
 		"cute":True,
+		"spawn_contributors":{
+			"bee": 1,
+			"bee_queen": 2,
+			"bee_worker": 0.5,
+			"bee_drone": 0.5,
+		}
 	},
 	"bee_queen":{
 		"name":"Queen Bee",
