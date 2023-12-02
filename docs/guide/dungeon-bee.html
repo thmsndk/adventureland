@@ -1,4 +1,4 @@
-<div style="width: 600px">
+<div style="width: 800px">
 	<p style="font-size: 32px; color: #216d25; text-decoration: underline dotted #b30b1a">BEEginner [Dungeon]</p>
 
 	<div>
@@ -22,6 +22,7 @@
 		>
 			<span class="bee_queen"></span>
 		</div>
+		<span class="monster-explanation">G.monsters.bee_queen</span>
 		TODO: Text about queen bee
 		<span class="jlabel" onclick="code_eval('show_json('+$(this).html()+')')">G.monsters.bee_queen</span>
 	</div>
@@ -38,6 +39,7 @@
 		>
 			<span class="bee_worker"></span>
 		</div>
+		<span class="monster-explanation">G.monsters.bee_worker</span>
 		TODO: Text about workers
 		<span class="jlabel" onclick="code_eval('show_json('+$(this).html()+')')">G.monsters.bee_worker</span>
 	</div>
@@ -54,6 +56,7 @@
 		>
 			<span class="bee_drone"></span>
 		</div>
+		<span class="monster-explanation">G.monsters.bee_drone</span>
 		TODO: Text about drones
 		<span class="jlabel" onclick="code_eval('show_json('+$(this).html()+')')">G.monsters.bee_drone</span>
 	</div>
@@ -281,6 +284,11 @@ if (character.fear > 2) {
 				.addClass("clickable");
 			// render monster icon
 			$(`.${monsterKey}`).html(sprite(`${monsterKey}`, { width: 50, height: 70 }));
+		});
+
+		$(`.monster-explanation`).each((i, element) => {
+			const key = $(element).html();
+			$(element).html(eval(key + ".explanation"));
 		});
 	</script>
 </div>
