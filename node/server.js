@@ -12225,80 +12225,7 @@ function update_instance(instance) {
 			}
 		}
 
-		// Handle spawning minions from monster.spawns
-		if (monster.target && monster.spawns && get_player(monster.target) && !is_disabled(monster)) {
-			monster.spawns.forEach(function (spi) {
-				const [interval, name, ...spi2] = spi;
-				let [spawnMode = "SpawnAtRandomPlayer", minSpawnAmount = 1, maxSpawnAmount = 1, range = 400] = spi2;
-
-				if (minSpawnAmount > maxSpawnAmount) {
-					maxSpawnAmount = minSpawnAmount;
-				}
-
-				if (!monster.last[name] || mssince(monster.last[name]) > interval) {
-					// random number between min and max (included)
-					const spawnAmount = Math.floor(Math.random() * (maxSpawnAmount - minSpawnAmount + 1) + minSpawnAmount);
-
-					const pname = random_one(Object.keys(monster.points));
-					const player = get_player(pname);
-
-					// TODO: don't spawn monsters at dead players?
-					if (!player || player.npc) {
-						// console.log(`${instance.name}`, player, distance(monster, player));
-						return;
-					}
-
-					// Validate the range between the master monster and the player
-					if (range && distance(monster, player) > range) {
-						return;
-					}
-
-					if (!is_same(player, get_player(monster.target), true)) {
-						// Only spawn on players the monster is not targeting
-						return;
-					}
-
-					let spot;
-					switch (spawnMode) {
-						case "SpawnAtBoss":
-							spot = safe_xy_nearby(
-								monster.map,
-								monster.x + Math.random() * 20 - 10, // +/- 10 x position
-								monster.y + Math.random() * 20 - 10, // +/- 10 y position
-							);
-							break;
-
-						// TODO: Spawn modes
-						// spawn at point(s)
-
-						default: {
-							// SpawnAtRandomPlayer
-							spot = safe_xy_nearby(player.map, player.x + Math.random() * 20 - 10, player.y + Math.random() * 20 - 10);
-							break;
-						}
-					}
-
-					monster.last[name] = new Date();
-					if (!spot) {
-						// server_log(`${instance.name} no safe spot near ${player.name}`);
-						return;
-					}
-
-					server_log(`${instance.name} spawning ${spawnAmount} x ${name} at [${spot.x},${spot.y}]`);
-
-					for (let index = 0; index < spawnAmount; index++) {
-						new_monster(instance.name, {
-							type: name,
-							stype: "spawn",
-							x: spot.x,
-							y: spot.y,
-							target: player.name, // TODO: Targeting players might terrify them.
-							master: monster.id,
-						});
-					}
-				}
-			});
-		}
+		update_instance_monster_spawn_minions(monster, instance);
 
 		function attack_target_or_move() {
 			var player = players[name_to_id[monster.target]];
@@ -13086,6 +13013,96 @@ function update_instance(instance) {
 	}
 	for (var id in instance.observers) {
 		send_xy_updates(instance.observers[id], to_push);
+	}
+}
+
+/**
+ * Handle spawning minions from monster.spawns
+ * @param {*} monster the monster entity we are spawning minions for
+ * @param {*} instance the instance we are spawning minions in
+ */
+function update_instance_monster_spawn_minions(monster, instance) {
+	if (monster.target && monster.spawns && get_player(monster.target) && !is_disabled(monster)) {
+		monster.spawns.forEach(function (spi) {
+			const [interval, name, ...spi2] = spi;
+			let [spawnMode = "SpawnAtRandomPlayer", minSpawnAmount = 1, maxSpawnAmount = 1, range = 400] = spi2;
+
+			if (minSpawnAmount > maxSpawnAmount) {
+				maxSpawnAmount = minSpawnAmount;
+			}
+
+			if (!monster.last[name] || mssince(monster.last[name]) > interval) {
+				// random number between min and max (included)
+				const spawnAmount = Math.floor(Math.random() * (maxSpawnAmount - minSpawnAmount + 1) + minSpawnAmount);
+
+				// TODO: the ability to make each spawned mob target random players? currently
+				// if for example 5 are spawned, that player WILL get terrified / petrified. a feature one might want. but not in a beginner dungeon
+				const pname = random_one(Object.keys(monster.points));
+				const player = get_player(pname);
+
+				// TODO: don't spawn monsters at dead players?
+				if (!player || player.npc) {
+					// console.log(`${instance.name}`, player, distance(monster, player));
+					return;
+				}
+
+				// Validate the range between the master monster and the player
+				if (range && distance(monster, player) > range) {
+					return;
+				}
+
+				if (!is_same(player, get_player(monster.target), true)) {
+					// Only spawn on players the monster is not targeting
+					return;
+				}
+
+				let spot = get_safe_spot(spawnMode, player, monster);
+
+				monster.last[name] = new Date();
+				if (!spot) {
+					// server_log(`${instance.name} no safe spot near ${player.name}`);
+					return;
+				}
+
+				// eslint-disable-next-line no-undef
+
+				for (let index = 0; index < spawnAmount; index++) {
+					server_log(`${instance.name} spawning 1/${spawnAmount} ${name} at [${spot.x},${spot.y}]`);
+					new_monster(instance.name, {
+						type: name,
+						stype: "spawn",
+						x: spot.x,
+						y: spot.y,
+						target: player.name,
+						master: monster.id,
+					});
+
+					// calculate a new spot so they are not smack ontop of each other
+					const newSpot = get_safe_spot(spawnMode, player, monster);
+					if (newSpot) {
+						spot = newSpot;
+					}
+				}
+			}
+		});
+	}
+
+	function get_safe_spot(spawnMode, player, monster) {
+		let spot;
+		switch (spawnMode) {
+			case "SpawnAtBoss":
+				spot = safe_xy_nearby(monster.map, monster.x + Math.random() * 20 - 10, monster.y + Math.random() * 20 - 10);
+				break;
+
+			// TODO: Spawn modes
+			// spawn at point(s)
+			default: {
+				// SpawnAtRandomPlayer
+				spot = safe_xy_nearby(player.map, player.x + Math.random() * 20 - 10, player.y + Math.random() * 20 - 10);
+				break;
+			}
+		}
+		return spot;
 	}
 }
 
