@@ -5868,7 +5868,7 @@ quest={
 	"beekey":{
 		"type":"dungeon_key",
 		"skin":"placeholder",
-		"name":"The BEE Key",
+		"name":"The Bee Key",
 		"opens":"test", #property seems to have no effect, not used, seems more like a note
 		#"ignore":True,
 		"g":500,
