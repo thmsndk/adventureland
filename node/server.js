@@ -5180,11 +5180,7 @@ function init_io() {
 
 					// Requirements for entering
 					if (map.enter) {
-						// TODO: Is there a place you need to be near to use the key
-						// spawns, doors, quirks, specific position
-						// var f = "cave";
-						// var ref = G.maps.cave.spawns[2];
-						// var item = "cryptkey";
+						// Is there a place you need to be near to use the key
 						const validateRange = map.enter.locations && map.enter.locations.length > 0;
 						let inRange = !validateRange;
 
@@ -5279,11 +5275,13 @@ function init_io() {
 					if (instanceExists) {
 						// transport to an existing instance
 						server_log(`entering existing instance ${data.place} ${data.name}`);
+						// TODO: transport player to the spawn point the door maps too
 						transport_player_to(player, data.name);
 					} else {
 						// name is a random generated instance id
 						server_log(`entering new instance ${data.place} ${name}`);
 						instance = create_instance(name, data.place);
+						// TODO: transport player to the spawn point the door maps too
 						transport_player_to(player, name);
 					}
 
