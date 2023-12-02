@@ -102,12 +102,10 @@
 // Move to the dungeon
 smart_move('bee_dungeon')
 
-// To unlock using a key
+// Calling the enter function will consume a key when called without an instance id:
 enter("bee_dungeon"); 
-// A key has now been used and character.in contains the unique id of the instance you just joined. 
-// This id is important, as it allows others to join the dungeon, your should persist it in case your character dies or you want other characters to enter the instance
 
-// To enter an already unlocked dungeon
+// Once an instance has been entered, the opener can find the instance ID of the dungeon using the `character.in` parameter which can be used by other characters (including other accounts so don’t share the ID unless you want others in your instance) to enter:
 enter("bee_dungeon", character.in); 
 		</div>
 	</div>
@@ -140,9 +138,9 @@ function on_party_request(name)
 	<h4 id="challenge-leave-dungeon">Leaving a dungeon</h4>
 	<div>
 		<!-- TODO describe this better -->
-		maps, dungeons and instances all behave differently. You can check
+		maps, events, dungeons and instances all behave differently. You can check
 		<span class="jlabel" onclick="code_eval('show_json('+$(this).html()+')')">G.maps.bee_dungeon.doors</span> for the
-		possible exits in this case, there is an exit that goes to main
+		possible doors in this case, there is an exit that goes to main. So the following will work:
 		<!-- prettier-ignore -->
 		<div class="code">
 // Move to the main map because G.maps.bee_dungeon.doors has a door to main
