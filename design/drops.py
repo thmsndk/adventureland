@@ -119,6 +119,17 @@ drops={
 			[0.0001,"wbreeches"],
 			[12.0/100000,"lostearring"],
 		],
+		"bee_dungeon": [
+			# [chance, open, "dropKey"]
+			# [chance, "itemKey"]
+			# map specific drops appears to have a random chance depending on configuration in hardcore mode. see server_functions.js -> sprocess_game_data
+			# map specific drops is an additional drop compared to the monster specific drop see server.js -> drop_something
+			[1.0/100,"beewings"],
+			# TODO: honey? pollen? other misc items?
+			[1.0/100,"bee_honey"],
+			[1.0/100,"bee_propolis"],
+			[1.0/100,"bee_pollen"],
+		]
 	},
 	"monsters":{
 		"hen":[
@@ -147,6 +158,24 @@ drops={
 		"bee":[
 			[1.0/100,"beewings"],
 			[1.0/6000,"stinger"],
+		],
+		"bee_queen":[
+			# [chance, open, "dropKey"]
+			# [chance, "itemKey"]
+
+			[1.0/100,"beewings"],
+			# [1.0/6000,"stinger"], # queens don't have a stinger!
+			[1.0/100,"beekey"],
+			[1.0/500,"open", "beeset"], # TODO: We could also type the drops in specifically?
+			
+		],
+		"bee_worker":[
+			[1.0/100,"beewings"],
+			[1.0/6000,"stinger"], # the stinger is developed instead of the queens reproductive organ.
+		],
+		"bee_drone":[
+			[1.0/100,"beewings"],
+			# [1.0/6000,"stinger"], #drones don't have a stinger!
 		],
 		"porcupine":[
 			[1.0/1000,"pleather"],
@@ -1224,6 +1253,20 @@ drops={
 	],
 	"cosmo3":[
 	],
+	"beeset":[
+		[1,"honeyhelmet"],
+		[1,"honeychest"],
+		[1,"honeypants"],
+		[1,"honeyboots"],
+		[1,"honeygloves"],
+		[1,"honeyamulet"],
+		[1,"honeyring"],
+		[1,"honeyelixir"],
+		[1,"honeyearring"],
+		[1,"honeybelt"],
+		[1,"honeycape"],
+		[1,"honeyorb"],
+	]
 }
 
 for n,nm in [[1,25],[2,25],[3,25],[4,25],[5,22]]:

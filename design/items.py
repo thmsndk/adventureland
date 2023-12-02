@@ -2499,18 +2499,7 @@ accessories={
 		"name":"Belt of Intelligence",
 		"g":50000,
 		"grades":[2,5],
-	},
-	"honeybelt":{
-		"set": "bee_0",
-		"type":"belt",
-		"skin":"placeholder",
-		"hp":160,
-		"compound":{
-			"hp":240,
-		},
-		"name":"Honey Belt",
-		"g":20000,
-	},
+	},	
 	"ringsj":{
 		"type":"ring",
 		"skin":"ring",
@@ -2666,6 +2655,32 @@ accessories={
 		"g":38000,
 		"grades":[2,5],
 	},
+	
+	# honey accesories
+	"honeyamulet":{
+		"set":"bee_0",
+		"type":"amulet",
+		"skin":"placeholder",
+		"hp":200,
+		"compound":{
+			"hp":240,
+		},
+		"name":"Amulet of HP",
+		"g":20000,
+	},
+	"honeyring":{
+		"set":"bee_0",
+		"type":"ring",
+		"skin":"placeholder",
+		"gold":0.5,
+		"compound":{
+			"gold":0.1,
+		},
+		"name":"Honey Ring",
+		"grades":[0,2],
+		"g":28000000,
+		"a":True,
+	},
 	"honeyearring":{
 		"set":"bee_0",
 		"type":"earring",
@@ -2674,10 +2689,22 @@ accessories={
 		# "compound":{
 		# 	"vit":2,
 		# },
-		"name":"Earring of Vitality",
+		"name":"Honey Earring",
 		"g":14000,
 		"grades":[2,5],
 	},
+	"honeybelt":{
+		"set": "bee_0",
+		"type":"belt",
+		"skin":"placeholder",
+		"hp":160,
+		"compound":{
+			"hp":240,
+		},
+		"name":"Honey Belt",
+		"g":20000,
+	},
+	
 }
 
 for name in accessories.keys():
@@ -4335,6 +4362,27 @@ collectables={
 		"type":"material",
 		"skin":"beewings",
 		"name":"Bee Wings",
+		"s":True,
+		"g":25,
+	},
+	"bee_honey":{
+		"type":"material",
+		"skin":"placeholder",
+		"name":"Honey",
+		"s":True,
+		"g":25,
+	},
+	"bee_propolis":{
+		"type":"material",
+		"skin":"placeholder",
+		"name":"Propolis",
+		"s":True,
+		"g":25,
+	},
+	"bee_pollen":{
+		"type":"material",
+		"skin":"placeholder",
+		"name":"Pollen",
 		"s":True,
 		"g":25,
 	},
@@ -6755,6 +6803,14 @@ elixirs={
 		"g":240000,
 		"a":True,
 	},
+	"honeyelixir": {
+		"set":"bee_0",
+		"type":"elixir",
+		"skin": "placeholder",
+		"name": "Honey Elixir",
+		"explanation": "Tastes yummy",
+		"s": 100
+	}
 }
 
 for name in elixirs:
@@ -7251,7 +7307,7 @@ sets={
 	},
 	"bee_0":{
 		"name":"BEEginner Dungeon",
-		"items":["honeyhelmet","honeychest","honeypants","honeyboots","honeygloves","honeyearring","honeybelt","honeycape", "honeyorb"],
+		"items":["honeyhelmet","honeychest","honeypants","honeyboots","honeygloves","honeyamulet","honeyring","honeyelixir", "honeyearring","honeybelt","honeycape", "honeyorb"],
 		"explanation":"A Bee themed set from the BEEginner dungeon",
 		"1":{"cuteness":1,},
 		"2":{"cuteness":1,},
@@ -7261,6 +7317,7 @@ sets={
 		"6":{"cuteness":1,},
 		"7":{"cuteness":1,},
 		"8":{"cuteness":1,},
+		# Only up to 8 pieces are shown in the UI 
 		"9":{"cuteness":1,},
 		"10":{"cuteness":1,},
 		"11":{"cuteness":1,},
