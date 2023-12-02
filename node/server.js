@@ -11565,9 +11565,12 @@ function stop_pursuit(monster, args) {
 		}
 		reduce_targets(target, monster);
 	}
+
 	if (monster.spawn && !args.redirect) {
+		server_log(`${monster.id} being removed due to monster.spawn && !args.redirect`);
 		return remove_monster(monster, { method: "disappear" });
 	}
+
 	if (is_sdk && args && args.cause) {
 		console.log("stop_pursuit: " + args.cause);
 	}
@@ -12167,6 +12170,18 @@ function update_instance(instance) {
 					}
 				}
 			} else if (monster.target) {
+				if (player && player.in !== monster.in) {
+					server_log(`${player.name} in another instance than monster ${player.in} != ${monster.in}`);
+				}
+
+				if (player && rip) {
+					server_log(`${player.name} is dead stopping pursuit`);
+				}
+
+				if (player && is_invis(player)) {
+					server_log(`${player.name} is invisible stopping pursuit`);
+				}
+
 				stop_pursuit(monster, { cause: "player_gone" });
 			}
 			if (monster.walk_once) {
@@ -12298,6 +12313,7 @@ function update_instance(instance) {
 						// new [01/03/19]
 						monster.m++;
 						setTimeout(new_monster_f(monster.oin, monster.map_def, { last_state: monster }), 500);
+						server_log(`${monster.id} being respawned due to monster.irregular == 3`);
 						remove_monster(monster, { nospawn: true, method: "disappear" });
 					} else if (monster.irregular == 2) {
 						server_log("Irregular2 move for " + monster.id);
@@ -13546,6 +13562,7 @@ setInterval(function () {
 					mssince(monster.last_level) > max((180000 * exp * mult) / accel, (monster.max_hp * mult * 30 * exp) / accel)
 				) {
 					if (monster.temp) {
+						server_log(`${monster.id} being removed because it was a temp monster`);
 						remove_monster(monster);
 					} else {
 						level_monster(monster);
