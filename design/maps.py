@@ -687,7 +687,7 @@ maps={
 			[312,-335,32,32,"mtunnel",0,16],
 			[967,-584,32,32,"mtunnel",1,17],
 			[1472,-434,32,32,"mtunnel",2,18],
-			# [x,y,w,h, mapKey, remoteSpawnsIndex, localSpawnsIndex mode, key? - unused?]
+			# [x,y,w,h, destinationMapKey, destinationMapSpawnIndex, currentMapSpawnIndex, mode, key? - unused?]
 			# mode can be protected and a .gatekeeper mob needs to be killed before you can continue
 			# mode can be ulocked and the user needs to have the place unlocked
 			# "bee_dungeon_door": [442.5,661.5,487,682.5]
@@ -1667,7 +1667,6 @@ maps={
 	},
 	"bee_dungeon":{
 		"key": "thmsn_bee_dungeon",
-		# "key":"jayson_ALMap2_v2", # the map that is rendered
 		# "no_bounds":True,
 		"instance":True,
 		"enter": {
@@ -1681,8 +1680,6 @@ maps={
 			# 	["main", "quirks", 10, 120], # log near mansion
 			# 	["main", "doors", 13, 120] # log near mansion
 			# ]
-
-
 		},
 		"name":"BEEginner Dungeon",
 		"npcs":[
@@ -1694,7 +1691,8 @@ maps={
 			{"type":"bee_drone","boundary":[-34, -267.5, 36.5, -136.5],"count":1, "roam": True},
 		],
 		"spawns":[
-			[0,0],
+			# spawn points need to be 12px away from lines, -y is upwards
+			[0,-35], 
 		],
 		"on_death":["main",19], # log near mansion
 		"on_exit":["main",19], # log near mansion
