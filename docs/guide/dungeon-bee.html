@@ -1,64 +1,77 @@
+<style>
+	.section {
+		width: 100%;
+		margin-bottom: 15px;
+	}
+
+	.header {
+		display: flex;
+		align-items: center;
+		margin-bottom: 10px;
+	}
+	.header h1 {
+		margin-bottom: 0px;
+		margin-top: 0px;
+	}
+	.header .monster-sprite,
+	.header .item-sprite {
+		margin-right: 10px;
+	}
+</style>
+
 <div style="width: 800px">
 	<p style="font-size: 32px; color: #216d25; text-decoration: underline dotted #b30b1a">BEEginner [Dungeon]</p>
 
-	<div>
-		<div style="float: left; margin-right: 20px"><span class="eitem1"></span></div>
-		<p>You need <span class="item-name">G.items.beekey</span> to enter the instanced BEEginner dungeon.</p>
+	<div class="section">
+		<div class="header">
+			<div class="item-sprite">G.items.beekey</div>
+			<div>
+				<h1><span class="gPath">G.items.beekey.name</span></h1>
+				<span class="jlabel" onclick="code_eval('show_json('+$(this).html()+')')">G.items.beekey</span>
+			</div>
+		</div>
+		<span class="gPath">G.items.beekey.explanation</span>
+		<p>You need <span class="gPath">G.items.beekey.explanation</span> to enter the instanced BEEginner dungeon.</p>
 		<p>Once a party member has unlocked the dungeon, other party members will be able to directly enter.</p>
-		<br />
 	</div>
 
 	<hr />
+
 	<!-- <h1>Monsters:</h1> -->
-	<div style="width: 480px">
-		<div
-			style="
-				background-color: #575983;
-				border: 2px solid #9f9fb0;
-				position: relative;
-				display: inline-block;
-				margin: 2px;
-			"
-		>
-			<span class="bee_queen"></span>
+	<div class="section">
+		<div class="header">
+			<div class="monster-sprite">G.monsters.bee_queen</div>
+			<div>
+				<h1><span class="gPath">G.monsters.bee_queen.name</span></h1>
+				<span class="jlabel" onclick="code_eval('show_json('+$(this).html()+')')">G.monsters.bee_queen</span>
+			</div>
 		</div>
-		<span class="monster-explanation">G.monsters.bee_queen</span>
+		<span class="gPath">G.monsters.bee_queen.explanation</span>
 		TODO: Text about queen bee
-		<span class="jlabel" onclick="code_eval('show_json('+$(this).html()+')')">G.monsters.bee_queen</span>
 	</div>
 
-	<div style="width: 480px">
-		<div
-			style="
-				background-color: #575983;
-				border: 2px solid #9f9fb0;
-				position: relative;
-				display: inline-block;
-				margin: 2px;
-			"
-		>
-			<span class="bee_worker"></span>
+	<div class="section">
+		<div class="header">
+			<div class="monster-sprite">G.monsters.bee_worker</div>
+			<div>
+				<h1><span class="gPath">G.monsters.bee_worker.name</span></h1>
+				<span class="jlabel" onclick="code_eval('show_json('+$(this).html()+')')">G.monsters.bee_worker</span>
+			</div>
 		</div>
-		<span class="monster-explanation">G.monsters.bee_worker</span>
+		<span class="gPath">G.monsters.bee_worker.explanation</span>
 		TODO: Text about workers
-		<span class="jlabel" onclick="code_eval('show_json('+$(this).html()+')')">G.monsters.bee_worker</span>
 	</div>
 
-	<div style="width: 480px">
-		<div
-			style="
-				background-color: #575983;
-				border: 2px solid #9f9fb0;
-				position: relative;
-				display: inline-block;
-				margin: 2px;
-			"
-		>
-			<span class="bee_drone"></span>
+	<div class="section">
+		<div class="header">
+			<div class="monster-sprite">G.monsters.bee_drone</div>
+			<div>
+				<h1><span class="gPath">G.monsters.bee_drone.name</span></h1>
+				<span class="jlabel" onclick="code_eval('show_json('+$(this).html()+')')">G.monsters.bee_drone</span>
+			</div>
 		</div>
-		<span class="monster-explanation">G.monsters.bee_drone</span>
+		<span class="gPath">G.monsters.bee_drone.explanation</span>
 		TODO: Text about drones
-		<span class="jlabel" onclick="code_eval('show_json('+$(this).html()+')')">G.monsters.bee_drone</span>
 	</div>
 
 	<hr />
@@ -97,6 +110,7 @@
 
 	<h4 id="challenge-enter-dungeon">Entering a dungeon</h4>
 	<div>
+		<p><span class="hlabel">Note:</span> Most Instances lives untill the server restarts</p>
 		<!-- prettier-ignore -->
 		<div class="code">
 // Move to the dungeon
@@ -271,27 +285,59 @@ if (character.fear > 2) {
 	<div style="margin-bottom: 10px"></div>
 
 	<script>
-		$(".eitem1").html(item_container({ skin: G.items.beekey.skin }, { name: "beekey", q: 0 }));
+		// $(".item-sprite").html(item_container({ skin: G.items.beekey.skin }, { name: "beekey", q: 0 }));
 
-		["bee_queen", "bee_worker", "bee_drone"].forEach((monsterKey) => {
-			// TODO: Extract out monster description
-			// TODO: Render monster name from G
-			// make sprite clickable and render the monster info
-			$(`.${monsterKey}`)
-				.on("click", () => render_monster_info(monsterKey))
-				.addClass("clickable");
-			// render monster icon
-			$(`.${monsterKey}`).html(sprite(`${monsterKey}`, { width: 50, height: 70 }));
-		});
+		$(`.item-sprite`).each((i, element) => {
+			const gPath = $(element).html();
+			const split = gPath.split(".");
+			const itemKey = split[split.length - 1];
 
-		$(`.monster-explanation`).each((i, element) => {
-			const key = $(element).html();
-			$(element).html(eval(key + ".explanation"));
+			$div = $("<div>")
+				// .attr("id", "sprite-monsterKey")
+				.on("click", () => render_item_info(itemKey))
+				.addClass("clickable")
+				// .css({
+				// 	"background-color": "#575983",
+				// 	border: "2px solid #9f9fb0",
+				// 	position: "relative",
+				// 	display: "inline-block",
+				// 	margin: "2px",
+				// })
+				.append(item_container({ skin: eval(gPath + ".skin") }, { name: itemKey, q: 0 }));
+
+			$(element).html($div);
 		});
 
 		$(`.item-name`).each((i, element) => {
-			const key = $(element).html();
-			$(element).html(eval(key + ".name"));
+			const gPath = $(element).html();
+			$(element).html(eval(gPath + ".name"));
+		});
+
+		$(`.monster-sprite`).each((i, element) => {
+			const gPath = $(element).html();
+			const split = gPath.split(".");
+			const monsterKey = split[split.length - 1];
+
+			$div = $("<div>")
+				.attr("id", "sprite-monsterKey")
+				.on("click", () => render_monster_info(monsterKey))
+				.addClass("clickable")
+				.css({
+					"background-color": "#575983",
+					border: "2px solid #9f9fb0",
+					position: "relative",
+					display: "inline-block",
+					margin: "2px",
+				})
+				.append(sprite(`${monsterKey}`, { width: 50, height: 70 }));
+
+			$(element).html($div);
+		});
+
+		$(`.gPath`).each((i, element) => {
+			const gPath = $(element).html();
+			const value = eval(gPath);
+			$(element).html(value);
 		});
 	</script>
 </div>
