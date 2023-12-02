@@ -3,8 +3,8 @@
 
 	<div>
 		<div style="float: left; margin-right: 20px"><span class="eitem1"></span></div>
-		You need The BEE Key to enter the instanced bee dungeon, once a party member has unlocked the dungeon, other party
-		members will be able to directly enter.
+		<p>You need <span class="item-name">G.items.beekey</span> to enter the instanced BEEginner dungeon.</p>
+		<p>Once a party member has unlocked the dungeon, other party members will be able to directly enter.</p>
 		<br />
 	</div>
 
@@ -177,7 +177,7 @@ craft(locate_item("beewings"))
 
 	<h4 id="challenge-fear">Fear</h4>
 	<div>
-		Your character can get feared, there are 3 stages of fear
+		Your character can get feared. There are 3 stages of fear:
 		<ul>
 			<li>Scared</li>
 			<li>Terrified</li>
@@ -289,6 +289,11 @@ if (character.fear > 2) {
 		$(`.monster-explanation`).each((i, element) => {
 			const key = $(element).html();
 			$(element).html(eval(key + ".explanation"));
+		});
+
+		$(`.item-name`).each((i, element) => {
+			const key = $(element).html();
+			$(element).html(eval(key + ".name"));
 		});
 	</script>
 </div>
