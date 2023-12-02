@@ -43,7 +43,7 @@ monsters={
 	},
 	"bee_queen":{
 		"name":"Queen Bee",
-		"speed":6,"hp":10000,"xp":20000, "gold":40,
+		"speed":6,"hp":20000,"xp":10000, "gold":40,
 		"attack":0,"damage_type":"physical","range":1,"frequency":0.5,
 		# "grow": True # can be defined in map.monsters respawns monsters untill the .count property on the map.monsters entry is reached
 		# respawn > 200 respawns the monster 200 * 720ms..1200ms = 144.000s..240.000s = 2.4m .. 4m after death
@@ -71,8 +71,8 @@ monsters={
 			# TODO: Make the UI show the mechanics?
 			# [interval, monsterKey, spawnMode, minSpawnAmount, maxSpawnAmount, range] see update_instance Handle spawning minions from monster.spawns
 			
-			[10000, "bee_worker", "SpawnAtBoss", 0, 2, False], # Spawns 0..2 every 10s at the boss ignoring range to the player
-			[20000, "bee_drone", "SpawnAtBoss", 0, 1, False] # Spawns 0..1 every 20s at the boss ignoring range to the player
+			[5000, "bee_worker", "SpawnAtBoss", 1, 2, False], # Spawns 1..2 every 5s at the boss ignoring range to the player, targeting a random player
+			[20000, "bee_drone", "SpawnAtBoss", 0, 1, False] # Spawns 0..1 every 20s at the boss ignoring range to the player, targeting a random player
 			# TODO: can we control spawning mechanics more? e.g. a wave with a random amount of monsters of different types
 		],
 		"explanation":"Her primary role is to lay eggs, and she is essential for the colony's survival. The queen produces pheromones that help maintain colony cohesion and regulate the behavior of other bees.",
@@ -80,7 +80,7 @@ monsters={
 	"bee_worker":{
 		"name":"Worker Bee",
 		"skin": "bee",
-		"speed":12,"hp":300,"xp":400,"gold":40,
+		"speed":12,"hp":1000,"xp":10,"gold":40,
 		"attack":16,"damage_type":"physical","range":5,"frequency":0.5,
 		"respawn":-1, # should not respawn on death
 		"roam":True, # Roams around the map
@@ -93,7 +93,7 @@ monsters={
 	"bee_drone":{
 		"name":"Drone Bee",
 		"skin": "bee",
-		"speed":12,"hp":300,"xp":400,"gold":40,
+		"speed":12,"hp":300,"xp":15,"gold":40,
 		"attack":0,"damage_type":"physical","range":1,"frequency":0.5,
 		"respawn":-1, # should not respawn on death
 		"roam":True, # Roams around the map
