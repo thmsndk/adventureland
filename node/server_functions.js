@@ -2068,7 +2068,24 @@ function event_loop() {
 			spawn_special_monster("goldenbat");
 		}
 
-		if (events.cutebee && stats.kills.bee > edges.next_cutebee) {
+		// cutebee has a list of spawn_contributors where kills on them contributes to spawning cutebee
+		let cutebeeKillScore = 0;
+		for (const monsterKey in G.monsters.cutebee.spawn_contributors) {
+			// const gMonster = G.monsters[monsterKey];
+			const multiplier = G.monsters.cutebee.spawn_contributors[monsterKey];
+			const kills = stats.kills[monsterKey];
+			if (multiplier && kills > 0) {
+				const score = stats.kills[monsterKey] * multiplier;
+				cutebeeKillScore += score;
+				// server_log(`cutebee ${monsterKey} has ${kills} kills and a score of ${score}`);
+			}
+		}
+
+		if (cutebeeKillScore > 0 && Math.round(cutebeeKillScore) % 1000 === 0) {
+			server_log(`next cutebee ${cutebeeKillScore} > ${edges.next_cutebee}`);
+		}
+
+		if (events.cutebee && cutebeeKillScore > edges.next_cutebee) {
 			edges.next_cutebee += parseInt(events.cutebee * Math.random());
 			spawn_special_monster("cutebee");
 		}
