@@ -4789,6 +4789,16 @@ pots={
 		"s":True,
 		"g":20000,
 	},
+	"honeypot":{
+		"type":"pot",
+		"skin":"placeholder",
+		"gives":[["hp",200],["mp",200]],
+		"name":"Royal Jelly",
+		"cooldown":2000,
+		"s":True,
+		"g":20,
+		"explanation": "A strict diet of this makes you a queen!"
+	},
 }
 
 scrolls={
