@@ -963,6 +963,12 @@ sprites={
 			["m1","m2","m3","m4","b2","br1","o1","j1",None,None],
 		]
 	},
+	"beekeeper":{
+		"file":"/images/tiles/characters/beekeeper_1.png",
+		"rows":1,
+		"columns":1,
+		"matrix":[["gnal"]],
+	},
 
 }
 bodysets=[
