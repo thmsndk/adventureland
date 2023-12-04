@@ -923,6 +923,27 @@ npcs={
 		"says":"Soon",
 		"color":"#5A1D7F",
 	},
+	"gnal":{
+		"role":"hunt", # what is the difference between roles? quest,citizen
+		# "quest": "beekeeper" # recipes.py can have a .quest property cue uses this as the mcollector role
+		"token":"beetoken", # we can also do tokens like Daisy, a bee monsterhunt? queen quest? tokens.py has the things that can be exchanged with the item and the token cost
+		# game.js npc_right_click
+		# server.js socket.on("monsterhunt") && monster_hunt_logic 
+
+		"name":"Gnal",
+		"skin":"gnal",
+		"type":"fullstatic",
+		"says": ["Hi!", "Hmmm?"],
+		# "interaction":["????"] # This is shown when right clicking on the npc
+		"color":"#B4FAA0", # What is this color used for?
+		"side_interaction":{"auto":True,"skin":"gnal","message":"This is a message"}, # what is this? secondhands has it as a message and a skin seems to also relate to right clicking an npc, and some roles use this for the message instead of having it hardcoded in 
+		"moving":True, # hmm bean has this :thinking: gnal seems to be stationary though
+		# "modal":"npc-angel", #what does this modal do?
+		# "class": "merchant", # hmmm?
+		# "slots": {
+
+		# }
+	},
 }
 for i in range(8,48):
 	npcs["items%d"%i]={
