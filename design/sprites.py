@@ -800,6 +800,14 @@ sprites={
 			["bloodworm","snake","bee","bat"]
 		]
 	},
+	"bee_queen_sprite":{
+		"file":"/images/tiles/monsters/bee_queen_move.png",
+		"rows":1,
+		"columns":1,
+		"matrix":[
+			["bee_queen"],
+		]
+	},
 	"animals1":{
 		"file":"/images/tiles/monsters/animals1.png",
 		"rows":2,
