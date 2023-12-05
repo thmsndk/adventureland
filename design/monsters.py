@@ -27,7 +27,7 @@ monsters={
 			[100000,"stat","apiercing",2],
 			[1000000,"stat","attack",3],
 			[10000000,"stat","xp",1],
-		]
+		],
 	},
 	"cutebee":{
 		"name":"Cute Bee","speed":12,"hp":300,"xp":400,"attack":16,"damage_type":"physical","respawn":-1,"gold":40,"range":20,"frequency":0.5,"aggro":1,"aa":1,"rage":0.05,
@@ -60,7 +60,7 @@ monsters={
 		"aggro":1,"aa":1,
 		"rage":1, # never disengage target
 		
-		"skin":"bee", # reuse the bee sprite
+		"skin":"bee_queen", 
 		"size":1.5,
 		"phresistance":60,
 		"achievements":[
@@ -74,10 +74,13 @@ monsters={
 			# [10000000,"stat","xp",1],
 		],
 		"spawns":[
+			# TODO: don't despawn theese mobs if the player is "gone" and stop_pursuit is called
+			# instead make them swarm a new target
 			# TODO: Make the UI show the mechanics?
 			# [interval, monsterKey, spawnMode, minSpawnAmount, maxSpawnAmount, range] see update_instance Handle spawning minions from monster.spawns
-			
-			[5000, "bee_worker", "SpawnAtBoss", 1, 2, False], # Spawns 1..2 every 5s at the boss ignoring range to the player, targeting a random player
+			# TODO: this interval makes it impossible for 3 fresh lvl 1 rangers to complete the event in a timely fashion
+			# [5000, "bee_worker", "SpawnAtBoss", 1, 2, False], # Spawns 1..2 every 5s at the boss ignoring range to the player, targeting a random player
+			[10000, "bee_worker", "SpawnAtBoss", 1, 2, False], # Spawns 1..2 every 10s at the boss ignoring range to the player, targeting a random player
 			[20000, "bee_drone", "SpawnAtBoss", 0, 1, False] # Spawns 0..1 every 20s at the boss ignoring range to the player, targeting a random player
 			# TODO: can we control spawning mechanics more? e.g. a wave with a random amount of monsters of different types
 		],
