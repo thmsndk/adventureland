@@ -1688,13 +1688,13 @@ maps={
 		],
 		"monsters":[
 			# {"type":"bee","boundary":[10,-10, 0,0],"count":1},
-			{"type":"bee_queen","boundary":[-44.5, -419.5, 40.5, -364],"count":1, "roam": True},
-			{"type":"bee_worker","boundary":[-34, -267.5, 36.5, -136.5],"count":3, "roam": True},
-			{"type":"bee_drone","boundary":[-34, -267.5, 36.5, -136.5],"count":1, "roam": True},
+			{"type":"bee_queen","boundary":[-22, -898, 148.5, -764],"count":1, "roam": True},
+			{"type":"bee_worker","boundary":[9, -561, 55, -75],"count":10, "roam": True},
+			{"type":"bee_drone","boundary":[9, -561, 55, -75],"count":1, "roam": True},
 		],
 		"spawns":[
 			# spawn points need to be 12px away from lines, -y is upwards
-			[0,-35], 
+			[31.5, -24.5], 
 		],
 		"on_death":["main",19], # log near mansion
 		"on_exit":["main",19], # log near mansion
