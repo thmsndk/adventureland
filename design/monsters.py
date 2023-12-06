@@ -75,13 +75,25 @@ monsters={
 		],
 		"spawns":[
 			# TODO: don't despawn theese mobs if the player is "gone" and stop_pursuit is called
-			# instead make them swarm a new target
+			# instead make them swarm a new target?
 			# TODO: Make the UI show the mechanics?
-			# [interval, monsterKey, spawnMode, minSpawnAmount, maxSpawnAmount, range] see update_instance Handle spawning minions from monster.spawns
-			# TODO: this interval makes it impossible for 3 fresh lvl 1 rangers to complete the event in a timely fashion
-			# [5000, "bee_worker", "SpawnAtBoss", 1, 2, False], # Spawns 1..2 every 5s at the boss ignoring range to the player, targeting a random player
-			[10000, "bee_worker", "SpawnAtBoss", 1, 2, False], # Spawns 1..2 every 10s at the boss ignoring range to the player, targeting a random player
-			[20000, "bee_drone", "SpawnAtBoss", 0, 1, False] # Spawns 0..1 every 20s at the boss ignoring range to the player, targeting a random player
+			[10000, "bee_worker", {
+				# This is the default behaviour on crypt or crabxx, spawn monsters on players in 400 range
+				# "spawnAtPlayer": [400] 
+
+				# [point, range] 
+				# 	point is a list of boundary points where the monsters can spawn, 
+				# 	range to player for spawning if range is false, range is ignored
+				# TODO: find some points that are near larvae in walls / ground, this will give players time to react to being terrifed.
+				"spawnPoints": [[[-44.5, -419.5, 40.5, -364], False]], 
+				"spawnAmount" : [1, 2],
+				# "boundary": [[-44.5, -419.5, 40.5, -364]], # TODO: this could limit where they can move
+				}], 
+			[20000, "bee_drone", {
+				# Spawns 0..1 every 20s at the boss ignoring range to the player, targeting a random player that has attacked the boss
+				"spawnAtBoss": [False],
+				"spawnAmount" : [0, 2],
+			}] 
 			# TODO: can we control spawning mechanics more? e.g. a wave with a random amount of monsters of different types
 		],
 		"explanation":"Her primary role is to lay eggs, and she is essential for the colony's survival. The queen produces pheromones that help maintain colony cohesion and regulate the behavior of other bees.",
@@ -89,7 +101,7 @@ monsters={
 	"bee_worker":{
 		"name":"Worker Bee",
 		"skin": "bee",
-		"speed":12,"hp":1000,"xp":10,"gold":40,
+		"speed":12,"hp":800,"xp":10,"gold":40,
 		"attack":16,"damage_type":"physical","range":5,"frequency":0.5,
 		"respawn":-1, # should not respawn on death
 		"roam":True, # Roams around the map
@@ -98,6 +110,14 @@ monsters={
 		"phresistance":60,
 		#TODO: Poison sting ability. Has a chance to kill bee
 		"explanation":"Worker bees are females that do not reproduce. They perform various tasks such as foraging for nectar and pollen, tending to the queen and developing brood, cleaning and defending the hive, and producing beeswax. Worker bees are the most numerous bees in a hive.",
+		# Elena is a supporter, this makes the monster.focus property be set to another humanoid target at 300 distance
+		# if a monster has .focus 
+		# 	it's speed gets set to the .charge property
+		#	if the monster.focus monster exists in the instance the speed is set to at least +4 speed of the focused monster
+		# the healing ability on a monster targets the .focus monster
+		# bees are not humanoids, so that will not work though, 
+		# it might be cooler if the queen could "buff" workers to assign their role of healing her or attacking the players
+		#supporter: True 
 	},
 	"bee_drone":{
 		"name":"Drone Bee",
