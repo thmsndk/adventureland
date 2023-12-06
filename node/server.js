@@ -12809,23 +12809,50 @@ function update_instance(instance) {
 function update_instance_monster_spawn_minions(monster, instance) {
 	if (monster.target && monster.spawns && get_player(monster.target) && !is_disabled(monster)) {
 		monster.spawns.forEach(function (spi) {
-			const [interval, name, ...spi2] = spi;
-			let [spawnMode = "SpawnAtRandomPlayer", minSpawnAmount = 1, maxSpawnAmount = 1, range = 400] = spi2;
+			const [interval, name, spawnOptions = {}] = spi;
+			let [minSpawnAmount = 1, maxSpawnAmount = 1] = spawnOptions.spawnAmount || [];
 
 			if (minSpawnAmount > maxSpawnAmount) {
 				maxSpawnAmount = minSpawnAmount;
+			}
+
+			const DEFAULT_RANGE = 400;
+
+			let range;
+			if ("spawnPoints" in spawnOptions) {
+				// not running in default mode range
+				// TODO: is there only one point? in that case we can assign range
+			} else if ("spawnAtBoss" in spawnOptions) {
+				if (spawnOptions.spawnAtBoss.range !== false) {
+					range = spawnOptions.spawnAtBoss.range || DEFAULT_RANGE;
+				}
+			} else if ("spawnAtPlayer" in spawnOptions) {
+				if (spawnOptions.spawnAtPlayer.range !== false) {
+					range = spawnOptions.spawnAtPlayer.range || DEFAULT_RANGE;
+				}
 			}
 
 			if (!monster.last[name] || mssince(monster.last[name]) > interval) {
 				// random number between min and max (included)
 				const spawnAmount = Math.floor(Math.random() * (maxSpawnAmount - minSpawnAmount + 1) + minSpawnAmount);
 
+				// TODO: We might also want the ability to offset the spawning of each bee in this current wave
 				// TODO: the ability to make each spawned mob target random players? currently
 				// if for example 5 are spawned, that player WILL get terrified / petrified. a feature one might want. but not in a beginner dungeon
 				const pname = random_one(Object.keys(monster.points));
 				const player = get_player(pname);
-
 				// TODO: don't spawn monsters at dead players?
+				// const player = random_one(
+				// 	Object.keys(monster.points)
+				// 		.map((playerName) => get_player(playerName))
+				// 		.filter((player) => !player.npc && !player.rip),
+				// );
+
+				// xy_emit(monster, "chat_log", { owner: "Grinch", message: phrase, id: monster.id, color: "#418343" });
+				// return xy_emit(target, "ui", { type: "poison_resist", id: target.id });
+				// xy_emit(entity, "disappearing_text", { message: text, x: x, y: y, id: entity.id, args: d_args, nv: 1 });
+				// function disappearing_text(socket, entity, text, args) args.s seems to be sound, could be interesting
+				// attacker.socket.emit("game_log", "You " + killed_message(target.type));
 				if (!player || player.npc) {
 					// console.log(`${instance.name}`, player, distance(monster, player));
 					return;
@@ -12841,20 +12868,23 @@ function update_instance_monster_spawn_minions(monster, instance) {
 					return;
 				}
 
-				let spot = get_safe_spot(spawnMode, player, monster);
-
+				// Put the spawning on cooldown untill next interval
 				monster.last[name] = new Date();
+
+				// get a safe spot to spawn at
+				let spot = get_safe_spawn_spot(spawnOptions, player, monster);
+
 				if (!spot) {
 					// server_log(`${instance.name} no safe spot near ${player.name}`);
 					return;
 				}
 
-				// eslint-disable-next-line no-undef
-
 				for (let index = 0; index < spawnAmount; index++) {
 					server_log(`${instance.name} spawning 1/${spawnAmount} ${name} at [${spot.x},${spot.y}]`);
 					new_monster(instance.name, {
 						type: name,
+						// TODO: don't despawn theese mobs if the player is "gone" / dies and stop_pursuit is called, should be an option, as this is how the current behaviour is on spike
+						// server.js attack_target_or_move calls stop_pursuit, we could extend with some retarge behaviour or the likes
 						stype: "spawn",
 						x: spot.x,
 						y: spot.y,
@@ -12863,7 +12893,7 @@ function update_instance_monster_spawn_minions(monster, instance) {
 					});
 
 					// calculate a new spot so they are not smack ontop of each other
-					const newSpot = get_safe_spot(spawnMode, player, monster);
+					const newSpot = get_safe_spawn_spot(spawnOptions, player, monster);
 					if (newSpot) {
 						spot = newSpot;
 					}
@@ -12872,22 +12902,37 @@ function update_instance_monster_spawn_minions(monster, instance) {
 		});
 	}
 
-	function get_safe_spot(spawnMode, player, monster) {
-		let spot;
-		switch (spawnMode) {
-			case "SpawnAtBoss":
-				spot = safe_xy_nearby(monster.map, monster.x + Math.random() * 20 - 10, monster.y + Math.random() * 20 - 10);
-				break;
-
-			// TODO: Spawn modes
-			// spawn at point(s)
-			default: {
-				// SpawnAtRandomPlayer
-				spot = safe_xy_nearby(player.map, player.x + Math.random() * 20 - 10, player.y + Math.random() * 20 - 10);
-				break;
+	function get_safe_spawn_spot(spawnOptions, player, monster) {
+		if ("spawnPoints" in spawnOptions) {
+			let range;
+			// TODO: Should spawns be spread out across all points, or all spawned at the same random boundary? or a new point each time?
+			const [boundary, spawnRange] = random_one(spawnOptions.spawnPoints);
+			if (spawnRange !== false) {
+				range = spawnRange || DEFAULT_RANGE;
 			}
+
+			// Validate the range between the master monster and the player
+			if (range && distance(monster, player) > range) {
+				return;
+			}
+
+			const pointInBoundary = random_point_in_boundary(boundary);
+			return get_safe_spot_near_point(monster.map, pointInBoundary.x, pointInBoundary.y);
+		} else if ("spawnAtBoss" in spawnOptions) {
+			return get_safe_spot_near_point(monster.map, monster.x, monster.y);
+		} else {
+			return get_safe_spot_near_point(player.map, player.x, player.y);
 		}
-		return spot;
+	}
+
+	function random_point_in_boundary(boundary) {
+		const x = boundary[0] + Math.random() * (boundary[2] - boundary[0]);
+		const y = boundary[1] + Math.random() * (boundary[3] - boundary[1]);
+		return { x, y };
+			}
+
+	function get_safe_spot_near_point(map, x, y) {
+		return safe_xy_nearby(map, x + Math.random() * 20 - 10, y + Math.random() * 20 - 10);
 	}
 }
 
