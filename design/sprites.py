@@ -1157,4 +1157,5 @@ tilesets={
 	"ruins":{"file":"/images/tiles/map/ruins.png?v=2"},
 	"tree":{"file":"/images/tiles/map/tree.png"},
 	"lights":{"file":"/images/tiles/map/lights.png?v=3","light":"yes"}, # "frames":3,"frame_width":48,
+	"honey_bee_nest":{"file":"/images/tiles/map/honey_bee_nest.png"},
 }
