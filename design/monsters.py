@@ -85,7 +85,12 @@ monsters={
 				# 	point is a list of boundary points where the monsters can spawn, 
 				# 	range to player for spawning if range is false, range is ignored
 				# TODO: find some points that are near larvae in walls / ground, this will give players time to react to being terrifed.
-				"spawnPoints": [[[-44.5, -419.5, 40.5, -364], False]], 
+				"spawnPoints": [
+					[[-237, -941.5, -134.5, -871], False],
+					[[244.5, -949, 366.5, -883], False],
+					[[-245, -561.5, -95.5, -497], False],
+					[[147.5, -567.5, 370, -501.5], False],
+					], 
 				"spawnAmount" : [1, 2],
 				# "boundary": [[-44.5, -419.5, 40.5, -364]], # TODO: this could limit where they can move
 				}], 
