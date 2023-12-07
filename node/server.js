@@ -6717,7 +6717,7 @@ function init_io() {
 				}
 
 				// Handle map specific & class specific extras
-				adopt_extras(def, def[player.player.type]);
+				adopt_extras(def, def[player.type]);
 				adopt_extras(def, def[player.map]);
 
 				var timeout = 2000;
