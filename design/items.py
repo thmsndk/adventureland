@@ -4792,7 +4792,10 @@ pots={
 	"honeypot":{
 		"type":"pot",
 		"skin":"placeholder",
-		"gives":[["hp",200],["mp",200]],
+		"gives":[["hp",150],["mp",250]],
+		"bee_dungeon": {
+			"gives":[["hp",100],["mp",150]],
+		},
 		"name":"Royal Jelly",
 		"cooldown":2000,
 		"s":True,

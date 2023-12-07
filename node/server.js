@@ -6822,12 +6822,19 @@ function init_io() {
 				new_monster(player.in, { type: def.spawn, stype: "trap", x: player.x, y: player.y, owner: player.name });
 				consume_one(player, data.num);
 			} else if (def.gives) {
+				// usually .type is pot when it has .gives and we are handling elixirs specifically
 				if (player.last.potion && mssince(player.last.potion) < 0) {
 					return fail_response("not_ready");
 				}
+
 				if (item.l) {
 					return fail_response("item_locked");
 				}
+
+				// Handle map specific & class specific extras
+				adopt_extras(def, def[player.player.type]);
+				adopt_extras(def, def[player.map]);
+
 				var timeout = 2000;
 				var timeout_ui = null;
 				var xp = false;
