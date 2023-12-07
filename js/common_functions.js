@@ -816,6 +816,17 @@ function adopt_extras(def,ex)
 				def[p][pp]=(def[p][pp]||0)+ex[p][pp];
 			}
 		}
+		else if (p == 'gives') {
+			for (const [pp, val] of ex[p]) {
+				// locate original gives entry
+				const def_gives = def[p].find((gives)=> gives[0] === pp)
+				if(def_gives){
+					def_gives[1] += val
+				} else {
+					def[p].push([pp, val])
+				}
+			}
+		}
 		else
 			def[p]=(def[p]||0)+ex[p];
 	}
