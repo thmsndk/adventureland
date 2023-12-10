@@ -85,6 +85,7 @@
 	<!-- TODO: I think this is only true for .solo instances -->
 	<!-- <p><span class="hlabel">Note:</span> Instances are only alive as long as there's someone inside and online!</p> -->
 
+	<!-- TODO: describe something about the strength of classes in this dungeon? nahhh, let the users figure that out.-->
 	<h1>Automation Challenges</h1>
 	Here are some automation challenges you can try and accomplish
 	<ul>
@@ -104,6 +105,9 @@
 		<li><a href="#challenge-key-crafting">Automated crafting of the key</a></li>
 
 		<li>Kiting</li>
+		<li>Health & Mana potions</li>
+		<li>Respawning</li>
+		<!-- Circular, Rectangle, Opposite Direction, Walls? -->
 		<!-- <li>Debug visualizations</li> -->
 	</ul>
 
@@ -335,7 +339,10 @@ if (character.fear > 2) {
 					display: "inline-block",
 					margin: "2px",
 				})
-				.append(sprite(`${monsterKey}`, { width: 50, height: 70 }));
+				// TODO: width and height needs to be the same as the calculated height
+				// TODO: overflow needs to be disabled
+				// TODO: position left needs to be the same as the image wrapper, but positive
+				.append(sprite(`${monsterKey}`, { full: true }));
 
 			$(element).html($div);
 		});
