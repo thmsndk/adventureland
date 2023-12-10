@@ -507,6 +507,15 @@ craft={
 		],
 		"cost":0,
 	},
+    "honeypot":{
+		"items":[
+			[1,"bee_honey"],
+            [1,"bee_propolis"],
+			[1,"hpot0"],
+            [1,"mpot0"],
+		],
+		"cost":0,
+	},
 }
 
 dismantle={
