@@ -1699,13 +1699,13 @@ maps={
 		"on_death":["main",19], # log near mansion
 		"on_exit":["main",19], # log near mansion
 		"doors":[
-			[0,-35, 10, 10, "main", 19, 0], # log near mansion
+			[31.5, -24.5, 10, 10, "main", 19, 0], # log near mansion
 		],
 		# "article": "dungeon-crypt", # Unsure if this works
 		# we end up calling open_guide that calls load_article
 		"quirks":[
 			# [-192,-1309,48,64,"log","Is this a gateway?"],
-			[0,-35,0,0,"info","bee_dungeon"], # TODO: define range? can we make the rendering in render_server dynamic, so we don't have to code something there to show this quirk?
+			[31.5, -24.5,0,0,"info","bee_dungeon"], # TODO: define range? can we make the rendering in render_server dynamic, so we don't have to code something there to show this quirk?
 		],
 		# TODO a info quirk at the entrance that tells about the instance
 		
