@@ -124,11 +124,14 @@ drops={
 			# [chance, "itemKey"]
 			# map specific drops appears to have a random chance depending on configuration in hardcore mode. see server_functions.js -> sprocess_game_data
 			# map specific drops is an additional drop compared to the monster specific drop see server.js -> drop_something
-			[1.0/100,"beewings"],
+			[1.0/50,"beewings"],
 			# TODO: honey? pollen? other misc items?
-			[1.0/100,"bee_honey"],
-			[1.0/100,"bee_propolis"],
-			[1.0/100,"bee_pollen"],
+			[1.0/50,"bee_honey"],
+			[1.0/50,"bee_propolis"],
+			[1.0/50,"bee_pollen"],
+			[1.0/750,"honeypot"],
+			[1.0/500,"open", "beeset"], # TODO: We could also type the drops in specifically?
+			
 		]
 	},
 	"monsters":{
@@ -158,23 +161,26 @@ drops={
 		"bee":[
 			[1.0/100,"beewings"],
 			[1.0/6000,"stinger"],
+			[1.0/2500,"beekey"],
 		],
 		"bee_queen":[
 			# [chance, open, "dropKey"]
 			# [chance, "itemKey"]
 
-			[1.0/100,"beewings"],
+			[1.0/10,"beewings"],
 			# [1.0/6000,"stinger"], # queens don't have a stinger!
-			[1.0/100,"beekey"],
-			[1.0/500,"open", "beeset"], # TODO: We could also type the drops in specifically?
+			[1.0/75,"beekey"],
+			[1.0/100,"open", "beeset"], # TODO: We could also type the drops in specifically?
+			[1.0/25,"honeypot"],
 			
 		],
 		"bee_worker":[
-			[1.0/100,"beewings"],
-			[1.0/6000,"stinger"], # the stinger is developed instead of the queens reproductive organ.
+			[1.0/10,"beewings"],
+			[1.0/3000,"stinger"], # the stinger is developed instead of the queens reproductive organ.
+			[1.0/50,"honeypot"],
 		],
 		"bee_drone":[
-			[1.0/100,"beewings"],
+			[1.0/10,"beewings"],
 			# [1.0/6000,"stinger"], #drones don't have a stinger!
 		],
 		"porcupine":[
