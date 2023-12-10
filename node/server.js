@@ -6833,6 +6833,7 @@ function init_io() {
 				}
 
 				// Handle map specific & class specific extras
+				def = clone(def); // Make sure to work on a immutable object so we do not change the G.items definition
 				adopt_extras(def, def[player.type]);
 				adopt_extras(def, def[player.map]);
 
@@ -6840,6 +6841,8 @@ function init_io() {
 				var timeout_ui = null;
 				var xp = false;
 				consume_one(player, data.num);
+				server_log(`${player.name} drank ${item.name} that gives ${JSON.stringify(def.gives)}`);
+				// TODO: The disappearing text is on top of each other if it gives both hp & mp
 				(def.gives || []).forEach(function (p) {
 					var amount = p[1];
 					if (player.s.poisoned) {
