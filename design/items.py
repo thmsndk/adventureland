@@ -1733,6 +1733,9 @@ armor={
 		"resistance":4,
 		"stat":2,
 		"name":"Honey Cape",
+		"bee_dungeon": {
+			#TODO: additional stats / upgrade inside bee_dungeon
+		},
 		"upgrade":{
 			"armor":1.5,
 			"resistance":1,
@@ -1788,6 +1791,7 @@ armor={
 		"name":"Honey Boots",
 		"g":1240000,
 		"a":2,
+		# ability to consume beewings for a speed boost effect?
 	},
 	"honeygloves":{
 		"set":"bee_0",
@@ -6453,6 +6457,7 @@ orbs={
 		"name":"Honey Orb",
 		"g":30000,
 		"grades":[4,6],
+		# ability to consume honey for Royal Jelly Potion effect?
 	},
 }
 
@@ -6821,8 +6826,14 @@ elixirs={
 		"type":"elixir",
 		"skin": "placeholder",
 		"name": "Honey Elixir",
-		"explanation": "Tastes yummy",
-		"s": 100
+		"explanation": "A strange tingly feeling, you feel a sudden rush.",
+		"s": 100,
+		"ability":"sugarrush",
+		"attr0": 0.1, # the % chance of sugar rush
+		"rpiercing": 10,
+		"rpiercing": 10,
+		"duration":0.5,
+		# "withdrawal":"withdrawal"
 	}
 }
 
