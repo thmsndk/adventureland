@@ -807,6 +807,8 @@ function dps_multiplier(defense) // [10/12/17]
 
 function adopt_extras(def,ex)
 {
+	if(!ex) return;
+
 	for(var p in ex)
 	{
 		if(p=='upgrade' || p=='compound')
