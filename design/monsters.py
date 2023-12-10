@@ -77,7 +77,7 @@ monsters={
 			# TODO: don't despawn theese mobs if the player is "gone" and stop_pursuit is called
 			# instead make them swarm a new target?
 			# TODO: Make the UI show the mechanics?
-			[10000, "bee_worker", {
+			[8000, "bee_worker", {
 				# This is the default behaviour on crypt or crabxx, spawn monsters on players in 400 range
 				# "spawnAtPlayer": [400] 
 
@@ -91,7 +91,7 @@ monsters={
 					[[-245, -561.5, -95.5, -497], False],
 					[[147.5, -567.5, 370, -501.5], False],
 					], 
-				"spawnAmount" : [1, 2],
+				"spawnAmount" : [0, 2],
 				# "boundary": [[-44.5, -419.5, 40.5, -364]], # TODO: this could limit where they can move
 				}], 
 			[20000, "bee_drone", {
@@ -107,7 +107,7 @@ monsters={
 		"name":"Worker Bee",
 		"skin": "bee",
 		"speed":12,"hp":800,"xp":10,"gold":40,
-		"attack":16,"damage_type":"physical","range":5,"frequency":0.5,
+		"attack":12,"damage_type":"physical","range":5,"frequency":0.5,
 		"respawn":-1, # should not respawn on death
 		"roam":True, # Roams around the map
 		"aggro":1,"aa":1,
