@@ -6661,6 +6661,7 @@ function init_io() {
 				}
 				resolve.slot = slot;
 			} else if (def.type == "elixir") {
+				// TODO: Handle map specific & class specific extras adopt_extras(def, def[player.map]), needs to be recalculated when changing map
 				if (item.l) {
 					return fail_response("item_locked");
 				}
@@ -11865,6 +11866,7 @@ function update_instance(instance) {
 					change = true;
 					if (monster.hp <= 0) {
 						monster.hp = 0;
+						server_log(`${monster.id} being removed due to health being lower than 0`);
 						remove_monster(monster);
 					}
 				}
@@ -12846,6 +12848,7 @@ function update_instance_monster_spawn_minions(monster, instance) {
 				// TODO: We might also want the ability to offset the spawning of each bee in this current wave
 				// TODO: the ability to make each spawned mob target random players? currently
 				// if for example 5 are spawned, that player WILL get terrified / petrified. a feature one might want. but not in a beginner dungeon
+
 				const pname = random_one(Object.keys(monster.points));
 				const player = get_player(pname);
 				// TODO: don't spawn monsters at dead players?
@@ -12886,8 +12889,11 @@ function update_instance_monster_spawn_minions(monster, instance) {
 					return;
 				}
 
+				server_log(`${instance.map} ${instance.name} Potential targets: ${JSON.stringify(monster.points)}`);
 				for (let index = 0; index < spawnAmount; index++) {
-					server_log(`${instance.name} spawning 1/${spawnAmount} ${name} at [${spot.x},${spot.y}]`);
+					server_log(
+						`${instance.map} ${instance.name} spawning 1/${spawnAmount} ${name} at [${spot.x},${spot.y}] targeting ${player.name}`,
+					);
 					new_monster(instance.name, {
 						type: name,
 						// TODO: don't despawn theese mobs if the player is "gone" / dies and stop_pursuit is called, should be an option, as this is how the current behaviour is on spike
@@ -12936,7 +12942,7 @@ function update_instance_monster_spawn_minions(monster, instance) {
 		const x = boundary[0] + Math.random() * (boundary[2] - boundary[0]);
 		const y = boundary[1] + Math.random() * (boundary[3] - boundary[1]);
 		return { x, y };
-			}
+	}
 
 	function get_safe_spot_near_point(map, x, y) {
 		return safe_xy_nearby(map, x + Math.random() * 20 - 10, y + Math.random() * 20 - 10);
