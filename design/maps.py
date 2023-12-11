@@ -1689,23 +1689,25 @@ maps={
 		"monsters":[
 			# {"type":"bee","boundary":[10,-10, 0,0],"count":1},
 			{"type":"bee_queen","boundary":[-22, -898, 148.5, -764],"count":1, "roam": True},
-			{"type":"bee_worker","boundary":[9, -561, 55, -75],"count":10, "roam": True},
-			{"type":"bee_drone","boundary":[9, -561, 55, -75],"count":1, "roam": True},
+			{"type":"bee_worker","boundary":[-168.5, -391.5, 84.5, -331],"count":5},
+			{"type":"bee_drone","boundary":[-168.5, -391.5, 84.5, -331],"count":1},
+			# entrance guard
+			{"type":"bee_worker","boundary":[-26.5, -496, 86, -399.5],"count":5},
 		],
 		"spawns":[
 			# spawn points need to be 12px away from lines, -y is upwards
-			[31.5, -24.5], 
+			[-214, -359], 
 		],
 		"on_death":["main",19], # log near mansion
 		"on_exit":["main",19], # log near mansion
 		"doors":[
-			[31.5, -24.5, 10, 10, "main", 19, 0], # log near mansion
+			[-214, -359, 10, 10, "main", 19, 0], # log near mansion
 		],
 		# "article": "dungeon-crypt", # Unsure if this works
 		# we end up calling open_guide that calls load_article
 		"quirks":[
 			# [-192,-1309,48,64,"log","Is this a gateway?"],
-			[31.5, -24.5,0,0,"info","bee_dungeon"], # TODO: define range? can we make the rendering in render_server dynamic, so we don't have to code something there to show this quirk?
+			[-214, -359,0,0,"info","bee_dungeon"], # TODO: define range? can we make the rendering in render_server dynamic, so we don't have to code something there to show this quirk?
 		],
 		# TODO a info quirk at the entrance that tells about the instance
 		
