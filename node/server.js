@@ -4754,6 +4754,95 @@ function init_io() {
 			resend(player, "u+cid");
 			success_response({ started: true });
 		});
+
+		socket.on("quest", function (data) {
+			var player = players[socket.id];
+			if (!player) {
+				return;
+			}
+
+			const questName = data.quest;
+			const npcKey = data.npc; // TODO: can they omit the npc?
+
+			if (!questName) {
+				return fail_response("quest_param_missing");
+			}
+
+			if (!npcKey) {
+				return fail_response("npc_param_missing");
+			}
+
+			// TODO: non hardcoded distance check to the npc questgiver
+			// if (simple_distance(G.maps.main.ref.monsterhunter, player, true) > B.sell_dist) {
+			// 	return fail_response("distance");
+			// }
+			// TODO: What is server.s ? seems like a list of monsters / spawns being hunted
+			// var hunted = [];
+			// for (var id in server.s) {
+			// 	if (server.s[id].type == "monsterhunt") {
+			// 		hunted.push(server.s[id].id);
+			// 	}
+			// }
+
+			// TODO: Validate classes that can do the quest
+			// if (player.type == "merchant") {
+			// 	return socket.emit("game_response", "monsterhunt_merchant");
+			// }
+
+			if (player.s[questName] && !player.s[questName].d) {
+				//already on the quest, and it is not completed
+				// TODO: We might want to give the questname in the response?
+				return fail_response("quest_in_progress");
+			} else if (player.s[questName] && player.s[questName].d) {
+				// quest is completed, award a token
+				delete server.s[`${questName}_${player.s[questName].id}`]; // clear the tracked stats
+				delete player.s[questName];
+
+				// TODO:look up token; I think we need the npc we are interacting with, or a questname to look up rewards
+				add_item(player, G.npcs[npcKey].token, { log: true, q: 1 });
+
+				//Refresh players inventory
+				resend(player, "u+cid+reopen");
+				return success_response({ completed: true });
+			}
+
+			// TODO: Quest specific logic whne accepting a quest, should probably be extracted out in seperate modules
+			switch (questName) {
+				case "beekeeper":
+					{
+						// Planned beekeeper quests
+						// killing the queen
+						// killing X bees - This should be a high amount, because bees are freely available outside the dungeon and is mostly a gimmick to pay homeage to gnal, also might spawn more cutebees!
+						// killing X worker bees
+						// killing X drone bees
+
+						// Ideas for beekeeper quests
+						// Fishing / Mining
+
+						const quest_ms = 30 * 60 * 1000;
+						// TODO: considering this is from monsterhunts, the name/id was the name of the mob, perhaps we need to generate a unique id?
+						const quest_id = "bee_queen";
+						const count = 1;
+
+						// Give the player the quest
+						// TODO: What is dl? dl marks the monster for deleveling
+						player.s[questName] = { sn: region + " " + server_name, id: quest_id, c: count, ms: quest_ms, d: false };
+
+						// keep track of the quest on the server, TODO: not sure why yet
+						server.s[`${questName}_${quest_id}`] = {
+							name: player.name,
+							id: quest_id,
+							ms: quest_ms,
+							type: "monsterhunt", // TODO: can we give it an icon?
+						};
+						player.hitchhikers.push(["game_response", "quest_started"]);
+						resend(player, "u+cid");
+						success_response({ started: true });
+					}
+					break;
+			}
+		});
+
 		socket.on("ccreport", function () {
 			socket.emit("ccreport", { calls: socket.calls, climit: limits.calls, total: socket.total_calls });
 		});
