@@ -3377,43 +3377,128 @@ function npc_right_click(event){
 	{
 		socket.emit("interaction",{type:"newyear_tree"});
 	}
-	if(this.role=="pvptokens")
-	{
+
+	// Handle token exchanges
+	if (this.role == "pvptokens") {
 		render_token_exchange("pvptoken");
-	}
-	if(this.role=="friendtokens")
-	{
+	} else if (this.role == "friendtokens") {
 		render_token_exchange("friendtoken");
-	}
-	if(this.role=="funtokens")
-	{
+	} else if (this.role == "funtokens") {
 		render_token_exchange("funtoken");
-	}
-	if(this.role=="cx")
-	{
-		render_exchange_shrine("cx");
-	}
-	if(this.role=="petkeeper")
-	{
-		render_pet_shrine();
-	}
-	if(this.role=="monstertokens")
-	{
+	} else if (this.role == "monstertokens") {
 		render_token_exchange("monstertoken");
-		if(!character.s.monsterhunt)
-			$("#merchant-item").html(render_interaction({auto:true,skin:"daisy",message:"Would you like to go on a hunt? However, I have to warn you. It's not for the faint-hearted!"+(gameplay=="hardcore"&&" [100 TOKENS!]"||""),button:"I CAN HANDLE IT!",onclick:function(){socket.emit('monsterhunt'); push_deferred("monsterhunt")}},"return_html"));
-		else if(character.s.monsterhunt.c)
-			$("#merchant-item").html(render_interaction({auto:true,skin:"daisy",message:"Go now, go! Come back after you completed your hunt ..."},"return_html"));
-		else
-		{
-			socket.emit('monsterhunt');
-			push_deferred("monsterhunt")
-			$("#merchant-item").html(render_interaction({auto:true,skin:"daisy",message:"Well done, well done! A token for your service!"},"return_html"));
+		if (!character.s.monsterhunt)
+			$("#merchant-item").html(
+				render_interaction(
+					{
+						auto: true,
+						skin: "daisy",
+						message:
+							"Would you like to go on a hunt? However, I have to warn you. It's not for the faint-hearted!" +
+							((gameplay == "hardcore" && " [100 TOKENS!]") || ""),
+						button: "I CAN HANDLE IT!",
+						onclick: function () {
+							socket.emit("monsterhunt");
+							push_deferred("monsterhunt");
+						},
+					},
+					"return_html",
+				),
+			);
+		else if (character.s.monsterhunt.c)
+			$("#merchant-item").html(
+				render_interaction(
+					{ auto: true, skin: "daisy", message: "Go now, go! Come back after you completed your hunt ..." },
+					"return_html",
+				),
+			);
+		else {
+			socket.emit("monsterhunt");
+			push_deferred("monsterhunt");
+			$("#merchant-item").html(
+				render_interaction(
+					{ auto: true, skin: "daisy", message: "Well done, well done! A token for your service!" },
+					"return_html",
+				),
+			);
+		}
+	} else if (this.token) {
+		render_token_exchange(this.token);
+		// quests, giving the player an entry in character.s like monstertokens
+		if (this.role === "questgiver") {
+			// TODO: multiple quest types?
+			const questName = `quest_${this.quest}`; // e.g. quest_beekeper
+			// TODO: this.skin is not a thing either
+			console.log("questgiver", this.npc, this.quest, this);
+			const quest_request = { npc: this.npc, quest: this.quest };
+			if (!character.s[questName]) {
+				// the character does not have an active quest show a random welcome interaction
+				$("#merchant-item").html(
+					render_interaction(
+						{
+							auto: true,
+							skin: npc.skin,
+							// TODO: Dynamic messages
+							message: "Would you like to go on a quest?",
+							button: "Yes!",
+							onclick: function () {
+								socket.emit("quest", quest_request);
+								push_deferred("quest");
+								$("#merchant-item").html(
+									render_interaction(
+										{
+											auto: true,
+											skin: npc.skin,
+											message:
+												"Alrighty then! Now go defeat " +
+												character.s[questName].c +
+												" " +
+												G.monsters[character.s.monsterhunt.id].name +
+												"'s and come back here!",
+										},
+										"return_html",
+									),
+								);
+							},
+						},
+						"return_html",
+					),
+				);
+			} else if (!character.s[questName].d) {
+				// Inform the player that the quest is not done yet
+				$("#merchant-item").html(
+					// TODO: Dynamic messages
+					render_interaction(
+						{ auto: true, skin: npc.skin, message: "Go now, go! Come back after you completed your quest ..." },
+						"return_html",
+					),
+				);
+			} else {
+				socket.emit("quest", quest_request);
+				push_deferred("quest");
+				$("#merchant-item").html(
+					render_interaction(
+						{ auto: true, skin: npc.skin, message: "Well done, well done! A token for your service!" },
+						"return_html",
+					),
+				);
+			}
 		}
 	}
-	if(this.role=="announcer")
-	{
-		render_interaction({auto:true,skin:"lionsuit",message:"Daily Events? Yes. Soon. Hopefully ... Definitely one day."});
+
+	if(this.role=="cx") {
+		render_exchange_shrine("cx");
+	}
+	if(this.role=="petkeeper") {
+		render_pet_shrine();
+	}
+
+	if(this.role=="announcer") {
+		render_interaction({
+			auto: true,
+			skin: "lionsuit",
+			message: "Daily Events? Yes. Soon. Hopefully ... Definitely one day.",
+		});
 	}
 	if(npc.interaction)
 	{
