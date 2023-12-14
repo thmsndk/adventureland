@@ -923,10 +923,9 @@ npcs={
 		"says":"Soon",
 		"color":"#5A1D7F",
 	},
-	"gnal":{
-		"role":"hunt", # what is the difference between roles? quest,citizen
-		# "quest": "beekeeper" # recipes.py can have a .quest property cue uses this as the mcollector role
-		"token":"beetoken", # we can also do tokens like Daisy, a bee monsterhunt? queen quest? tokens.py has the things that can be exchanged with the item and the token cost
+		"role":"questgiver", # what is the difference between roles? quest,citizen
+		"quest": "beekeeper", # recipes.py can have a .quest property cue uses this as the mcollector role, there can only be one recipe for an item though as far as I can tell
+		"token":"beetoken", # we can also do tokens like Daisy, 
 		# game.js npc_right_click
 		# server.js socket.on("monsterhunt") && monster_hunt_logic 
 
