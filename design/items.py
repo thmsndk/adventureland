@@ -1,5 +1,5 @@
 import math
-# "s" Stackable
+# "s" Stackable - True is replaced with 9999
 # "e" Exchangable
 # "a" Announce + High Grade
 # "a" 2 - Announce Within the Map
@@ -5784,6 +5784,26 @@ misc={
 		"s":True,
 		"g":40000,
 	},
+	"emptyheart":{
+		"type":"material",
+		"skin":"emptyheart",
+		"name":"Empty Heart",
+		"explanation":"A cold empty stone heart",
+		"s":True,
+		"g":12000,
+		"event":True,
+	},
+	"fieldgen0":{
+		"type":"spawner",
+		"skin":"fieldgen0",
+		"spawn":"fieldgen0",
+		"name":"Dampening Field Generator",
+		"explanation":"Summon a robot generating a dampening field that prevents teleportation of any kind!",
+		"g":2000000,
+	},
+}
+
+token = {
 	"pvptoken":{
 		"type":"token",
 		"skin":"pvptoken",
@@ -5817,22 +5837,14 @@ misc={
 		"s":True,
 		"g":36000,
 	},
-	"emptyheart":{
-		"type":"material",
-		"skin":"emptyheart",
-		"name":"Empty Heart",
-		"explanation":"A cold empty stone heart",
+	"beetoken":{
+		"type":"token",
+		"skin":"placeholder",
+		"name":"Bee Token",
+		"explanation":"A token representing your efforts. You made someone rich!",
+		"npc": "beekeeper", # does this reference do anything?
 		"s":True,
-		"g":12000,
-		"event":True,
-	},
-	"fieldgen0":{
-		"type":"spawner",
-		"skin":"fieldgen0",
-		"spawn":"fieldgen0",
-		"name":"Dampening Field Generator",
-		"explanation":"Summon a robot generating a dampening field that prevents teleportation of any kind!",
-		"g":2000000,
+		"g":6000,
 	},
 }
 
@@ -7395,6 +7407,7 @@ items.update(gems)
 items.update(materials)
 items.update(collectables)
 items.update(misc)
+items.update(token)
 items.update(quest)
 items.update(orbs)
 items.update(elixirs)
