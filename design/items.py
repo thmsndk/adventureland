@@ -1727,75 +1727,102 @@ armor={
 	},
 	"honeycape":{
 		"set":"bee_0",
+		"tier":1.5,
 		"type":"cape",
 		"skin":"placeholder",
-		"armor":5,
-		"resistance":4,
-		"stat":2,
+		# "armor":5,
+		# "resistance":4,
+		# "stat":2,
 		"name":"Honey Cape",
 		"bee_dungeon": {
 			#TODO: additional stats / upgrade inside bee_dungeon
 		},
 		"upgrade":{
-			"armor":1.5,
-			"resistance":1,
-			"stat":0.10,
+			# "armor":1.5,
+			# "resistance":1,
+			# "stat":0.10,
 		},
 		"grades":[0,8],
 		"g":10000,
 	},
 	"honeyhelmet":{
 		"set":"bee_0",
-		"tier":3,
+		"tier":1.5,
 		"type":"helmet",
 		"skin":"placeholder",
 		"scroll":True,
+		# "stat": 1.5,
+		# "armor": 15,
+		# "resistance": 15,
 		"upgrade":{
+			# "stat": 1,
+			# "armor": 2.25,
+			# "resistance": 2.25
 		},
 		"name":"Honey Helmet",
 		"g":320000,
-		"a":2,
+		# "a":True,
 	},
 	"honeychest":{
 		"set":"bee_0",
-		"tier":3,
+		"tier":1.5,
 		"type":"chest",
 		"skin":"placeholder",
 		"scroll":True,
+		# "stat": 1.5,
+		# "armor": 15,
+		# "resistance": 15,
 		"upgrade":{
+			# "stat": 1,
+			# "armor": 2.25,
+			# "resistance": 2.25
 		},
 		"name":"Honey Chest",
 		"g":480000,
-		"a":2,
+		"a":True,
 	},
 	"honeypants":{
 		"set":"bee_0",
-		"tier":3,
+		"tier":1.5,
 		"type":"pants",
 		"skin":"placeholder",
 		"scroll":True,
+		# "stat": 1.5,
+		# "armor": 15,
+		# "resistance": 15,
 		"upgrade":{
+			# "stat": 1,
+			# "armor": 2.25,
+			# "resistance": 2.25
 		},
 		"name":"Honey Pants",
 		"g":780000,
-		"a":2,
+		"a":True,
 	},
 	"honeyboots":{
 		"set":"bee_0",
-		"tier":3,
+		"tier":1.5,
 		"type":"shoes",
 		"skin":"placeholder",
 		"scroll":True,
+		# "stat": 1.5,
+		# "armor": 15,
+		# "resistance": 15,
+		# "speed": 5,
 		"upgrade":{
+			# "stat": 1,
+			# "armor": 2.25,
+			# "resistance": 2.25,
+			# "speed": 0.725
 		},
 		"name":"Honey Boots",
 		"g":1240000,
-		"a":2,
+		"a":True,
 		# ability to consume beewings for a speed boost effect?
 	},
 	"honeygloves":{
 		"set":"bee_0",
-		"tier":3,
+		"tier":1.5,
 		"type":"gloves",
 		"skin":"placeholder",
 		"scroll":True,
@@ -1803,7 +1830,7 @@ armor={
 		},
 		"name":"Honey Gloves",
 		"g":340000,
-		"a":2,
+		"a":True,
 	},
 }
 for name in armor.keys():
@@ -2680,31 +2707,122 @@ accessories={
 		"compound":{
 			"gold":0.1,
 		},
+		"rogue": {
+			"dex": 1,
+			"compound":{
+				"dex":1,
+			},
+		},
+		"ranger": {
+			"dex": 1,
+			"compound":{
+				"dex":1,
+			},
+		},
+		"mage": {
+			"int": 1,
+			"compound":{
+				"int":1,
+			},
+		},
+		"priest": {
+			"int": 1,
+			"compound":{
+				"int":1,
+			},
+		},
+		"warrior": {
+			"str": 1,
+			"compound":{
+				"str":1,
+			},
+		},
 		"name":"Honey Ring",
 		"grades":[0,2],
-		"g":28000000,
+		"g":20000,
 		"a":True,
 	},
 	"honeyearring":{
 		"set":"bee_0",
 		"type":"earring",
 		"skin":"placeholder",
-		"vit":3,
-		# "compound":{
-		# 	"vit":2,
-		# },
+		"rogue": {
+			"dex": 2,
+			"compound":{
+				"dex":1.5,
+			},
+		},
+		"ranger": {
+			"dex": 2,
+			"compound":{
+				"dex":1.5,
+			},
+		},
+		"mage": {
+			"int": 2,
+			"compound":{
+				"int":1.5,
+			},
+		},
+		"priest": {
+			"int": 2,
+			"compound":{
+				"int":1.5,
+			},
+		},
+		"warrior": {
+			"str": 2,
+			"compound":{
+				"str":1.5,
+			},
+		},
 		"name":"Honey Earring",
 		"g":14000,
-		"grades":[2,5],
+		# "grades":[2,5],
 	},
 	"honeybelt":{
 		"set": "bee_0",
 		"type":"belt",
 		"skin":"placeholder",
-		"hp":160,
-		"compound":{
-			"hp":240,
+		#TODO: stat scroll instead?
+		"rogue": {
+			"dex": 2,
+			"compound":{
+				"dex":1.5,
+			},
 		},
+		"ranger": {
+			"dex": 2,
+			"compound":{
+				"dex":1.5,
+			},
+		},
+		"mage": {
+			"int": 2,
+			"compound":{
+				"int":1.5,
+			},
+		},
+		"priest": {
+			"int": 2,
+			"compound":{
+				"int":1.5,
+			},
+		},
+		"warrior": {
+			"str": 2,
+			"compound":{
+				"str":1.5,
+			},
+		},
+		# paladin?
+		# merchant?
+		# "merchant": {
+		# 	"speed": 2,
+		# 	"compound":{
+		# 		"speed":0.5,
+		# 	},
+		# },
 		"name":"Honey Belt",
 		"g":20000,
 	},
