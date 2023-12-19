@@ -18,8 +18,7 @@
 			html,
 			body {
 				background: black;
-			}
-			body {
+				font-family: "Courier New";
 				overflow: scroll;
 			}
 
@@ -29,7 +28,8 @@
 			}
 
 			tr td:nth-child(1),
-			tr td:nth-child(2) {
+			tr td:nth-child(2),
+			tr td:nth-child(3) {
 				position: sticky;
 				left: 0;
 			}
@@ -37,6 +37,11 @@
 			tr th:nth-child(2),
 			tr td:nth-child(2) {
 				left: 95px;
+			}
+
+			tr th:nth-child(3),
+			tr td:nth-child(3) {
+				left: 195px;
 			}
 
 			/* table tr:nth-child(odd) {
@@ -168,8 +173,21 @@
 				//     "awesomeness": "awesomeness",
 				//     "npc": "npc"
 				// }
-				const property_ignore = ["skin", "cx", "ignore", "explanation"];
-				const property_columns = {};
+
+				const property_ignore = ["skin", "cx", "ignore", "explanation", "a", "throw", "onclick", "hat", "e"];
+				const property_columns = {
+					armor: 1,
+					dex: 1,
+					int: 1,
+					str: 1,
+					vit: 1,
+					for: 1,
+					speed: 1,
+					range: 1,
+					resistance: 1,
+					apiercing: 1,
+					rpiercing: 1,
+				};
 				for (const gItem of Object.values(G.items)) {
 					for (const key in gItem) {
 						if (property_ignore.includes(key)) {
@@ -192,7 +210,7 @@
 					}
 				}
 
-				console.log(property_columns);
+				// console.log(property_columns);
 
 				const items = Object.entries(G.items);
 
