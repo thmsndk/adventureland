@@ -2254,6 +2254,7 @@ function init_socket(args)
 			{
 				$("#merchant-item").html(render_interaction({auto:true,skin:"daisy",message:"Huh? A merchant? On the hunt? Hahahahahahahaha ... Go sell cake or something ..."},"return_html"));
 			}
+			// TODO: handle quest responses
 			else
 			{
 				console.log("Missed game_response: "+response);
@@ -3727,6 +3728,7 @@ function update_sprite(sprite)
 	{
 		hp_bar_logic(sprite);
 		if(border_mode) border_logic(sprite);
+		// TODO: show range?
 	}
 	if(sprite.type=="character" || sprite.type=="npc")
 	{
