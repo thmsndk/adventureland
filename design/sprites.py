@@ -975,7 +975,7 @@ sprites={
 		"file":"/images/tiles/characters/beekeeper_1.png",
 		"rows":1,
 		"columns":1,
-		"matrix":[["gnal"]],
+		"matrix":[["beekeeper"]],
 	},
 
 }
