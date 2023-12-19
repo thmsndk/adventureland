@@ -537,6 +537,14 @@ conditions={
 		"duration":1800000,
 		"persistent":True,
 	},
+	# TODO: should be named quest, and used as a general purpose, the quest should also be able to override the skin
+	"beekeeper":{
+		"skin":"quest_monsterhunt",
+		"name":"Bee On The Hunt",
+		"ui":True,
+		"duration":1800000,
+		"persistent":True,
+	},
 	"marked":{
 		"skin":"skill_huntersmark",
 		"name":"Marked",
