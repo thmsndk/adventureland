@@ -160,8 +160,8 @@ def serve_items():
 	#if not is_current_user_admin():
 	#	user=get_user(self,domain)
 	#	if not user or user.k()+"" not in [ellian_id,hello_id]: return
-	mode,items=gdmul(request,"mode","items")
-	return whtml(request,"utility/htmls/items.html",domain=domain,mode=mode,items=items)
+	mode,items.types=gdmul(request,"mode","items"."types")
+	return whtml(request,"utility/htmls/items.html",domain=domain,mode=mode,items=items, types=types)
 
 @app.route('/admin/balance/items')
 @ndb.toplevel
