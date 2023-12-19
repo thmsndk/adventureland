@@ -126,10 +126,10 @@ drops={
 			# map specific drops is an additional drop compared to the monster specific drop see server.js -> drop_something
 			[1.0/50,"beewings"],
 			# TODO: honey? pollen? other misc items?
-			[1.0/50,"bee_honey"],
-			[1.0/50,"bee_propolis"],
-			[1.0/50,"bee_pollen"],
-			[1.0/750,"honeypot"],
+			[1.0/10,"bee_honey"],
+			[1.0/10,"bee_propolis"],
+			[1.0/10,"bee_pollen"],
+			[1.0/50,"honeypot"],
 			[1.0/500,"open", "beeset"], # TODO: We could also type the drops in specifically?
 			
 		]
@@ -167,17 +167,18 @@ drops={
 			# [chance, open, "dropKey"]
 			# [chance, "itemKey"]
 
-			[1.0/10,"beewings"],
+			[1.0/2.5,"beewings"],
 			# [1.0/6000,"stinger"], # queens don't have a stinger!
-			[1.0/75,"beekey"],
-			[1.0/100,"open", "beeset"], # TODO: We could also type the drops in specifically?
-			[1.0/25,"honeypot"],
+			[1.0/5,"beekey"],
+			[1.0/10,"open", "beeset"], # TODO: We could also type the drops in specifically?
+			[1.0/5,"honeypot"],
+			[1.0/5,"honeypot"],
 			
 		],
 		"bee_worker":[
 			[1.0/10,"beewings"],
 			[1.0/3000,"stinger"], # the stinger is developed instead of the queens reproductive organ.
-			[1.0/50,"honeypot"],
+			[1.0/25,"honeypot"],
 		],
 		"bee_drone":[
 			[1.0/10,"beewings"],
