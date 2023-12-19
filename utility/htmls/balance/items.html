@@ -17,14 +17,87 @@
 		<style>
 			html,
 			body {
-				background: black;
-				font-family: "Courier New";
+				/* background: black;
+				font-family: "Courier New"; */
 				overflow: scroll;
+			}
+			/* https://codepen.io/cesarrrguez/pen/MWegWYa */
+			:root {
+				--primary-color: white;
+				--secondary-color: rgb(61, 68, 73);
+				--highlight-color: #3282b8;
+
+				--dt-status-available-color: greenyellow;
+				--dt-status-away-color: lightsalmon;
+				--dt-status-offline-color: lightgray;
+
+				--dt-padding: 12px;
+				--dt-padding-s: 6px;
+				--dt-padding-xs: 2px;
+
+				--dt-border-radius: 3px;
+
+				--dt-background-color-container: #2a3338;
+				--dt-border-color: var(--secondary-color);
+				--dt-bg-color: var(--highlight-color);
+				--dt-text-color: var(--primary-color);
+				--dt-bg-active-button: var(--highlight-color);
+				--dt-text-color-button: var(--primary-color);
+				--dt-text-color-active-button: var(--primary-color);
+				--dt-hover-cell-color: var(--highlight-color);
+				--dt-even-row-color: var(--secondary-color);
+				--dt-focus-color: var(--highlight-color);
+				--dt-input-background-color: var(--secondary-color);
+				--dt-input-color: var(--primary-color);
+			}
+
+			.datatable-container,
+			body {
+				font-family: sans-serif;
+				background-color: var(--dt-background-color-container);
+				border-radius: var(--dt-border-radius);
+				color: var(--dt-text-color);
+				/* max-width: 1140px;
+				min-width: 950px; */
+				margin: 0 auto;
+				font-size: 12px;
+			}
+
+			table.datatable {
+				border-collapse: collapse;
+				width: 100%;
+			}
+
+			table.datatable,
+			table.datatable th,
+			table.datatable td {
+				padding: var(--dt-padding-s) var(--dt-padding-s);
+			}
+
+			table.datatable th {
+				font-weight: bolder;
+				text-align: left;
+				border-bottom: solid 1px var(--dt-border-color);
+			}
+
+			table.datatable td {
+				border-bottom: solid 1px var(--dt-border-color);
+			}
+
+			table.datatable tbody tr:nth-child(even) {
+				background-color: var(--dt-even-row-color);
+			}
+
+			table.datatable tbody tr:hover {
+				background-color: var(--dt-hover-cell-color);
 			}
 
 			table.sticky-header th {
 				position: sticky;
 				top: 0;
+				left: 0;
+				background-color: var(--dt-background-color-container);
+				z-index: 10;
 			}
 
 			tr td:nth-child(1),
@@ -32,6 +105,7 @@
 			tr td:nth-child(3) {
 				position: sticky;
 				left: 0;
+				z-index: 9;
 			}
 
 			tr th:nth-child(2),
@@ -48,11 +122,11 @@
 				background: grey;
 			} */
 
-			table tr:hover {
+			/* table tr:hover {
 				background: silver;
-				/* cursor: pointer; */
+				cursor: pointer;
 				color: black;
-			}
+			} */
 		</style>
 		<script>
 			document.addEventListener("DOMContentLoaded", function (event) {
@@ -174,8 +248,10 @@
 				//     "npc": "npc"
 				// }
 
-				const property_ignore = ["skin", "cx", "ignore", "explanation", "a", "throw", "onclick", "hat", "e"];
+				// const property_ignore = ["skin", "cx", "ignore", "explanation", "a", "throw", "onclick", "hat", "e"];
 				const property_columns = {
+					hp: 1,
+					mp: 1,
 					armor: 1,
 					dex: 1,
 					int: 1,
@@ -187,28 +263,30 @@
 					resistance: 1,
 					apiercing: 1,
 					rpiercing: 1,
+					crit: 1,
+					luck: 1,
 				};
-				for (const gItem of Object.values(G.items)) {
-					for (const key in gItem) {
-						if (property_ignore.includes(key)) {
-							continue;
-						}
+				// for (const gItem of Object.values(G.items)) {
+				// 	for (const key in gItem) {
+				// 		if (property_ignore.includes(key)) {
+				// 			continue;
+				// 		}
 
-						if (key === "upgrade") {
-							continue;
-						}
+				// 		if (key === "upgrade") {
+				// 			continue;
+				// 		}
 
-						if (key === "compound") {
-							continue;
-						}
+				// 		if (key === "compound") {
+				// 			continue;
+				// 		}
 
-						if (!property_columns[key]) {
-							property_columns[key] = key;
-						}
+				// 		if (!property_columns[key]) {
+				// 			property_columns[key] = key;
+				// 		}
 
-						// TODO: handle upgrade property and add them as well
-					}
-				}
+				// 		// TODO: handle upgrade property and add them as well
+				// 	}
+				// }
 
 				// console.log(property_columns);
 
@@ -227,10 +305,9 @@
 
 				let html = "";
 				// Draw item table
-				html += "<table class='sticky-header'>";
+				html += "<table class='datatable sticky-header'>";
 				html += "<tr>";
-				html += `<th>itemKey</th>`;
-				html += `<th>itemName</th>`;
+				html += `<th>item</th>`;
 				html += `<th>Type</th>`;
 
 				for (const key in property_columns) {
@@ -238,24 +315,29 @@
 				}
 
 				html += "</tr>";
+				let maxLevel = 0;
+
+				// TODO: render levels as columns, each item as a row, and render relevant properties inside the matrix
+				// TODO: or render items as columns, levels as rows, depending on what is easiest to compare
+
+				// TODO: loop levels per item type?
+
 				// TODO: What attribute columns are interesting to compare?
 				for (const [itemKey, gItem] of items) {
 					// TODO: How to visualize each item and their upgraded version, could append it in the same column? perhaps a sub table?
-
-					// html += "<tr>";
-					// html += `<td>${itemKey}</td>`;
-					// html += `<td>${gItem.name}</td>`;
-					// html += `<td>${gItem.type}</td>`;
-
-					// html += "</tr>";
-
-					// TODO: ability to toggle if leveled items should be shown
-					let maxLevel = 0;
-					// if (gItem.compound) maxLevel = 5;
-					// if (gItem.upgrade) maxLevel = 13;
-
 					const styles = "vertical-align: top; margin-right: 10px";
 					for (let level = 0; level <= maxLevel; level++) {
+						// html += "<tr>";
+						// html += `<td>${itemKey}</td>`;
+						// html += `<td>${gItem.name}</td>`;
+						// html += `<td>${gItem.type}</td>`;
+
+						// html += "</tr>";
+
+						// TODO: ability to toggle if leveled items should be shown
+						// if (gItem.compound) maxLevel = 5;
+						// if (gItem.upgrade) maxLevel = 13;
+
 						// calculate stats for upgrade
 						const actual = { name: itemKey, level };
 						const prop = calculate_item_properties(
@@ -277,12 +359,12 @@
 						const icon = item_container({ skin: gItem.skin, size: 25 }, actual);
 
 						html += "<tr>";
-						html += `<td>${itemKey}</td>`;
-						html += `<td title='${name}'>${icon}</td>`;
+						html += `<td title='${name}'><span style="display:inline-block; vertical-align:middle">${icon}</span> <span style="vertical-align:middle">${itemKey}</span></td>`;
 						html += `<td>${gItem.type}</td>`;
 
 						for (const key in property_columns) {
-							const value = prop[key];
+							let value = prop[key];
+							if (value == 0) value = "";
 							html += `<td>${value ?? ""}</td>`;
 						}
 
