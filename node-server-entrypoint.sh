@@ -19,4 +19,4 @@ fi
 sleep 5
 
 echo "Starting $1 $2 on port $3"
-node /adventureland/node/server.js $1 $2 $3
+exec node /adventureland/node/server.js $1 $2 $3
