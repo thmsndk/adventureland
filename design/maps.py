@@ -597,7 +597,7 @@ maps={
 			{"id":"monsterhunter","position":[126,-413]},
 			{"id":"mcollector","position":[81,-283,1]},
 			#{"id":"newyear_tree","position":[64,-88]}, #xmas
-			{"id":"gnal","position":[612, 737.5],"boundary":[-200,-200,200,200]},
+			{"id":"beekeeper","position":[612, 737.5],"boundary":[-200,-200,200,200]},
 		],
 		"monsters":[
 			#square
@@ -1684,7 +1684,7 @@ maps={
 		},
 		"name":"BEEginner Dungeon",
 		"npcs":[
-			{"id":"gnal","position":[0, 30]},
+			{"id":"beekeeper","position":[0, 30]},
 		],
 		"monsters":[
 			# {"type":"bee","boundary":[10,-10, 0,0],"count":1},
