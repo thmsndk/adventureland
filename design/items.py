@@ -2719,31 +2719,31 @@ accessories={
 		"rogue": {
 			"dex": 1,
 			"compound":{
-				"dex":1,
+				"dex":1.5,
 			},
 		},
 		"ranger": {
 			"dex": 1,
 			"compound":{
-				"dex":1,
+				"dex":1.5,
 			},
 		},
 		"mage": {
 			"int": 1,
 			"compound":{
-				"int":1,
+				"int":1.5,
 			},
 		},
 		"priest": {
 			"int": 1,
 			"compound":{
-				"int":1,
+				"int":1.5,
 			},
 		},
 		"warrior": {
 			"str": 1,
 			"compound":{
-				"str":1,
+				"str":1.5,
 			},
 		},
 		"grades":[0,2],
@@ -2754,6 +2754,8 @@ accessories={
 		"set":"bee_0",
 		"type":"earring",
 		"skin":"placeholder",
+		"compound":{
+		},
 		"rogue": {
 			"dex": 2,
 			"compound":{
