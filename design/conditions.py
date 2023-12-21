@@ -616,6 +616,18 @@ conditions={
 		"duration_min":3000,
 		"duration":8000,
 	},
+	"beekeeper_aura":{
+		"skin":"placeholder",
+		"gold":1,
+		# "xp":1,
+		"name":"Beekeeper Aura",
+		"attr0":"gold", # We can only give one attribute as an aura currently
+		# "attr1":"xp",
+		"buff":True,
+		"ui":True,
+		"aura":True,
+		"duration":30*1000,
+	},
 }
 
 if 0:
