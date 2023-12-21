@@ -2834,6 +2834,8 @@ accessories={
 		"type":"belt",
 		"skin":"placeholder",
 		#TODO: stat scroll instead?
+		"compound":{
+		},
 		"rogue": {
 			"dex": 2,
 			"compound":{
