@@ -167,7 +167,8 @@ def serve_items():
 @ndb.toplevel
 def serve_balance_items():
 	domain=gdi(request)
-	return whtml(self,"utility/htmls/balance/items.html",domain=domain)
+	ctype, map=gdmul(self,"ctype", "map")
+	return whtml(self,"utility/htmls/balance/items.html", domain=domain, ctype=ctype, map=map)
 
 @app.route('/admin/backups/<m>/<id>')
 @ndb.toplevel
