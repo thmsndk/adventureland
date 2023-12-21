@@ -815,6 +815,7 @@ function adopt_extras(def,ex)
 		{
 			for(var pp in ex)
 			{
+				if(!def[p]) def[p] = {};
 				def[p][pp]=(def[p][pp]||0)+ex[p][pp];
 			}
 		}
@@ -825,6 +826,7 @@ function adopt_extras(def,ex)
 				if(def_gives){
 					def_gives[1] += val
 				} else {
+					if(!def[p]) def[p] = [];
 					def[p].push([pp, val])
 				}
 			}
