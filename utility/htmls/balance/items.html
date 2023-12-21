@@ -101,8 +101,7 @@
 			}
 
 			tr td:nth-child(1),
-			tr td:nth-child(2),
-			tr td:nth-child(3) {
+			tr td:nth-child(2) {
 				position: sticky;
 				left: 0;
 				z-index: 9;
@@ -111,11 +110,6 @@
 			tr th:nth-child(2),
 			tr td:nth-child(2) {
 				left: 95px;
-			}
-
-			tr th:nth-child(3),
-			tr td:nth-child(3) {
-				left: 195px;
 			}
 
 			/* table tr:nth-child(odd) {
@@ -130,6 +124,10 @@
 		</style>
 		<script>
 			document.addEventListener("DOMContentLoaded", function (event) {
+				const character = {
+					ctype: "{{ctype}}",
+					map: "{{map}}",
+				};
 				// TODO: a table of items with relevant attributes for comparison
 				// TODO: Ability to edit an items data
 				// TODO: Filter by type e.g. head, weapon
@@ -265,29 +263,8 @@
 					rpiercing: 1,
 					crit: 1,
 					luck: 1,
+					gold: 1,
 				};
-				// for (const gItem of Object.values(G.items)) {
-				// 	for (const key in gItem) {
-				// 		if (property_ignore.includes(key)) {
-				// 			continue;
-				// 		}
-
-				// 		if (key === "upgrade") {
-				// 			continue;
-				// 		}
-
-				// 		if (key === "compound") {
-				// 			continue;
-				// 		}
-
-				// 		if (!property_columns[key]) {
-				// 			property_columns[key] = key;
-				// 		}
-
-				// 		// TODO: handle upgrade property and add them as well
-				// 	}
-				// }
-
 				// console.log(property_columns);
 
 				const items = Object.entries(G.items);
@@ -310,74 +287,88 @@
 				html += `<th>item</th>`;
 				html += `<th>Type</th>`;
 
-				for (const key in property_columns) {
-					html += `<th>${key}</th>`;
+				let maxLevel = 13;
+				for (let level = 0; level <= maxLevel; level++) {
+					html += `<th>+${level}</th>`;
 				}
 
+				// for (const key in property_columns) {
+				// 	html += `<th>${key}</th>`;
+				// }
+
 				html += "</tr>";
-				let maxLevel = 0;
 
-				// TODO: render levels as columns, each item as a row, and render relevant properties inside the matrix
-				// TODO: or render items as columns, levels as rows, depending on what is easiest to compare
-
-				// TODO: loop levels per item type?
-
-				// TODO: What attribute columns are interesting to compare?
 				for (const [itemKey, gItem] of items) {
-					// TODO: How to visualize each item and their upgraded version, could append it in the same column? perhaps a sub table?
 					const styles = "vertical-align: top; margin-right: 10px";
+
+					// const grade = calculate_item_grade(gItem, actual);
+
+					let name = gItem.name;
+
+					// Render item icon like in inventory
+					let actual = { name: itemKey };
+					let icon = item_container({ skin: gItem.skin }, actual);
+
+					html += "<tr>";
+					html += `<td title='${name}'><span style="display:inline-block; vertical-align:middle">${icon}</span> <span style="vertical-align:middle">${itemKey}</span></td>`;
+					html += `<td>${gItem.type}</td>`;
+
 					for (let level = 0; level <= maxLevel; level++) {
-						// html += "<tr>";
-						// html += `<td>${itemKey}</td>`;
-						// html += `<td>${gItem.name}</td>`;
-						// html += `<td>${gItem.type}</td>`;
+						if (!gItem.upgrade && !gItem.compound && level > 0) {
+							// empty td, because it's simple, could use colspan
+							html += `<td></td>`;
+							continue;
+						}
 
-						// html += "</tr>";
+						// compound only goes to 5
+						if (gItem.compound && level > 5) {
+							// empty td, because it's simple, could use colspan
+							html += `<td></td>`;
+							continue;
+						}
 
-						// TODO: ability to toggle if leveled items should be shown
-						// if (gItem.compound) maxLevel = 5;
-						// if (gItem.upgrade) maxLevel = 13;
+						if (level > 0) {
+							// TODO: look at render_item and extract it out
+							name = gItem.name + " +" + level;
+						}
+
+						const actual = { name: itemKey, level };
 
 						// calculate stats for upgrade
-						const actual = { name: itemKey, level };
 						const prop = calculate_item_properties(
 							actual,
 							// TODO: class & map can have an effect on stats
 							// { def: item, class: window.character && character.ctype, map: window.character && character.map },
-							{ def: gItem },
+							{ def: gItem, class: character.ctype, map: character.map },
 						);
 
-						const grade = calculate_item_grade(gItem, actual);
+						icon = item_container({ skin: gItem.skin }, actual);
 
-						let name = gItem.name;
-						if (level > 0) {
-							// TODO: look at render_item and extract it out
-							name += " +" + level;
-						}
-
-						// Render item icon like in inventory
-						const icon = item_container({ skin: gItem.skin, size: 25 }, actual);
-
-						html += "<tr>";
-						html += `<td title='${name}'><span style="display:inline-block; vertical-align:middle">${icon}</span> <span style="vertical-align:middle">${itemKey}</span></td>`;
-						html += `<td>${gItem.type}</td>`;
-
+						html += `<td title='${name}' style=\"vertical-align:top;\">`;
+						html += '<div style="display:flex; flex-direction: row">';
+						html += `<span style="display:inline-block; vertical-align:middle">${icon}</span> `;
+						// TODO: flex container with the properties
+						// html += `<span style="vertical-align:middle">${itemKey}</span>`;
+						html += '<div style="display:flex; flex-direction: column">';
 						for (const key in property_columns) {
 							let value = prop[key];
-							if (value == 0) value = "";
-							html += `<td>${value ?? ""}</td>`;
+							// if (value == 0) value = "";
+							if (value == 0) continue;
+							html += `<span>${key}: ${value ?? ""}</span>`;
 						}
-
-						html += "</tr>";
-
-						// html += render_item("html", {
-						// 	item: gItem,
-						// 	name: itemKey,
-						// 	styles: styles,
-						// 	actual: { name: itemKey, level },
-						// 	sell: 1,
-						// });
+						html += "</div>";
+						html += "</div>";
+						html += `</td>`;
 					}
+					html += "</tr>";
+
+					// html += render_item("html", {
+					// 	item: gItem,
+					// 	name: itemKey,
+					// 	styles: styles,
+					// 	actual: { name: itemKey, level },
+					// 	sell: 1,
+					// });
 
 					// render_item experiment, takes too much space
 					// // TODO: dynamic colspawn
