@@ -264,6 +264,12 @@
 					crit: 1,
 					luck: 1,
 					gold: 1,
+					mp_cost: 1,
+					mp_reduction: 1,
+					courage: 1,
+					mcourage: 1,
+					pcourage: 1,
+					aura: 1,
 				};
 				// console.log(property_columns);
 
@@ -353,7 +359,7 @@
 						for (const key in property_columns) {
 							let value = prop[key];
 							// if (value == 0) value = "";
-							if (value == 0) continue;
+							if (!value) continue;
 							html += `<span>${key}: ${value ?? ""}</span>`;
 						}
 						html += "</div>";
