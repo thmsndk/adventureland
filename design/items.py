@@ -2689,14 +2689,53 @@ accessories={
 	
 	# honey accesories
 	"honeyamulet":{
+		"name":"Amulet of Honey",
 		"set":"bee_0",
 		"type":"amulet",
 		"skin":"placeholder",
 		"hp":200,
+		# this works for items in aura_loop
+		"aura":"beekeeper_aura",
+		"attr0":1,
+		# citizen specific does not work for items
+		# "aura":{
+		# 	"gold":5,
+		# },
 		"compound":{
 			"hp":240,
+			"attr0":0.5,
 		},
-		"name":"Amulet of HP",
+		"rogue": {
+			"dex": 2,
+			"compound":{
+				"dex":1.5,
+			},
+		},
+		"ranger": {
+			"dex": 2,
+			"compound":{
+				"dex":1.5,
+			},
+		},
+		"mage": {
+			"int": 2,
+			"compound":{
+				"int":1.5,
+			},
+		},
+		"priest": {
+			"int": 2,
+			"compound":{
+				"int":1.5,
+			},
+		},
+		"warrior": {
+			"str": 2,
+			"compound":{
+				"str":1.5,
+			},
+		},
+		
 		"g":20000,
 	},
 	"honeyring":{
@@ -2751,6 +2790,7 @@ accessories={
 		"a":True,
 	},
 	"honeyearring":{
+		"name":"Honey Earring",
 		"set":"bee_0",
 		"type":"earring",
 		"skin":"placeholder",
@@ -2786,7 +2826,6 @@ accessories={
 				"str":1.5,
 			},
 		},
-		"name":"Honey Earring",
 		"g":14000,
 		# "grades":[2,5],
 	},
