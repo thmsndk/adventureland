@@ -1730,17 +1730,17 @@ armor={
 		"tier":1.5,
 		"type":"cape",
 		"skin":"placeholder",
-		# "armor":5,
-		# "resistance":4,
-		# "stat":2,
+		"armor":5,
+		"resistance":4,
+		"stat":2,
 		"name":"Honey Cape",
 		"bee_dungeon": {
 			#TODO: additional stats / upgrade inside bee_dungeon
 		},
 		"upgrade":{
-			# "armor":1.5,
-			# "resistance":1,
-			# "stat":0.10,
+			"armor":1.5,
+			"resistance":1,
+			"stat":0.10,
 		},
 		"grades":[0,8],
 		"g":10000,
@@ -1772,10 +1772,12 @@ armor={
 		# "stat": 1.5,
 		# "armor": 15,
 		# "resistance": 15,
+		"vit": 1,
 		"upgrade":{
 			# "stat": 1,
 			# "armor": 2.25,
 			# "resistance": 2.25
+			"vit": 1
 		},
 		"name":"Honey Chest",
 		"g":480000,
@@ -4406,6 +4408,20 @@ offhands={
 		"grades":[7,9],
 		"cx":{"accent":"#3D923A"},
 	},
+	"honeyshield":{
+		"type":"shield",
+		"tier":1.5,
+		"skin":"shield",
+		"armor":40,
+		"resistance":15,
+		"upgrade":{
+			"armor":12,
+			"resistance":7,
+		},
+		"name":"Shield",
+		"g":24000,
+		"grades":[4,8],
+	},
 	"wbook0":{
 		"type":"source",
 		"tier":1,
@@ -4479,6 +4495,22 @@ offhands={
 		"g":24000,
 		"grades":[3,7],
 	},
+	"honeysource":{
+		"type":"source",
+		"tier":1.5,
+		"skin":"wbook0",
+		"int":8,
+		"compound":{
+			"int":6,
+		},
+		"name":"Book of Honey",
+		"g":12000,
+		"grades":[4,5],
+		"cx":{
+			"scale":0.5,
+			"extension":True,
+		}
+	},
 	"t2quiver":{
 		"type":"quiver",
 		"tier":2,
@@ -4496,6 +4528,22 @@ offhands={
 		"g":960000,
 		"grades":[0,4],
 		"a":True,
+	},
+	"honeyquiver":{
+		"type":"quiver",
+		"tier":1.5,
+		"skin":"quiver", #TODO: a honeyjar with arrows in it
+		"dex":2,
+		"range":20,
+		"armor":10,
+		"upgrade":{
+			"dex":1.5,
+			"armor":2,
+			"range":3.5,
+		},
+		"name":"Honey Quiver",
+		"g":24000,
+		"grades":[3,7],
 	},
 }
 
@@ -6630,10 +6678,14 @@ orbs={
 		"str":1,
 		"int":1,
 		"dex":1,
+		"vit":1,
+		"for":1,
 		"compound":{
 			"str":0.5,
 			"int":0.5,
 			"dex":0.5,
+			"vit":0.5,
+			"for":0.5,
 		},
 		"name":"Honey Orb",
 		"g":30000,
