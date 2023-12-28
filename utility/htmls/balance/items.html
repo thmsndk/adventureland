@@ -270,6 +270,8 @@
 					mcourage: 1,
 					pcourage: 1,
 					aura: 1,
+					tier: 1,
+					stat: 1,
 				};
 				// console.log(property_columns);
 
@@ -313,7 +315,7 @@
 
 					// Render item icon like in inventory
 					let actual = { name: itemKey };
-					let icon = item_container({ skin: gItem.skin }, actual);
+					let icon = item_container({ skin: gItem.skin, onclick: `render_item_info('${itemKey}')` }, actual);
 
 					html += "<tr>";
 					html += `<td title='${name}'><span style="display:inline-block; vertical-align:middle">${icon}</span> <span style="vertical-align:middle">${itemKey}</span></td>`;
@@ -348,7 +350,7 @@
 							{ def: gItem, class: character.ctype, map: character.map },
 						);
 
-						icon = item_container({ skin: gItem.skin }, actual);
+						icon = item_container({ skin: gItem.skin, onclick: `render_item_info('${itemKey}')` }, actual);
 
 						html += `<td title='${name}' style=\"vertical-align:top;\">`;
 						html += '<div style="display:flex; flex-direction: row">';
