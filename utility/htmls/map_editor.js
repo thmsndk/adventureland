@@ -1040,7 +1040,6 @@ function export_map(params) {
 }
 
 function show_import_map() {
-	// TODO: select a file
 	// TODO: paste json
 
 	function onImportMapJsonChange(event) {
@@ -1050,11 +1049,12 @@ function show_import_map() {
 	}
 
 	function onReaderLoad(event) {
-		$("#import_map_json").text(event.target.result);
+		$("#import_map_json").val(event.target.result);
 	}
 
 	function import_map() {
-		var json = JSON.parse($("#import_map_json").text());
+		const text = $("#import_map_json").val();
+		const json = JSON.parse(text);
 		// console.log(json);
 		for (const key in json) {
 			const value = json[key];
