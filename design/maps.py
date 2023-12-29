@@ -1696,20 +1696,24 @@ maps={
 		],
 		"spawns":[
 			# spawn points need to be 12px away from lines, -y is upwards
-			[-214, -359], 
+			[0, 0], 
 		],
 		"on_death":["main",19], # log near mansion
 		"on_exit":["main",19], # log near mansion
 		"doors":[
-			[-214, -359, 10, 10, "main", 19, 0], # log near mansion
+			[0, 0, 10, 10, "main", 19, 0], # log near mansion
 		],
 		# "article": "dungeon-crypt", # Unsure if this works
 		# we end up calling open_guide that calls load_article
 		"quirks":[
 			# [-192,-1309,48,64,"log","Is this a gateway?"],
-			[-214, -359,0,0,"info","bee_dungeon"], # TODO: define range? can we make the rendering in render_server dynamic, so we don't have to code something there to show this quirk?
+			[0,0,0,0,"info","bee_dungeon"], # TODO: define range? can we make the rendering in render_server dynamic, so we don't have to code something there to show this quirk?
 		],
 		# TODO a info quirk at the entrance that tells about the instance
+		# TODO: animatable objects at the spawn locations that spawning can trigger (Make bee engravings glow up X seconds before spawning?, perhaps glow the amount that will spawn? this will only be a visual though, should the player get this info via code as well?)
+		# "animatables":{
+		# 	"the_door":{"x":888,"y":-672,"position":"door0"},
+		# },
 		
 	},
 
