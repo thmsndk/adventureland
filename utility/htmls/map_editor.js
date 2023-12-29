@@ -1062,6 +1062,7 @@ function show_import_map() {
 		}
 
 		$("#toprightcorner").hide();
+		$("#toprightcorner").html("");
 
 		redraw_map();
 	}
