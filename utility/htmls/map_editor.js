@@ -1143,6 +1143,7 @@ function redraw_map() {
 	to_delete = [];
 	deleted = false;
 
+	if (map_data.placements) {
 	for (var i = 0; i < map_data.placements.length; i++) {
 		var tile = map_data.placements[i];
 		try {
@@ -1152,6 +1153,7 @@ function redraw_map() {
 			console.log("Faulty tile detected + deleted");
 			deleted = true;
 			to_delete.push(i);
+			}
 		}
 	}
 
