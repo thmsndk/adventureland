@@ -123,6 +123,12 @@
 			} */
 		</style>
 		<script>
+			function hide_row(element) {
+				console.log("parent", this, $(element).closest("tr"));
+				$(element).closest("tr").hide();
+				return false;
+			}
+
 			document.addEventListener("DOMContentLoaded", function (event) {
 				const character = {
 					ctype: "{{ctype}}",
@@ -275,17 +281,21 @@
 				};
 				// console.log(property_columns);
 
-				const items = Object.entries(G.items);
+				const items = Object.entries(G.items).sort(([aKey, aItem], [bKey, bItem]) => {
+					// Sorting by multiple properties (e.g., wtype and value)
+					if (aItem.type === bItem.type) {
+						if (aItem.type === "weapon") {
+							// sort by wtype
+							return aItem.wtype.localeCompare(bItem.wtype);
+						}
 
-				// Sorting by multiple properties (e.g., wtype and value)
-				items.sort(([aKey, aItem], [bKey, bItem]) => {
-					// TODO: sort by wtype
-					// if (a.type === b.type) {
-					// 	return a.value - b.value;
-					// }
+						// Sort by tier ASC
+						return (aItem.tier ?? 0) - (bItem.tier ?? 0);
+					}
 
 					// TODO: sort by name or key
-					return aItem.type > bItem.type ? 1 : -1;
+					// return aItem.type > bItem.type ? 1 : -1;
+					return aItem.type.localeCompare(bItem.type);
 				});
 
 				let html = "";
@@ -293,7 +303,6 @@
 				html += "<table class='datatable sticky-header'>";
 				html += "<tr>";
 				html += `<th>item</th>`;
-				html += `<th>Type</th>`;
 
 				let maxLevel = 13;
 				for (let level = 0; level <= maxLevel; level++) {
@@ -318,8 +327,22 @@
 					let icon = item_container({ skin: gItem.skin, onclick: `render_item_info('${itemKey}')` }, actual);
 
 					html += "<tr>";
-					html += `<td title='${name}'><span style="display:inline-block; vertical-align:middle">${icon}</span> <span style="vertical-align:middle">${itemKey}</span></td>`;
-					html += `<td>${gItem.type}</td>`;
+					html += `<td title='${name}'>`;
+					html += '<div style="display:flex; flex-direction: row">';
+					html += '<div style="display:flex; flex-direction: column">';
+					html += `<span style="display:inline-block; vertical-align:middle">${icon}</span>`;
+					html += "</div>";
+					html += '<div style="display:flex; flex-direction: column">';
+					html += ` <span>${gItem.type} ${gItem.wtype ?? ""}</span>`;
+					html += ` <span>${itemKey}</span>`;
+					if (gItem.tier) {
+						html += ` <span>Tier: ${gItem.tier}</span>`;
+					}
+					html += ` <a onclick="hide_row(this);">Hide</a>`;
+					html += "</div>";
+
+					html += "</div>";
+					html += `</td>`;
 
 					for (let level = 0; level <= maxLevel; level++) {
 						if (!gItem.upgrade && !gItem.compound && level > 0) {
