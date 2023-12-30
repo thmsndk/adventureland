@@ -286,7 +286,9 @@
 					if (aItem.type === bItem.type) {
 						if (aItem.type === "weapon") {
 							// sort by wtype
-							return aItem.wtype.localeCompare(bItem.wtype);
+							if (aItem.wtype !== bItem.wtype) {
+								return aItem.wtype.localeCompare(bItem.wtype);
+							}
 						}
 
 						// Sort by tier ASC
