@@ -318,6 +318,11 @@
 				html += "</tr>";
 
 				for (const [itemKey, gItem] of items) {
+					// skip materials, keys, quest?
+					if (["material", "dungeon_key", "quest", "box", "chrysalis", "cosmetics"].includes(gItem.type)) {
+						continue;
+					}
+
 					const styles = "vertical-align: top; margin-right: 10px";
 
 					// const grade = calculate_item_grade(gItem, actual);
