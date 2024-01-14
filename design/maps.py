@@ -1684,24 +1684,28 @@ maps={
 		},
 		"name":"BEEginner Dungeon",
 		"npcs":[
-			{"id":"beekeeper","position":[0, 30]},
+			{"id":"beekeeper","position":[32, 0]},
 		],
 		"monsters":[
 			# {"type":"bee","boundary":[10,-10, 0,0],"count":1},
-			{"type":"bee_queen","boundary":[-22, -898, 148.5, -764],"count":1, "roam": True},
-			{"type":"bee_worker","boundary":[-168.5, -391.5, 84.5, -331],"count":5},
-			{"type":"bee_drone","boundary":[-168.5, -391.5, 84.5, -331],"count":1},
+			{"type":"bee_queen","boundary":[224, -400, 320, -304],"count":1, "roam": True},
+			# fill the entire hive with worker bees by default
+			{"type":"bee_worker","boundary":[32, -500, 550, -150],"rage":[32, -500, 550, -150], "count":20, "roam": True},
+			# entrance spawn
+			{"type":"bee_worker","boundary":[64, -48, 550, 48],"rage":[64, -64, 550, 64],"count":5, "roam": True},
+			{"type":"bee_drone","boundary":[32, -48, 64, 48],"count":2},
 			# entrance guard
-			{"type":"bee_worker","boundary":[-26.5, -496, 86, -399.5],"count":5},
+			{"type":"bee_worker","boundary":[224, -208, 320, -64], "rage":[208, -208, 336, -64],"count":10},
+			
 		],
 		"spawns":[
 			# spawn points need to be 12px away from lines, -y is upwards
-			[0, 0], 
+			[522, -731], # player_spawn
 		],
 		"on_death":["main",19], # log near mansion
 		"on_exit":["main",19], # log near mansion
 		"doors":[
-			[0, 0, 10, 10, "main", 19, 0], # log near mansion
+			[522, -731, 10, 10, "main", 19, 0], # log near mansion
 		],
 		# "article": "dungeon-crypt", # Unsure if this works
 		# we end up calling open_guide that calls load_article
