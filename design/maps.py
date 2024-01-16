@@ -1692,15 +1692,15 @@ maps={
 			# fill the entire hive with worker bees by default
 			{"type":"bee_worker","boundary":[32, -500, 550, -150],"rage":[32, -500, 550, -150], "count":20, "roam": True},
 			# entrance spawn
-			{"type":"bee_worker","boundary":[64, -48, 550, 48],"rage":[64, -64, 550, 64],"count":5, "roam": True},
-			{"type":"bee_drone","boundary":[32, -48, 64, 48],"count":2},
+			{"type":"bee_worker","boundary":[564, 369, 1245, 468],"rage":[564, 369, 1245, 468],"count":10, "roam": True},
+			{"type":"bee_drone","boundary":[1223, 370.5, 1290.5, 469],"count":2},
 			# entrance guard
-			{"type":"bee_worker","boundary":[224, -208, 320, -64], "rage":[208, -208, 336, -64],"count":10},
+			{"type":"bee_worker","boundary":[181, -45, 363, 157], "rage":[181, -45, 363, 157],"count":10},
 			
 		],
 		"spawns":[
 			# spawn points need to be 12px away from lines, -y is upwards
-			[522, -731], # player_spawn
+			[1406, 416], # player_spawn
 		],
 		"on_death":["main",19], # log near mansion
 		"on_exit":["main",19], # log near mansion
