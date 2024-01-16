@@ -49,8 +49,8 @@ monsters={
 	},
 	"bee_queen":{
 		"name":"Queen Bee",
-		"speed":6,"hp":20000,"xp":10000, "gold":40,
-		"attack":0,"damage_type":"physical","range":1,"frequency":0.5,
+		"speed":6,"hp":60000,"xp":10000, "gold":400,
+		"attack":40,"damage_type":"physical","range":1,"frequency":1,
 		# "grow": True # can be defined in map.monsters respawns monsters untill the .count property on the map.monsters entry is reached
 		# respawn > 200 respawns the monster 200 * 720ms..1200ms = 144.000s..240.000s = 2.4m .. 4m after death
 		# respawn <= 200 respawns the monster 200 * 1000 + 0ms..900ms  = 200000ms .. 200900ms = 200s .. 200.9s = 3.3m .. 3,348m
@@ -62,7 +62,9 @@ monsters={
 		
 		"skin":"bee_queen", 
 		"size":1.5,
-		"phresistance":60,
+		"phresistance": 60,
+		"armor":50,
+		"resistance":50,
 		"achievements":[
 			# [10,"stat","hp",5],
 			[50,"stat","armor",5],
@@ -77,7 +79,7 @@ monsters={
 			# TODO: don't despawn theese mobs if the player is "gone" and stop_pursuit is called
 			# instead make them swarm a new target?
 			# TODO: Make the UI show the mechanics?
-			[8000, "bee_worker", {
+			[6500, "bee_worker", {
 				# This is the default behaviour on crypt or crabxx, spawn monsters on players in 400 range
 				# "spawnAtPlayer": [400] 
 
@@ -86,10 +88,10 @@ monsters={
 				# 	range to player for spawning if range is false, range is ignored
 				# TODO: find some points that are near larvae in walls / ground, this will give players time to react to being terrifed.
 				"spawnPoints": [
-					[[-237, -941.5, -134.5, -871], False],
-					[[244.5, -949, 366.5, -883], False],
-					[[-245, -561.5, -95.5, -497], False],
-					[[147.5, -567.5, 370, -501.5], False],
+					[[16, -272, 128, -160], False],
+					[[416, -272, 528, -160], False],
+					[[16, -544, 128, -432], False],
+					[[416, -544, 528, -432], False],
 					], 
 				"spawnAmount" : [0, 2],
 				# "boundary": [[-44.5, -419.5, 40.5, -364]], # TODO: this could limit where they can move
@@ -106,13 +108,17 @@ monsters={
 	"bee_worker":{
 		"name":"Worker Bee",
 		"skin": "bee",
-		"speed":12,"hp":800,"xp":10,"gold":40,
-		"attack":12,"damage_type":"physical","range":5,"frequency":0.5,
+		"speed":40,"hp":2500,"xp":10,"gold":40,
+		"attack":20,"damage_type":"physical","range":5,"frequency":1,
 		"respawn":-1, # should not respawn on death
-		"roam":True, # Roams around the map
-		"aggro":1,"aa":1,
-		"rage":1, # never disengage target
+		# "roam":True, # Roams around the map
+		"aggro":1.2, #"aggro": 0.5, // 50% chance to attack on sight
+		"aa":1,
+		"rage":1.5, # "rage": 0.5, // 50% chance to target the player on attack
+		# never disengage target, could also be a tuple defining an area, see create_map it's weird
 		"phresistance":60,
+		"armor":25,
+		"resistance":25,
 		#TODO: Poison sting ability. Has a chance to kill bee
 		"explanation":"Worker bees are females that do not reproduce. They perform various tasks such as foraging for nectar and pollen, tending to the queen and developing brood, cleaning and defending the hive, and producing beeswax. Worker bees are the most numerous bees in a hive.",
 		# Elena is a supporter, this makes the monster.focus property be set to another humanoid target at 300 distance
@@ -127,10 +133,10 @@ monsters={
 	"bee_drone":{
 		"name":"Drone Bee",
 		"skin": "bee",
-		"speed":12,"hp":300,"xp":15,"gold":40,
+		"speed":20,"hp":300,"xp":15,"gold":40,
 		"attack":0,"damage_type":"physical","range":1,"frequency":0.5,
 		"respawn":-1, # should not respawn on death
-		"roam":True, # Roams around the map
+		# "roam":True, # Roams around the map
 		
 		"aggro":1,"aa":1,
 		"rage":1, # never disengage target
