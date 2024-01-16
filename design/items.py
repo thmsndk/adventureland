@@ -4498,7 +4498,7 @@ offhands={
 	"honeysource":{
 		"type":"source",
 		"tier":1.5,
-		"skin":"wbook0",
+		"skin":"placeholder",
 		"int":8,
 		"compound":{
 			"int":6,
@@ -4532,7 +4532,7 @@ offhands={
 	"honeyquiver":{
 		"type":"quiver",
 		"tier":1.5,
-		"skin":"quiver", #TODO: a honeyjar with arrows in it
+		"skin":"placeholder", #TODO: a honeyjar with arrows in it
 		"dex":2,
 		"range":20,
 		"armor":10,
