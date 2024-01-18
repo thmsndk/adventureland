@@ -282,7 +282,8 @@ def security_threat(request,domain):
 
 	referer=urlparse(referer).hostname
 	if not referer.endswith(domain.domain):
-		request.response.set_data("Threat detected")
+		logging.warn("\n\nThreat Detected unexpected hostname %s != %s\n"%(referer, domain.domain))
+		self.response.out.write("Threat detected")
 		return True
 	
 	# if is_production and domain.cf_always_on and not is_cloudflare(self):
