@@ -145,7 +145,7 @@
 		[1472, 352, 512]
 	],
 	"rectangles": {
-		"hive_entrance_spawn_drone": [1223, 370.5, 1290.5, 469],
+		"hive_entrance_spawn_drone": [1248, 368, 1280, 496],
 		"player_spawn_vision_700_500": [1056, 166, 1756, 666],
 		"queen_entrance_guard_spawn": [181, -45.5, 363.5, 157.5],
 		"spawn_minions4": [416, -544, 528, -432],
@@ -153,7 +153,11 @@
 		"spawn_minions3": [16, -544, 128, -432],
 		"spawn_minions1": [16, -272, 128, -160],
 		"queen": [224, -400, 320, -304],
-		"hive_entrance_spawn_worker": [564, 369.5, 1245, 468.5]
+		"hive_entrance_spawn_worker": [1072, 368, 1152, 496],
+		"hive_entrance_spawn_worker1": [944, 368, 1024, 496],
+		"hive_entrance_spawn_worker2": [816, 368, 896, 496],
+		"hive_entrance_spawn_worker3": [688, 368, 768, 496],
+		"hive_entrance_spawn_worker4": [560, 368, 640, 496]
 	},
 	"max_y": 576,
 	"max_x": 1488,
