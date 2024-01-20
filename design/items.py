@@ -1729,7 +1729,7 @@ armor={
 		"set":"bee_0",
 		"tier":1.5,
 		"type":"cape",
-		"skin":"placeholder",
+		"skin":"honeycape",
 		"armor":5,
 		"resistance":4,
 		"stat":2,
@@ -1749,7 +1749,7 @@ armor={
 		"set":"bee_0",
 		"tier":1.5,
 		"type":"helmet",
-		"skin":"placeholder",
+		"skin":"honeyhelmet",
 		"scroll":True,
 		# "stat": 1.5,
 		# "armor": 15,
@@ -1767,7 +1767,7 @@ armor={
 		"set":"bee_0",
 		"tier":1.5,
 		"type":"chest",
-		"skin":"placeholder",
+		"skin":"honeychest",
 		"scroll":True,
 		# "stat": 1.5,
 		# "armor": 15,
@@ -1787,7 +1787,7 @@ armor={
 		"set":"bee_0",
 		"tier":1.5,
 		"type":"pants",
-		"skin":"placeholder",
+		"skin":"honeypants",
 		"scroll":True,
 		# "stat": 1.5,
 		# "armor": 15,
@@ -1805,7 +1805,7 @@ armor={
 		"set":"bee_0",
 		"tier":1.5,
 		"type":"shoes",
-		"skin":"placeholder",
+		"skin":"honeyboots",
 		"scroll":True,
 		# "stat": 1.5,
 		# "armor": 15,
@@ -1826,7 +1826,7 @@ armor={
 		"set":"bee_0",
 		"tier":1.5,
 		"type":"gloves",
-		"skin":"placeholder",
+		"skin":"honeygloves",
 		"scroll":True,
 		"upgrade":{
 		},
@@ -2694,7 +2694,7 @@ accessories={
 		"name":"Amulet of Honey",
 		"set":"bee_0",
 		"type":"amulet",
-		"skin":"placeholder",
+		"skin":"honeyamulet",
 		"hp":200,
 		# this works for items in aura_loop
 		"aura":"beekeeper_aura",
@@ -2743,7 +2743,7 @@ accessories={
 	"honeyring":{
 		"type":"ring",
 		"name":"Honey Ring",
-		"skin":"placeholder",
+		"skin":"honeyring",
 		"set":"bee_0",
 		"apiercing":1,
 		"rpiercing":1,
@@ -2795,7 +2795,7 @@ accessories={
 		"name":"Honey Earring",
 		"set":"bee_0",
 		"type":"earring",
-		"skin":"placeholder",
+		"skin":"honeyearring",
 		"compound":{
 		},
 		"rogue": {
@@ -4411,7 +4411,7 @@ offhands={
 	"honeyshield":{
 		"type":"shield",
 		"tier":1.5,
-		"skin":"shield",
+		"skin":"honeyshield",
 		"armor":40,
 		"resistance":15,
 		"upgrade":{
@@ -4498,7 +4498,7 @@ offhands={
 	"honeysource":{
 		"type":"source",
 		"tier":1.5,
-		"skin":"placeholder",
+		"skin":"honeysource",
 		"int":8,
 		"compound":{
 			"int":6,
@@ -4532,7 +4532,7 @@ offhands={
 	"honeyquiver":{
 		"type":"quiver",
 		"tier":1.5,
-		"skin":"placeholder", #TODO: a honeyjar with arrows in it
+		"skin":"honeyquiver",
 		"dex":2,
 		"range":20,
 		"armor":10,
@@ -5012,7 +5012,7 @@ pots={
 	},
 	"honeypot":{
 		"type":"pot",
-		"skin":"placeholder",
+		"skin":"honeypot",
 		"gives":[["hp",150],["mp",250]],
 		"bee_dungeon": {
 			"gives":[["hp",100],["mp",150]],
@@ -6161,9 +6161,9 @@ quest={
 	},
 	"beekey":{
 		"type":"dungeon_key",
-		"skin":"placeholder",
+		"skin":"beekey",
 		"name":"The Bee Key",
-		"opens":"test", #property seems to have no effect, not used, seems more like a note
+		"opens":"bee_dungeon", #property seems to have no effect, not used, seems more like a note
 		#"ignore":True,
 		"g":500,
 		"explanation":"A key, imbued with magical energy. It smells strangely like a tree log",
@@ -6674,7 +6674,7 @@ orbs={
 	"honeyorb":{
 		"set": "bee_0",
 		"type":"orb",
-		"skin":"placeholder",
+		"skin":"honeyorb",
 		"str":1,
 		"int":1,
 		"dex":1,
@@ -7057,7 +7057,7 @@ elixirs={
 	"honeyelixir": {
 		"set":"bee_0",
 		"type":"elixir",
-		"skin": "placeholder",
+		"skin": "honeyelixir",
 		"name": "Honey Elixir",
 		"explanation": "A strange tingly feeling, you feel a sudden rush.",
 		"s": 100,
