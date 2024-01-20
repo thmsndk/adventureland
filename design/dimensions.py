@@ -1002,4 +1002,25 @@ positions={
 	#"claw":["",13,42],
 	
 	"friendtoken":["",15,33],
+    
+	# bee_dungeon items
+    
+    "honeyhelmet":["pack_20_bee_items",4,0],
+    "honeychest":["pack_20_bee_items",4,1],
+    "honeypants":["pack_20_bee_items",4,2],
+    "honeyboots":["pack_20_bee_items",4,3],
+    "honeyearring":["pack_20_bee_items",4,4],
+    "honeyring":["pack_20_bee_items",4,5],
+    "honeyamulet":["pack_20_bee_items",4,6],
+    "honeycape":["pack_20_bee_items",4,7],
+    "honeyorb":["pack_20_bee_items",4,8],
+    "honeygloves":["pack_20_bee_items",4,9],
+    "honeyquiver":["pack_20_bee_items",4,10],
+    "honeysource":["pack_20_bee_items",4,11],
+    "honeyshield":["pack_20_bee_items",4,12],
+    
+	"beekey":["pack_20_bee_items",1,18],
+    "honeypot":["pack_20_bee_items",0,20],
+    "honeyelixir":["pack_20_bee_items",1,19], 
+    
 }

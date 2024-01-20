@@ -1130,6 +1130,13 @@ imagesets={
 		"file":"/images/tiles/items/community.png",
 		"load":True,
 	},
+	"pack_20_bee_items":{
+		"size":20,
+		"rows":21,
+		"columns":9,
+		"file":"/images/tiles/items/pack_20_bee_items.png",
+		# "load":True,
+	},
 }
 tilesets={
 	"castle":{"file":"/images/tiles/map/castle.png?v=2"},
