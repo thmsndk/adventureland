@@ -49,13 +49,13 @@ monsters={
 	},
 	"bee_queen":{
 		"name":"Queen Bee",
-		"speed":6,"hp":600000,"xp":10000, "gold":400,
-		"attack":40,"damage_type":"physical","range":1,"frequency":1,
+		"speed":30,"hp":600000,"xp":10000, "gold":400,
+		"attack":100,"damage_type":"physical","range":25,"frequency":1,
 		# "grow": True # can be defined in map.monsters respawns monsters untill the .count property on the map.monsters entry is reached
 		# respawn > 200 respawns the monster 200 * 720ms..1200ms = 144.000s..240.000s = 2.4m .. 4m after death
 		# respawn <= 200 respawns the monster 200 * 1000 + 0ms..900ms  = 200000ms .. 200900ms = 200s .. 200.9s = 3.3m .. 3,348m
 		"respawn":-1, # should not respawn on death
-		"roam":True, # Roams around the map
+		# "roam":True, # Roams around the map
 		
 		"aggro":1,
 		"aa":1,
@@ -88,6 +88,8 @@ monsters={
 				# 	point is a list of boundary points where the monsters can spawn, 
 				# 	range to player for spawning if range is false, range is ignored
 				# TODO: find some points that are near larvae in walls / ground, this will give players time to react to being terrifed.
+				# the player could pull the boss away, should we spawn monsters at the player then?
+				# could also give spawnAtPlayer a spawn range so it spawns at that range instead.
 				"spawnPoints": [
 					[[16, -272, 128, -160], False],
 					[[416, -272, 528, -160], False],
@@ -110,7 +112,7 @@ monsters={
 		"name":"Worker Bee",
 		"skin": "bee",
 		"speed":40,"hp":5500,"xp":10,"gold":40,
-		"attack":20,"damage_type":"physical","range":5,"frequency":1,
+		"attack":200,"damage_type":"physical","range":20,"frequency":1,
 		"respawn":-1, # should not respawn on death
 		# "roam":True, # Roams around the map
 		"aggro":1.2, #"aggro": 0.5, // 50% chance to attack on sight
