@@ -81,6 +81,8 @@ monsters={
 			# instead make them swarm a new target?
 			# TODO: Make the UI show the mechanics?
 			[5000, "bee_worker", {
+				# TODO: ability to define a maxSpawnTime, so it could be random in a range.
+
 				# This is the default behaviour on crypt or crabxx, spawn monsters on players in 400 range
 				# "spawnAtPlayer": [400] 
 

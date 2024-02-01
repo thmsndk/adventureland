@@ -1,12 +1,14 @@
 drops.py is responsible for the drops
 you can configure
 
-- map specific drops
+- map specific drops is an additional drop compared to the monster specific drop see server.js -> drop_something
 - monster specific drops
 
 the configuration is a tuple with a chance and an item. the item can also be a reference to a list of other items.
+[chance, open, "dropKey"]
+[chance, "itemKey"]
 
-You can also bundle drops
+You can also bundle drops and refernce them
 
 server.js drop_something loops the following and runs drop_item_logic for each
 
