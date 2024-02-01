@@ -122,15 +122,15 @@ drops={
 		"bee_dungeon": [
 			# [chance, open, "dropKey"]
 			# [chance, "itemKey"]
-			# map specific drops appears to have a random chance depending on configuration in hardcore mode. see server_functions.js -> sprocess_game_data
 			# map specific drops is an additional drop compared to the monster specific drop see server.js -> drop_something
+			# map specific drops appears to have a random chance depending on configuration in hardcore mode. see server_functions.js -> sprocess_game_data
 			[1.0/50,"beewings"],
 			# TODO: honey? pollen? other misc items?
 			[1.0/10,"bee_honey"],
 			[1.0/10,"bee_propolis"],
 			[1.0/10,"bee_pollen"],
 			[1.0/50,"honeypot"],
-			[1.0/500,"open", "beeset"], # TODO: We could also type the drops in specifically?
+			# [1.0/600000,"open", "beeset"], # TODO: We could also type the drops in specifically?
 			
 		]
 	},
@@ -161,7 +161,7 @@ drops={
 		"bee":[
 			[1.0/100,"beewings"],
 			[1.0/6000,"stinger"],
-			[1.0/2500,"beekey"],
+			[1.0/10000,"beekey"],
 		],
 		"bee_queen":[
 			# [chance, open, "dropKey"]
