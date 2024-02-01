@@ -42,7 +42,9 @@ RUN apt-get install libxml2-dev libxslt-dev
 # Imported, not used in config.py: from lxml import etree as lxmletree
 RUN pip install lxml
 
-RUN pip install flask -t lib
+RUN pip install flask -t adventureland/lib
+# TODO: should probably install requirements instead, in case other requirements are added
+# pip install -t lib -r requirements.txt
 
 # why are we copying the current location into adventureland?
 # make the AL directory, and enter it
