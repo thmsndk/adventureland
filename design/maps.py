@@ -1687,10 +1687,12 @@ maps={
 			{"id":"beekeeper","position":[1406, 416]},
 		],
 		"monsters":[
-			# {"type":"bee","boundary":[10,-10, 0,0],"count":1},
+			
 			{"type":"bee_queen","boundary":[224, -400, 320, -304],"count":1},
-			# fill the entire hive with worker bees by default, make a rage zone around the queen, then the queen can't roam
-			{"type":"bee_worker","boundary":[32, -500, 550, -150],"rage":[224, -400, 320, -304], "count":20, "roam": True},
+			# fill the entire hive with worker bees by default, 
+			# make a rage zone around the queen, to simulate bees going to protect the qeen then the queen can't roam
+			# TODO: more zones? so rage can trigger more often?
+			{"type":"bee_worker","boundary":[32, -500, 550, -150],"rage":[160, -464, 384, -240], "count":20, "roam": True},
 			# entrance spawn
 			# 4 zones 10x8 tiles (16) in size for worker bees
 			# TODO: should the zones overlap?
@@ -1704,7 +1706,13 @@ maps={
 			{"type":"bee_drone","boundary":[1248, 368, 1280, 496],"count":2},
 			# entrance guard
 			# we need multiple spawn / rage zones, so only a certain set of bees will attack
-			{"type":"bee_worker","boundary":[181, -45, 363, 157], "rage":[181, -45, 363, 157],"count":10},
+			# 5 spawn/rage zones with 3 bees on guard (not roaming)
+			{"type":"bee_worker","boundary":[176, -45, 368, -13], "rage":[176, -45, 368, -13],"count":3},
+			{"type":"bee_worker","boundary":[176, 3, 368, 35], "rage":[176, 3, 368, 35],"count":3},
+			{"type":"bee_worker","boundary":[176, 51, 368, 83], "rage":[176, 51, 368, 83],"count":3},
+			{"type":"bee_worker","boundary":[176, 96, 368, 131], "rage":[176, 96, 368, 131],"count":3},
+			{"type":"bee_worker","boundary":[176, 144, 368, 179], "rage":[176, 144, 368, 179],"count":3},
+			# {"type":"bee_worker","boundary":[181, -45, 363, 12], "rage":[181, -45, 363, 157],"count":10},
 			
 		],
 		"spawns":[
