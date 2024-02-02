@@ -153,6 +153,13 @@ def serve_selector(name=""):
 
 #TODO: Re-implement uploaders at uploaders.py
 
+@app.route('/admin/balance/items')
+@ndb.toplevel
+def serve_balance_items():
+	domain=gdi(request)
+	ctype, map=gdmul(request,"ctype", "map")
+	return whtml(request,"utility/htmls/balance/items.html",domain=domain, ctype=ctype, map=map)
+
 @app.route('/admin/items')
 @app.route('/communityitems') #NOTICE: << Publicly available at /communityitems! >> [10/10/16]
 def serve_items():
@@ -162,13 +169,6 @@ def serve_items():
 	#	if not user or user.k()+"" not in [ellian_id,hello_id]: return
 	mode,items.types=gdmul(request,"mode","items"."types")
 	return whtml(request,"utility/htmls/items.html",domain=domain,mode=mode,items=items, types=types)
-
-@app.route('/admin/balance/items')
-@ndb.toplevel
-def serve_balance_items():
-	domain=gdi(request)
-	ctype, map=gdmul(self,"ctype", "map")
-	return whtml(self,"utility/htmls/balance/items.html", domain=domain, ctype=ctype, map=map)
 
 @app.route('/admin/backups/<m>/<id>')
 @ndb.toplevel
