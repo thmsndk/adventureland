@@ -12294,24 +12294,15 @@ function update_instance(instance) {
 		if (monster.dead) {
 			continue;
 		}
-		if (G.monsters[monster.type].supporter && !monster.focus) {
-			for (var mid in instance.monsters) {
-				var m = instance.monsters[mid];
-				if (
-					!m.focus &&
-					m != monster &&
-					G.monsters[monster.type].humanoid == G.monsters[m.type].humanoid &&
-					distance(m, monster) < 300
-				) {
-					monster.focus = m.id;
+
+		if (update_instance_monster_supporter(monster, instance)) {
 					change = true;
-					break;
 				}
-			}
-		}
+
 		if (change) {
 			calculate_monster_stats(monster);
 		}
+
 		if (
 			!monster.pet &&
 			!monster.trap &&
@@ -13114,6 +13105,59 @@ function update_instance(instance) {
 	}
 	for (var id in instance.observers) {
 		send_xy_updates(instance.observers[id], to_push);
+	}
+}
+
+/**
+ * Handles assigning .focus to monsters with .supporter
+ * @param {*} monster
+ * @param {*} instance
+ * @returns true if calculate stats / speed needs to be updated due to having .focus
+ */
+function update_instance_monster_supporter(monster, instance) {
+	const gMonster = G.monsters[monster.type];
+	const supporter = gMonster.supporter;
+	if (supporter && !monster.focus) {
+		for (const mid in instance.monsters) {
+			const otherMonster = instance.monsters[mid];
+			let validForSupport = false;
+			if (supporter === true) {
+				// Backwards combatability for the previous supporter config just being a bool for Elena
+				const isBothHumanoid = gMonster.humanoid == G.monsters[otherMonster.type].humanoid;
+				validForSupport = isBothHumanoid && distance(otherMonster, monster) < 300;
+			} else if (supporter instanceof Array) {
+				// An array of tuples [attribute|monsterType,range|False]
+				for (const [arg0, range] of supporter) {
+					const isArg0MonsterType = G.monsters[arg0];
+					const hasGAttribute = G.monsters[otherMonster.type][arg0];
+
+					if (isArg0MonsterType && arg0 !== otherMonster.type) {
+						continue;
+					}
+
+					if (!isArg0MonsterType && !hasGAttribute) {
+						continue;
+					}
+
+					const inRange = range > 0 ? distance(otherMonster, monster) < range : true;
+					if (!inRange) {
+						continue;
+					}
+
+					validForSupport = true;
+					break;
+				}
+			}
+
+			if (
+				!otherMonster.focus && // Another monster with focus is not valid
+				otherMonster != monster && // Monster can't focus itself.
+				validForSupport
+			) {
+				monster.focus = otherMonster.id;
+				return true;
+			}
+		}
 	}
 }
 
