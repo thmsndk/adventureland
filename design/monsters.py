@@ -134,11 +134,11 @@ monsters={
 		# the healing ability on a monster targets the .focus monster
 		# bees are not humanoids, so that will not work though, 
 		# it might be cooler if the queen could "buff" workers to assign their role of healing her or attacking the players
-		"abilities":{
-			"healing":{"heal":2000,"cooldown":10000} # TODO: range specification for ability
-		},
+		# "abilities":{
+		# 	"healing":{"heal":2000,"cooldown":10000} # TODO: range specification for ability
+		# },
 		# "supporter":True,
-		"supporter": [["bee_queen", 300]], 
+		# "supporter": [["bee_queen", 300]], 
 	},
 	"bee_drone":{
 		"name":"Drone Bee",
