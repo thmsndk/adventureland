@@ -1712,7 +1712,6 @@ maps={
 			{"type":"bee_worker","boundary":[176, 51, 368, 83], "rage":[176, 51, 368, 83],"count":3},
 			{"type":"bee_worker","boundary":[176, 96, 368, 131], "rage":[176, 96, 368, 131],"count":3},
 			{"type":"bee_worker","boundary":[176, 144, 368, 179], "rage":[176, 144, 368, 179],"count":3},
-			# {"type":"bee_worker","boundary":[181, -45, 363, 12], "rage":[181, -45, 363, 157],"count":10},
 			
 		],
 		"spawns":[
