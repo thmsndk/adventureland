@@ -141,6 +141,18 @@ skills={
 		"condition":"stoned",
 		"hostile":True,
 	},
+	"bee_sting":{
+		"type":"monster",
+		"name":"Bee Sting",
+		"explanation":"Honey bees will actively seek out and sting when they perceive the hive to be threatened, often being alerted to this by the release of attack pheromones.",
+		"damage":600,
+		"hostile":True,
+		# "projectile":"sburst",
+		# can we style non projectiles differently?
+		"damage_type":"physical",
+		"procs":True, # What does this mean?
+		"range":160,
+	},
 	#Players
 	"snowball":{
 		"type":"skill",
