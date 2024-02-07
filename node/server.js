@@ -2825,7 +2825,10 @@ function commence_attack(attacker, target, atype, { projectile, chained, targets
 	}
 
 	if ((attacker.is_player && target.is_player && !is_in_pvp(target, true) && !info.positive) || target.npc) {
-		attacker.socket.emit("game_response", { response: "attack_failed", id: target.id });
+		if (attacker.socket) {
+			// if a monster tries to attack an npc, there is no socket to emit to.
+			attacker.socket.emit("game_response", { response: "attack_failed", id: target.id });
+		}
 		return { failed: true, reason: "no_pvp", place: atype, id: target.id };
 	}
 
@@ -12078,6 +12081,7 @@ function update_instance(instance) {
 					monster.cid++;
 				}
 			}
+
 			if (!("ms" in ref)) {
 				for (let party_name in ref.data) {
 					if (ref.data[party_name].ms <= 0) {
@@ -12089,22 +12093,27 @@ function update_instance(instance) {
 					delete monster.s[name];
 				}
 			} else if (monster.s[name].ms <= 0) {
-				if (monster.a[name] && monster.a[name].cooldown) {
-					monster.s[name].ms = monster.a[name].cooldown;
+				const abilityDefinition = monster.a[name];
+				// If monster ability has a cooldown, reapply it here, else remove it
+				if (abilityDefinition && abilityDefinition.cooldown) {
+					monster.s[name].ms = abilityDefinition.cooldown;
 				} else {
 					delete monster.s[name];
 				}
+
 				if (is_disabled(monster) && G.skills[name] && !G.skills[name].passive) {
 					continue;
 				}
+
 				if (name != "young") {
 					monster.u = true;
 					monster.cid++;
 					change = true;
 				}
+
 				if (name == "self_healing") {
 					var hp = monster.hp;
-					var heal = monster.a.self_healing.heal;
+					var heal = abilityDefinition.heal;
 					if (monster.s.poisoned) {
 						heal /= 2;
 					}
@@ -12113,13 +12122,14 @@ function update_instance(instance) {
 						events.push(["ui", { type: "mheal", id: id, heal: monster.hp - hp }]);
 					}
 				}
+
 				if (name == "healing") {
 					var target = monster;
 					if (focus && distance(focus, monster) < 120) {
 						target = focus;
 					}
 					var hp = target.hp;
-					var heal = monster.a.healing.heal;
+					var heal = abilityDefinition.heal;
 					if (target.s.poisoned) {
 						heal /= 2;
 					}
@@ -12128,6 +12138,7 @@ function update_instance(instance) {
 						events.push(["ui", { type: "mheal", id: target.id, heal: target.hp - hp }]);
 					}
 				}
+
 				if (name == "mtangle") {
 					if (monster.target && get_player(monster.target)) {
 						var player = get_player(monster.target);
@@ -12135,6 +12146,7 @@ function update_instance(instance) {
 						resend(player, "u+cid");
 					}
 				}
+
 				if (name == "multi_burn") {
 					if (monster.cooperative) {
 						for (var name in monster.points || {}) {
@@ -12155,6 +12167,7 @@ function update_instance(instance) {
 					monster.u = true;
 					change = true;
 				}
+
 				if (name == "multi_freeze") {
 					for (var name in monster.points || {}) {
 						var player = get_player(name);
@@ -12166,6 +12179,7 @@ function update_instance(instance) {
 					monster.u = true;
 					change = true;
 				}
+
 				if (name == "degen") {
 					monster.hp -= 60;
 					monster.cid++;
@@ -12177,14 +12191,88 @@ function update_instance(instance) {
 						remove_monster(monster);
 					}
 				}
+
 				if (name == "zap") {
 					for (var id in instances[monster.in].players) {
 						var player = instances[monster.in].players[id];
-						if (distance(player, monster) < monster.a[name].radius) {
+						if (distance(player, monster) < abilityDefinition.radius) {
 							commence_attack(monster, player, "zap");
 						}
 					}
 				}
+
+				if (name == "bee_sting") {
+					// TODO: Attack the closest player? or just the first player in proximity?
+					for (const playerId in instance.players) {
+						const player = instance.players[playerId];
+
+						if (player.is_npc || player.rip) {
+							continue;
+						}
+
+						if (distance(player, monster) < abilityDefinition.range) {
+							// TODO: forward ability definition to commence attack?
+							server_log(
+								`${instance.map} ${instance.name} ${monster.name} ${monster.is_player} bee_sting ${player.name} ${player.is_player}`,
+							);
+							// xy_emit(monster, "chat_log", { owner: "Grinch", message: phrase, id: monster.id, color: "#418343" });
+							events.push([
+								"game_log",
+								{
+									owner: monster.type,
+									id: monster.id,
+									message: `stings ${player.name}`,
+									size: "large",
+									color: "#DB2900",
+								},
+							]);
+							commence_attack(monster, player, "bee_sting");
+
+							// TODO: calculate chance of killing itself by sting. Should we rather just do X% dmg to the monster?
+							// TODO: calculate chance of self inflicting damage, higher chance the more armor player has?
+							const selfDamageChance = 0.25; // TODO: move to aura definition
+							const triggerSelfDamage = Math.random() < selfDamageChance;
+
+							if (triggerSelfDamage) {
+								const selfDamage = Math.floor(abilityDefinition.self_damage_percent * monster.max_hp);
+								monster.hp = monster.hp - selfDamage;
+
+								events.push([
+									"disappearing_text",
+									{ id: monster.id, message: `-${selfDamage} STING`, size: "large", color: "#DB2900" },
+								]);
+								// events.push([
+								// 	"game_log",
+								// 	{
+								// 		owner: monster.type,
+								// 		id: monster.id,
+								// 		message: `hurt itself for ${selfDamage}`,
+								// 		size: "large",
+								// 		color: "#DB2900",
+								// 	},
+								// ]);
+
+								server_log(
+									`${instance.map} ${instance.name} ${monster.type} ${monster.id} bee_sting hurt itself for ${selfDamage}`,
+								);
+								// events.push(["ui", { type: "mheal", id: target.id, heal: selfDamage }]);
+
+								if (monster.hp <= 0) {
+									monster.hp = 0;
+									server_log(`${monster.id} being removed due to health being lower than 0`);
+									remove_monster(monster);
+								}
+							}
+
+							// TODO: give the target a bee sting condition
+							add_condition(player, "poisoned");
+							resend(player, "u+cid");
+							break;
+						}
+					}
+				}
+
+				// Handle monster ability aura
 				if (monster.a && monster.a[name] && monster.a[name].aura) {
 					for (var id in instances[monster.in].players) {
 						var player = instances[monster.in].players[id];
@@ -12194,6 +12282,7 @@ function update_instance(instance) {
 						}
 					}
 				}
+
 				if (name == "deepfreeze") {
 					var c = [];
 					for (var id in instances[monster.in].players) {
@@ -12207,6 +12296,7 @@ function update_instance(instance) {
 						commence_attack(monster, theone, "deepfreeze");
 					}
 				}
+
 				if (name == "anger") {
 					var c = [];
 					for (var id in instances[monster.in].players) {
@@ -12223,6 +12313,7 @@ function update_instance(instance) {
 						target_player(monster, theone);
 					}
 				}
+
 				if (name == "warpstomp") {
 					var dampened = false;
 					for (var id in instances[monster.in].monsters) {
@@ -12250,9 +12341,11 @@ function update_instance(instance) {
 						}
 					}
 				}
+
 				if (name == "mlight") {
 					xy_emit(monster, "light", { name: monster.id });
 				}
+
 				if (name == "stone") {
 					if (monster.target && get_player(monster.target)) {
 						var player = get_player(monster.target);
@@ -12260,6 +12353,7 @@ function update_instance(instance) {
 						resend(player, "u+cid");
 					}
 				}
+
 				if (name == "magiport") {
 					var r = false;
 					if (monster.map != ref.map) {
@@ -12284,6 +12378,7 @@ function update_instance(instance) {
 						continue;
 					}
 				}
+
 				if (name == "sleeping" && E.schedule.night && Math.random() < 0.9) {
 					monster.s.sleeping = { ms: 3000 + 5000 * Math.random() };
 					monster.u = true;
@@ -12291,13 +12386,14 @@ function update_instance(instance) {
 				}
 			}
 		}
+
 		if (monster.dead) {
 			continue;
 		}
 
 		if (update_instance_monster_supporter(monster, instance)) {
-					change = true;
-				}
+			change = true;
+		}
 
 		if (change) {
 			calculate_monster_stats(monster);
