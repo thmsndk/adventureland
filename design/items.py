@@ -4496,6 +4496,7 @@ offhands={
 		"grades":[3,7],
 	},
 	"honeysource":{
+		"set":"bee_0",
 		"type":"source",
 		"tier":1.5,
 		"skin":"honeysource",
@@ -4530,6 +4531,7 @@ offhands={
 		"a":True,
 	},
 	"honeyquiver":{
+		"set":"bee_0",
 		"type":"quiver",
 		"tier":1.5,
 		"skin":"honeyquiver",
@@ -7564,7 +7566,7 @@ sets={
 	},
 	"bee_0":{
 		"name":"BEEginner Dungeon",
-		"items":["honeyhelmet","honeychest","honeypants","honeyboots","honeygloves","honeyamulet","honeyring","honeyelixir", "honeyearring","honeybelt","honeycape", "honeyorb"],
+		"items":["honeyhelmet","honeychest","honeypants","honeyboots","honeygloves","honeyamulet","honeyring","honeyelixir", "honeyearring","honeybelt","honeycape", "honeyorb", "honeysource", "honeyquiver"],
 		"explanation":"A Bee themed set from the BEEginner dungeon",
 		"1":{"cuteness":1,},
 		"2":{"cuteness":1,},
