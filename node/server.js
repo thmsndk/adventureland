@@ -2813,7 +2813,7 @@ function commence_attack(attacker, target, atype) {
 	if ((attacker.is_player && target.is_player && !is_in_pvp(target, true) && !info.positive) || target.npc) {
 		if (attacker.socket) {
 			// if a monster tries to attack an npc, there is no socket to emit to.
-		attacker.socket.emit("game_response", { response: "attack_failed", id: target.id });
+			attacker.socket.emit("game_response", { response: "attack_failed", id: target.id });
 		}
 		return { failed: true, reason: "no_pvp", place: atype, id: target.id };
 	}
@@ -12177,8 +12177,8 @@ function update_instance(instance) {
 		}
 
 		if (update_instance_monster_supporter(monster, instance)) {
-					change = true;
-				}
+			change = true;
+		}
 
 		if (change) {
 			calculate_monster_stats(monster);
