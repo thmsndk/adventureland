@@ -49,7 +49,7 @@ monsters={
 	},
 	"bee_queen":{
 		"name":"Queen Bee",
-		"speed":30,"hp":400000,"xp":10000, "gold":400,
+		"speed":30,"hp":400000,"xp":100000, "gold":400,
 		"attack":100,"damage_type":"physical","range":25,"frequency":1,
 		# "grow": True # can be defined in map.monsters respawns monsters untill the .count property on the map.monsters entry is reached
 		# respawn > 200 respawns the monster 200 * 720ms..1200ms = 144.000s..240.000s = 2.4m .. 4m after death
@@ -114,7 +114,7 @@ monsters={
 	"bee_worker":{
 		"name":"Worker Bee",
 		"skin": "bee",
-		"speed":40,"hp":5500,"xp":10,"gold":40,
+		"speed":40,"hp":5500,"xp":100,"gold":40,
 		"attack":200,"damage_type":"physical","range":20,"frequency":1,
 		"respawn":-1, # should not respawn on death
 		# "roam":True, # Roams around the map
@@ -144,7 +144,7 @@ monsters={
 	"bee_drone":{
 		"name":"Drone Bee",
 		"skin": "bee",
-		"speed":20,"hp":300,"xp":15,"gold":40,
+		"speed":20,"hp":300,"xp":150,"gold":40,
 		"attack":0,"damage_type":"physical","range":1,"frequency":0.5,
 		"respawn":-1, # should not respawn on death
 		# "roam":True, # Roams around the map
