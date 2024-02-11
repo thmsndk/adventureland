@@ -1698,11 +1698,11 @@ maps={
 			# TODO: should the zones overlap?
 			# TODO: more spawn zones allows us to reduce the amount of mobs in each zone, and how many will aggro a player
 			# {"type":"bee_worker","boundary":[564, 369, 1245, 468],"rage":[564, 369, 1245, 468],"count":10, "roam": True},
-			{"type":"bee_worker","boundary":[1072, 368, 1152, 496],"rage":[1040, 352, 1184, 512],"count":3, "roam": True},
-			{"type":"bee_worker","boundary":[944, 368, 1024, 496],"rage":[912, 352, 1056, 512],"count":3, "roam": True},
-			{"type":"bee_worker","boundary":[816, 368, 896, 496],"rage":[784, 352, 928, 512],"count":3, "roam": True},
-			{"type":"bee_worker","boundary":[688, 368, 768, 496],"rage":[656, 352, 800, 512],"count":3, "roam": True},
-			{"type":"bee_worker","boundary":[560, 368, 640, 496],"rage":[528, 352, 672, 512],"count":3, "roam": True},
+			{"type":"bee_worker","boundary":[1072, 368, 1152, 496],"rage":[1040, 352, 1184, 512],"count":3},
+			{"type":"bee_worker","boundary":[944, 368, 1024, 496],"rage":[912, 352, 1056, 512],"count":3},
+			{"type":"bee_worker","boundary":[816, 368, 896, 496],"rage":[784, 352, 928, 512],"count":3},
+			{"type":"bee_worker","boundary":[688, 368, 768, 496],"rage":[656, 352, 800, 512],"count":3},
+			{"type":"bee_worker","boundary":[560, 368, 640, 496],"rage":[528, 352, 672, 512],"count":3},
 			{"type":"bee_drone","boundary":[1248, 368, 1280, 496],"count":2},
 			# entrance guard
 			# we need multiple spawn / rage zones, so only a certain set of bees will attack
