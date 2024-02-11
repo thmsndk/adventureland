@@ -145,7 +145,7 @@ skills={
 		"type":"monster",
 		"name":"Bee Sting",
 		"explanation":"Honey bees will actively seek out and sting when they perceive the hive to be threatened, often being alerted to this by the release of attack pheromones.",
-		"damage":600,
+		"damage":500,
 		"hostile":True,
 		# "projectile":"sburst",
 		# can we style non projectiles differently?
