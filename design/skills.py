@@ -150,7 +150,7 @@ skills={
 		# "projectile":"sburst",
 		# can we style non projectiles differently?
 		"damage_type":"physical",
-		"procs":True, # What does this mean?
+		# "procs":True, # What does this mean? think it means it can crit
 		"range":40,
 	},
 	#Players
