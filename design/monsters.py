@@ -136,7 +136,7 @@ monsters={
 		# it might be cooler if the queen could "buff" workers to assign their role of healing her or attacking the players
 		"abilities":{
 			# "healing":{"heal":2000,"cooldown":10000} # TODO: range specification for ability
-			"bee_sting":{"cooldown":2500,"range":160, "self_damage_percent": 0.05},
+			"bee_sting":{"cooldown":2500,"range":40, "self_damage_percent": 0.05},
 		},
 		# "supporter":True, # Supporter makes bees stick to the queen, don't want that
 		# "supporter": [["bee_queen", 300]], 

@@ -145,13 +145,13 @@ skills={
 		"type":"monster",
 		"name":"Bee Sting",
 		"explanation":"Honey bees will actively seek out and sting when they perceive the hive to be threatened, often being alerted to this by the release of attack pheromones.",
-		"damage":500,
+		"damage":300,
 		"hostile":True,
 		# "projectile":"sburst",
 		# can we style non projectiles differently?
 		"damage_type":"physical",
 		"procs":True, # What does this mean?
-		"range":160,
+		"range":40,
 	},
 	#Players
 	"snowball":{
