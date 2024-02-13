@@ -2289,6 +2289,8 @@ function drop_something_pvp(player, target) {
 	}
 }
 
+// TODO: quest kill logic
+
 function monster_hunt_logic(player, monster) {
 	var target = monster;
 	if (!player.s.monsterhunt || player.s.monsterhunt.sn != region + " " + server_name) {
@@ -9900,6 +9902,12 @@ function init_io() {
 						}
 					}
 
+					if (is_sdk) {
+						player.verified = true;
+						delete player.s.notverified;
+						delete player.s.authfail;
+					}
+
 					if (player.guild) {
 						console.log(player.guild);
 						player.guild = player.guild.short;
@@ -9949,7 +9957,7 @@ function init_io() {
 						} // part of the new restriction system [02/05/19]
 					}
 
-					if (mode.drm_check) {
+					if (mode.drm_check && !is_sdk) {
 						if (result.character.drm && !player.auth_id) {
 							player.s.authfail = { ms: 900000 * 1000 };
 						} else if (player.s.authfail) {
@@ -12011,6 +12019,10 @@ function update_instance(instance) {
 									color: "#DB2900",
 								},
 							]);
+
+							// TODO: use cleave visual to visualize sting for now
+							events.push(["ui", { type: "cleave", name: player.name, ids: [player.id] }]);
+							// xy_emit(player, "ui", { type: "cleave", name: monster.id, ids: ids });
 							commence_attack(monster, player, "bee_sting");
 
 							// TODO: calculate chance of killing itself by sting. Should we rather just do X% dmg to the monster?
@@ -12026,16 +12038,17 @@ function update_instance(instance) {
 									"disappearing_text",
 									{ id: monster.id, message: `-${selfDamage} STING`, size: "large", color: "#DB2900" },
 								]);
-								// events.push([
-								// 	"game_log",
-								// 	{
-								// 		owner: monster.type,
-								// 		id: monster.id,
-								// 		message: `hurt itself for ${selfDamage}`,
-								// 		size: "large",
-								// 		color: "#DB2900",
-								// 	},
-								// ]);
+
+								events.push([
+									"game_log",
+									{
+										owner: monster.type,
+										id: monster.id,
+										message: `hurt itself for ${selfDamage}`,
+										size: "large",
+										color: "#DB2900",
+									},
+								]);
 
 								server_log(
 									`${instance.map} ${instance.name} ${monster.type} ${monster.id} bee_sting hurt itself for ${selfDamage}`,
@@ -13137,6 +13150,7 @@ function update_instance_monster_spawn_minions(monster, instance) {
 						master: monster.id,
 					});
 
+					// TODO: should  it be the same spawn zone?
 					// calculate a new spot so they are not smack ontop of each other
 					const newSpot = get_safe_spawn_spot(spawnOptions, player, monster);
 					if (newSpot) {
