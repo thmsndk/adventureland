@@ -1,4 +1,5 @@
-img{ /* makes a change, noticeable [28/05/16] */
+img {
+	/* makes a change, noticeable [28/05/16] */
 	image-rendering: optimizeSpeed;
 	image-rendering: -moz-crisp-edges;
 	image-rendering: -webkit-optimize-contrast;
@@ -6,7 +7,7 @@ img{ /* makes a change, noticeable [28/05/16] */
 	image-rendering: pixelated;
 	-ms-interpolation-mode: nearest-neighbor;
 }
-body{
+body {
 	-webkit-touch-callout: none;
 	-webkit-user-select: none;
 	-khtml-user-select: none;
@@ -14,7 +15,8 @@ body{
 	-ms-user-select: none;
 	user-select: none;
 }
-div[contenteditable],span[contenteditable]{
+div[contenteditable],
+span[contenteditable] {
 	-webkit-touch-callout: auto;
 	-webkit-user-select: auto;
 	-khtml-user-select: auto;
@@ -22,23 +24,26 @@ div[contenteditable],span[contenteditable]{
 	-ms-user-select: auto;
 	user-select: auto;
 }
-::-webkit-scrollbar{background:transparent;}
-::-webkit-scrollbar-track{
-	background:transparent;
+::-webkit-scrollbar {
+	background: transparent;
+}
+::-webkit-scrollbar-track {
+	background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background:rgba(200,200,200,0.8);
+	background: rgba(200, 200, 200, 0.8);
 }
-.noscroll::-webkit-scrollbar{
-	background:black;
+.noscroll::-webkit-scrollbar {
+	background: black;
 }
 
 /*  *{font-weight:normal !important;}  */
 /* best to abandon all "bold" texts [12/08/16] */
 
-html,body{
-	margin:0 0 0 0;
-	padding:0 0 0 0;
+html,
+body {
+	margin: 0 0 0 0;
+	padding: 0 0 0 0;
 	width: 100%;
 	height: 100%;
 	overflow: hidden; /* temporary solution [16/05/16]*/
@@ -60,159 +65,194 @@ html,body{
 	/*
 		NOTE: Chrome renders fonts thicker as default, it's nice, the other browsers render then reall thin ... ignoring the difference for the time being; [05/08/16]
 	*/
-
 }
-::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
-	color: #A9ACAC;
+::placeholder {
+	/* Chrome, Firefox, Opera, Safari 10.1+ */
+	color: #a9acac;
 	opacity: 1; /* Firefox */
 }
 
-:-ms-input-placeholder { /* Internet Explorer 10-11 */
-	color: #A9ACAC;
+:-ms-input-placeholder {
+	/* Internet Explorer 10-11 */
+	color: #a9acac;
 }
-canvas { display:block; } /*replaces the overflow: hidden solution [07/07/16] */
-.psuccess{
-	color: #5DAC40;
+canvas {
+	display: block;
+} /*replaces the overflow: hidden solution [07/07/16] */
+.psuccess {
+	color: #5dac40;
 }
-.pfail{
-	color: #AC393E;
+.pfail {
+	color: #ac393e;
 }
-.iqui{ /*item quantity ui*/
+.iqui {
+	/*item quantity ui*/
 	color: white;
-	border: 2px solid gray; background: black; padding: 1px 2px 1px 3px;
-	position:absolute; right:-2px; bottom:-2px; text-align: center;
-	line-height: 16px; font-size: 24px; height: 16px;
+	border: 2px solid gray;
+	background: black;
+	padding: 1px 2px 1px 3px;
+	position: absolute;
+	right: -2px;
+	bottom: -2px;
+	text-align: center;
+	line-height: 16px;
+	font-size: 24px;
+	height: 16px;
 }
-.iqhp{
-	color: #F37A87;
+.iqhp {
+	color: #f37a87;
 }
-.iqdbf{
+.iqdbf {
 	color: #343792;
 }
-.iqmp{
-	color: #66B3F6;
+.iqmp {
+	color: #66b3f6;
 }
-.iuui{ /*item upgrade ui*/
-	border: 2px solid gray; background: black; padding: 1px 2px 1px 3px;
-	position:absolute; left:-2px; bottom:-2px; text-align: center;
-	line-height: 16px; font-size: 24px; height: 16px;
+.iuui {
+	/*item upgrade ui*/
+	border: 2px solid gray;
+	background: black;
+	padding: 1px 2px 1px 3px;
+	position: absolute;
+	left: -2px;
+	bottom: -2px;
+	text-align: center;
+	line-height: 16px;
+	font-size: 24px;
+	height: 16px;
 	color: gray;
 }
-.truui{ /*item upgrade ui*/
-	border: 2px solid gray; background: black; padding: 1px 2px 1px 3px;
-	position:absolute; left:-2px; top:-2px; text-align: center;
-	line-height: 16px; font-size: 24px; height: 16px;
+.truui {
+	/*item upgrade ui*/
+	border: 2px solid gray;
+	background: black;
+	padding: 1px 2px 1px 3px;
+	position: absolute;
+	left: -2px;
+	top: -2px;
+	text-align: center;
+	line-height: 16px;
+	font-size: 24px;
+	height: 16px;
 	color: gray;
 }
-.trruui{
-	border: 2px solid gray; background: black; padding: 1px 2px 1px 3px;
-	position:absolute; right:-2px; top:-2px; text-align: center;
-	line-height: 16px; font-size: 24px; height: 16px;
+.trruui {
+	border: 2px solid gray;
+	background: black;
+	padding: 1px 2px 1px 3px;
+	position: absolute;
+	right: -2px;
+	top: -2px;
+	text-align: center;
+	line-height: 16px;
+	font-size: 24px;
+	height: 16px;
 	color: gray;
 }
-.imu{
-	color:#64B867;
+.imu {
+	color: #64b867;
 }
-.ivu{
-	color:#D3391E;
+.ivu {
+	color: #d3391e;
 }
-.itu{
-	color:gold;
-	color:#E6C409;
-	color:#389261;
-	color:#398F2E;
-	color:#FFFFFF;
-	color:#398F2E;
+.itu {
+	color: gold;
+	color: #e6c409;
+	color: #389261;
+	color: #398f2e;
+	color: #ffffff;
+	color: #398f2e;
 }
-.ibu{
-	color:#5D688F;
-	color:#808C8F;
-	color:#D96C0E;
-	color:#DA8F20;
+.ibu {
+	color: #5d688f;
+	color: #808c8f;
+	color: #d96c0e;
+	color: #da8f20;
 }
-.igu{
-	color:#D96EDC;
+.igu {
+	color: #d96edc;
 }
-.ixu{
-	color:#5C5D5E;
-	color:#B3AFB4;
+.ixu {
+	color: #5c5d5e;
+	color: #b3afb4;
 }
-.ilsu{
-	color:#B3AFB4;
-	color:#8C7A36;
-	color:#C9AE5D;
-	color:#A28D4C;
+.ilsu {
+	color: #b3afb4;
+	color: #8c7a36;
+	color: #c9ae5d;
+	color: #a28d4c;
 }
-.iluu{
-	color:#B3AFB4;
-	color:#949698;
-	color:#5C5D5E;
+.iluu {
+	color: #b3afb4;
+	color: #949698;
+	color: #5c5d5e;
 }
-.ering{
+.ering {
 	border: 2px solid gray;
 	padding: 8px;
 	display: inline-block;
 }
-.clevel4{
-	color: #FFC949;
+.clevel4 {
+	color: #ffc949;
 }
-.clevel5{
-	color: #B753C7;
+.clevel5 {
+	color: #b753c7;
 }
-.clevelA{
-	color: #FFC949;
+.clevelA {
+	color: #ffc949;
 }
-.clevelB{
-	color: #4A9AFF;
+.clevelB {
+	color: #4a9aff;
 }
-.clevelC{
-	color: #FC4546;
+.clevelC {
+	color: #fc4546;
 }
-.clevelD{
-	color: #9353FF;
+.clevelD {
+	color: #9353ff;
 }
-.clevelE{
-	color: #FD8915;
+.clevelE {
+	color: #fd8915;
 }
-.clevelW{
-	color: #5BAD59;
+.clevelW {
+	color: #5bad59;
 }
-.clevel6{
-	color: #FC2F72;
+.clevel6 {
+	color: #fc2f72;
 }
-.clevel7{
-	color: #FD6A19;
+.clevel7 {
+	color: #fd6a19;
 }
-.clevel7{
-	color: #D71D41;
+.clevel7 {
+	color: #d71d41;
 }
-.ulevel8{
-	color: #FFC949;
+.ulevel8 {
+	color: #ffc949;
 }
-.ulevel9{
-	color: #E64D31;
+.ulevel9 {
+	color: #e64d31;
 }
-.ulevel10{
-	color: #B753C7;
+.ulevel10 {
+	color: #b753c7;
 }
-.ulevel11{
-	color: #E0DE58;
-	color: #B753C7;
+.ulevel11 {
+	color: #e0de58;
+	color: #b753c7;
 }
-.ulevel12{
-	color: #2096D8;
-	color: #B753C7;
+.ulevel12 {
+	color: #2096d8;
+	color: #b753c7;
 }
-.infop{
-	color: #9E9E9E;
+.infop {
+	color: #9e9e9e;
 }
-.mw{
-	color: #FFFFFF;
+.mw {
+	color: #ffffff;
 }
-.infot{
+.infot {
 	margin-top: 4px;
 }
-.itemnumi{ /* input */
+.itemnumi {
+	/* input */
 	vertical-align: middle;
 	width: 40px;
 	height: 16px;
@@ -221,21 +261,22 @@ canvas { display:block; } /*replaces the overflow: hidden solution [07/07/16] */
 	font-family: Pixel;
 	margin-right: 5px;
 	display: inline-block;
-	border:0;
+	border: 0;
 	padding-left: 5px;
-	background: #7D7D7D;
+	background: #7d7d7d;
 	color: white;
 }
-.cinput{ /* code save */
+.cinput {
+	/* code save */
 	height: 48px;
 	line-height: 36px;
 	font-size: 36px;
 	font-family: Pixel;
 	display: inline-block;
-	border:0;
+	border: 0;
 	padding: 12px;
-	background: #7D7D7D;
-	background: #2D2D2E;
+	background: #7d7d7d;
+	background: #2d2d2e;
 	border: 4px solid gray;
 	color: white;
 	margin-right: 4px;
@@ -244,14 +285,16 @@ canvas { display:block; } /*replaces the overflow: hidden solution [07/07/16] */
 
 /* #toprightcorner .gamebutton{ margin-left: -9px; } */
 
-#gamelog,#chatlog,#codelog{
+#gamelog,
+#chatlog,
+#codelog {
 	/*z-index: 300;
 	position: fixed;
 	bottom: 0px;
 	right: 0px;*/
 	height: 208px;
 	width: 300px;
-	background: rgb(0,0,0);
+	background: rgb(0, 0, 0);
 	line-height: 24px;
 	font-size: 24px;
 	text-align: left;
@@ -261,7 +304,7 @@ canvas { display:block; } /*replaces the overflow: hidden solution [07/07/16] */
 	border: 5px solid gray;
 	/*letter-spacing: 0.8px;*/
 }
-#xcodehint{
+#xcodehint {
 	z-index: 400;
 	height: 36px;
 	width: 320px; /*300+15+5*/
@@ -276,10 +319,10 @@ canvas { display:block; } /*replaces the overflow: hidden solution [07/07/16] */
 	text-align: center;
 }
 .codesearch::placeholder {
-  color: gray;
-  opacity: 1;
+	color: gray;
+	opacity: 1;
 }
-.chatlog{
+.chatlog {
 	line-height: 24px;
 	font-size: 24px;
 	text-align: left;
@@ -289,9 +332,9 @@ canvas { display:block; } /*replaces the overflow: hidden solution [07/07/16] */
 	height: 190px;
 	width: 300px; /* .chatinput is 314+3x2 - this one is 300+10x2 */
 }
-#chatinput{
+#chatinput {
 	position: fixed;
-	z-index:99;
+	z-index: 99;
 	bottom: 5px;
 	left: 5px;
 	width: 314px;
@@ -304,7 +347,7 @@ canvas { display:block; } /*replaces the overflow: hidden solution [07/07/16] */
 	border: none;
 	padding: 3px;
 }
-.chatinput{
+.chatinput {
 	width: 314px;
 	height: 30px;
 	font-size: 24px;
@@ -315,7 +358,8 @@ canvas { display:block; } /*replaces the overflow: hidden solution [07/07/16] */
 	border: none;
 	padding: 3px;
 }
-.ccinput,.ccinput:focus{
+.ccinput,
+.ccinput:focus {
 	border: none;
 	outline: none;
 	background: none;
@@ -325,40 +369,40 @@ canvas { display:block; } /*replaces the overflow: hidden solution [07/07/16] */
 	font-size: 36px;
 	font-family: Pixel;
 }
-.newmessage{
+.newmessage {
 	color: green;
 }
-.tint{
+.tint {
 	position: relative;
-	z-index:1;
+	z-index: 1;
 	overflow: hidden;
 }
-.ontint{
+.ontint {
 	position: relative;
-	z-index:2;
+	z-index: 2;
 }
-.gameentry{
+.gameentry {
 }
-#chatlog{
-	z-index:98;
+#chatlog {
+	z-index: 98;
 	left: 0px;
 	/*direction:rtl;*/
 }
-.chatentry{
+.chatentry {
 	/*direction: ltr;*/
 	margin-bottom: 30px;
 }
-.chatentry+.chatentry{
+.chatentry + .chatentry {
 	margin-top: -30px;
 }
-#topleftcorner{
+#topleftcorner {
 	z-index: 109;
 	top: 0px;
 	left: 0px;
 	position: fixed;
 	pointer-events: none;
 }
-.mimicker{
+.mimicker {
 	position: fixed;
 	font-size: 0px;
 	display: inline-block;
@@ -369,47 +413,49 @@ canvas { display:block; } /*replaces the overflow: hidden solution [07/07/16] */
 /*#topleftcornerui > *{
 	pointer-events: auto;
 }*/
-#toprightcorner{
+#toprightcorner {
 	z-index: 100;
 	top: 0px;
 	right: 0px;
 	position: fixed;
 }
-#bottomrightcorner{
+#bottomrightcorner {
 	z-index: 300;
 	bottom: 0px;
 	right: 0px;
 	position: fixed;
 }
-#bottomrightcodecorner{
+#bottomrightcodecorner {
 	z-index: 300;
 	bottom: 0px;
 	right: 325px;
 	position: fixed;
 	display: none;
 }
-#bottomleftcorner2{
+#bottomleftcorner2 {
 	z-index: 99;
 	bottom: 0px;
 	left: 0px;
 	position: fixed;
 }
-.xclicks{
+.xclicks {
 	cursor: none;
 }
-.bpclicks{ /* Block Parent Clicks - Only [24/07/18] */
+.bpclicks {
+	/* Block Parent Clicks - Only [24/07/18] */
 	pointer-events: none !important; /* if !important is not set, the '> *' takes priority */
 }
-.bpclicks > *{
+.bpclicks > * {
 	pointer-events: auto;
 }
-#bottomleftcorner{
+#bottomleftcorner {
 	z-index: 100;
 	bottom: 0px;
 	left: 0px;
 	position: fixed;
 }
-.label,.klabel{
+.label,
+.klabel {
 	padding: 0px 4px 2px 4px;
 	background: #808080;
 	color: white;
@@ -418,11 +464,18 @@ canvas { display:block; } /*replaces the overflow: hidden solution [07/07/16] */
 	display: inline-block;
 	vertical-align: middle;
 }
-.klabel{
+.klabel {
 	margin: 1px;
-	background: #E13758;
+	background: #e13758;
 }
-.clabel,.xlabel,.rlabel,.jlabel,.dlabel,.redlabel,.hlabel,.elabel{
+.clabel,
+.xlabel,
+.rlabel,
+.jlabel,
+.dlabel,
+.redlabel,
+.hlabel,
+.elabel {
 	margin-left: -4px;
 	margin-right: -2px;
 	padding: 0px 2px 2px 6px;
@@ -438,31 +491,37 @@ canvas { display:block; } /*replaces the overflow: hidden solution [07/07/16] */
 	-ms-user-select: text;
 	user-select: text;
 }
-.clabel[onclick],.xlabel[onclick],.rlabel[onclick],.jlabel[onclick],.redlabel[onclick],.hlabel[onclick],.elabel[onclick]{
-	cursor:pointer;
+.clabel[onclick],
+.xlabel[onclick],
+.rlabel[onclick],
+.jlabel[onclick],
+.redlabel[onclick],
+.hlabel[onclick],
+.elabel[onclick] {
+	cursor: pointer;
 }
-.xlabel{
-	background: #77A6C3;
+.xlabel {
+	background: #77a6c3;
 }
-.rlabel{
-	background: #E5680D;
+.rlabel {
+	background: #e5680d;
 }
-.jlabel{
-	background: #49BD74;
+.jlabel {
+	background: #49bd74;
 }
-.hlabel{
-	background: #B9AB63;
+.hlabel {
+	background: #b9ab63;
 }
-.elabel{
-	background: #46BE2E;
+.elabel {
+	background: #46be2e;
 }
-.dlabel{
-	background: #3C9BC4;
+.dlabel {
+	background: #3c9bc4;
 }
-.redlabel{
-	background: #C01941;
+.redlabel {
+	background: #c01941;
 }
-.slimbutton{
+.slimbutton {
 	display: inline-block;
 	border: 2px solid gray;
 	font-size: 24px;
@@ -472,7 +531,7 @@ canvas { display:block; } /*replaces the overflow: hidden solution [07/07/16] */
 	text-align: center;
 	color: white;
 }
-.tinybutton{
+.tinybutton {
 	display: inline-block;
 	border: 2px solid gray;
 	font-size: 16px;
@@ -483,7 +542,7 @@ canvas { display:block; } /*replaces the overflow: hidden solution [07/07/16] */
 	color: white;
 	margin: 4px;
 }
-.gamebutton{
+.gamebutton {
 	display: inline-block;
 	border: 4px solid gray;
 	font-size: 24px;
@@ -493,12 +552,12 @@ canvas { display:block; } /*replaces the overflow: hidden solution [07/07/16] */
 	text-align: center;
 	color: white;
 }
-.largerfont{
+.largerfont {
 	font-size: 32px;
 	line-height: 24px;
 	vertical-align: bottom;
 }
-.blockbutton{
+.blockbutton {
 	display: block;
 	border: 4px solid gray;
 	font-size: 24px;
@@ -507,54 +566,54 @@ canvas { display:block; } /*replaces the overflow: hidden solution [07/07/16] */
 	background: black;
 	text-align: center;
 }
-a.textbutton{
+a.textbutton {
 	color: inherit;
-	text-decoration:none;
+	text-decoration: none;
 }
-a.gamebutton{
+a.gamebutton {
 	color: inherit;
-	text-decoration:none;
+	text-decoration: none;
 }
-.redborder{
+.redborder {
 	border-color: orange;
 }
-.orangeborder{
+.orangeborder {
 	border-color: orange;
 }
-.gamebutton.active{
+.gamebutton.active {
 	border-color: green;
 }
-.gamebutton.active2{
-	border-color: #FFFFFF;
+.gamebutton.active2 {
+	border-color: #ffffff;
 }
-.gamebutton.active3{
-	border-color: #42AFDE;
+.gamebutton.active3 {
+	border-color: #42afde;
 }
-.gamebutton-large{
+.gamebutton-large {
 	font-size: 36px;
 	line-height: 36px;
 }
-.gamebutton-small{
+.gamebutton-small {
 	padding: 4px 8px 4px 8px;
 	border: 2px solid gray;
 	margin-bottom: 4px;
 }
-.gamebutton-active.gamebutton-small{
-	border: 2px solid #EAF1EC;
+.gamebutton-active.gamebutton-small {
+	border: 2px solid #eaf1ec;
 }
-#pagewrapped{
+#pagewrapped {
 	margin-top: 400px;
 	width: 400px;
-	z-index:205;
+	z-index: 205;
 	display: inline-block;
 }
-.loginorselection{
+.loginorselection {
 	text-align: center;
 	-webkit-text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.4);
 	-moz-text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.4);
 	text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.4);
 }
-#codeui{
+#codeui {
 	position: fixed;
 	top: 0px;
 	bottom: 0px;
@@ -567,170 +626,178 @@ a.gamebutton{
 	-moz-box-shadow: 0 0 6px #555960;
 	box-shadow: 0 0 6px #555960;
 }
-.CodeMirror{
+.CodeMirror {
 	height: 100%;
 	width: 100%;
 	font-family: Pixel;
 	font-size: 24px;
 	letter-spacing: 1px; /* more readable */
 }
-.engagebutton,.dengagebutton{
+.engagebutton,
+.dengagebutton {
 	position: absolute;
 	right: 5px;
 	bottom: 5px;
 	z-index: 200;
 }
-.cslotbutton{
+.cslotbutton {
 	position: absolute;
 	right: 5px;
 	top: 5px;
 	z-index: 200;
 }
-.loginorselection,#features,#codeui,.largeborder{
+.loginorselection,
+#features,
+#codeui,
+.largeborder {
 	background: black;
 	border: 5px solid gray;
 	padding: 10px;
 }
-#selection{
+#selection {
 }
-#pagewrapper{
-	z-index:200;
+#pagewrapper {
+	z-index: 200;
 	position: fixed;
 	top: 0px;
 	left: 0px;
 	right: 0px;
 	bottom: 0px;
-	vertical-align:middle;
+	vertical-align: middle;
 	text-align: center;
 	/*background: rgba(0,0,0,0.3);*/
 }
-#features{
+#features {
 	position: fixed;
 	bottom: 0px;
 	left: 0px;
 	z-index: 201;
 	/* padding-right: 40px; WHY?! */
 }
-#topui{
+#topui {
 	position: fixed;
 	top: 0px;
 	left: 0px;
 	z-index: 202;
 }
-#backbutton{
+#backbutton {
 	position: fixed;
 	top: 0px;
 	right: 0px;
 	z-index: 201;
 }
-.input{
+.input {
 	padding: 20px;
 	font-size: 18px;
 }
-.button{
-	background: #4C3634;
+.button {
+	background: #4c3634;
 	padding: 20px;
 	font-size: 18px;
 	font-weight: bold;
-	border:none;
+	border: none;
 }
-.button.disable{
-	background: #2E4C28;
+.button.disable {
+	background: #2e4c28;
 }
-.textbutton,.whiteheader{
+.textbutton,
+.whiteheader {
 	font-size: 24px;
 }
-.textbutton.disable{
-	color: #3A783E;
+.textbutton.disable {
+	color: #3a783e;
 }
-.logout.disable{
+.logout.disable {
 	color: #787878;
 }
-.textheader{
+.textheader {
 	font-size: 32px;
 	padding: 4px;
 	margin-bottom: 2px;
 	font-family: pixel;
 	text-align: center;
 }
-.input,.button{
+.input,
+.button {
 	/*font-family: pixel;*/
-	border:none !important;
+	border: none !important;
 }
-.selectioninput{
+.selectioninput {
 	font-size: 24px;
 	padding: 2px;
 	font-family: pixel;
 	text-align: center;
 }
-.selectiontextarea{
+.selectiontextarea {
 	font-size: 24px;
 	padding: 2px;
 	font-family: pixel;
 	text-align: left;
 }
-.chartype{
+.chartype {
 	border: 2px solid black;
 	display: inline-block;
 	padding: 4px 6px 4px 8px;
 	margin: 3px 0px 2px 3px;
 }
-.chartype.selected{
+.chartype.selected {
 	border: 2px solid gray;
 }
-.gendertype{
+.gendertype {
 	border: 2px solid black;
 	display: inline-block;
 	padding: 4px 6px 4px 8px;
 	margin: 3px 0px 2px 3px;
 }
-.gendertype.selected{
+.gendertype.selected {
 	border: 2px solid gray;
 }
-.lookstype{
+.lookstype {
 	border: 2px solid black;
 	display: inline-block;
 	padding: 4px 6px 4px 8px;
 	margin: 3px 0px 2px 3px;
 }
-.lookstype.selected{
+.lookstype.selected {
 	border: 2px solid gray;
 }
-input:focus, button:focus, div:focus {
+input:focus,
+button:focus,
+div:focus {
 	outline: none !important;
 	box-shadow: none !important;
 }
-.block{
+.block {
 	box-sizing: border-box;
 	width: 100%;
 }
-li{
+li {
 	font-size: 24px;
 }
 
-.vtopx{
+.vtopx {
 	margin-bottom: 0px;
 	margin-top: 0px;
 	vertical-align: top;
 }
 
-.glow8{
+.glow8 {
 	-webkit-box-shadow: 0 0 3px orange;
 	-moz-box-shadow: 0 0 3px orange;
 	box-shadow: 0 0 3px orange;
 }
-.glow9{
-	-webkit-box-shadow: 0 0 5px #E6434B;
-	-moz-box-shadow: 0 0 5px #E6434B;
-	box-shadow: 0 0 5px #E6434B;
+.glow9 {
+	-webkit-box-shadow: 0 0 5px #e6434b;
+	-moz-box-shadow: 0 0 5px #e6434b;
+	box-shadow: 0 0 5px #e6434b;
 }
-.glow10{
+.glow10 {
 	-webkit-box-shadow: 0 0 7px #ffe000;
 	-moz-box-shadow: 0 0 7px #ffe000;
 	box-shadow: 0 0 7px #ffe000;
 }
 
-.textglow{
+.textglow {
 	animation: textglow 4s infinite alternate;
 }
 
@@ -740,7 +807,7 @@ li{
 	}
 }
 
-.boxglow{
+.boxglow {
 	animation: boxglow 3s infinite alternate;
 }
 
@@ -755,15 +822,15 @@ li{
 
 @keyframes boxglow2 {
 	from {
-		box-shadow: 0 0 12px #E3C410;
+		box-shadow: 0 0 12px #e3c410;
 		background-color: #000000;
 	}
 	50% {
-		box-shadow: 0 0 1px #E3C410;
-		background-color: #8B8C96;
+		box-shadow: 0 0 1px #e3c410;
+		background-color: #8b8c96;
 	}
 	to {
-		box-shadow: 0 0 12px #E3C410;
+		box-shadow: 0 0 12px #e3c410;
 		background-color: #000000;
 	}
 }
@@ -773,7 +840,7 @@ li{
 		background-color: #000000;
 	}
 	50% {
-		background-color: #599BC3;
+		background-color: #599bc3;
 	}
 	to {
 		background-color: #000000;
@@ -782,49 +849,66 @@ li{
 
 @keyframes flashpa {
 	from {
-		background-color: #3A968E;
+		background-color: #3a968e;
 	}
 	50% {
-		background-color: #56F0E7;
+		background-color: #56f0e7;
 	}
 	to {
-		background-color: #3A968E;
+		background-color: #3a968e;
 	}
 }
 
-.flashp{
+.flashp {
 	animation: flashpa 5s infinite linear;
 }
 
 @keyframes flashta {
 	from {
-		background-color: #3D386C;
+		background-color: #3d386c;
 	}
 	50% {
-		background-color: #746AD9;
+		background-color: #746ad9;
 	}
 	to {
-		background-color: #3D386C;
+		background-color: #3d386c;
 	}
 }
 
-.flasht{
+.flasht {
 	animation: flashta 3s infinite linear;
 }
 
-
-.loading{
+.loading {
 	animation: boxglow2 2s infinite ease-in-out;
 }
 
 @media only screen and (max-height: 640px) {
-	.loginfeatures{
+	.loginfeatures {
 		top: 59px;
 		overflow: auto;
 	}
 }
-.mailsubject + .mailsubject{
+.mailsubject + .mailsubject {
 	border-top: 1px dashed gray;
 	padding-top: 4px;
 	margin-top: 4px;
+}
+
+span.ellipsis {
+	display: inline-block;
+}
+
+.ellipsis {
+	cursor: pointer;
+	max-width: 100%;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+}
+
+.ellipsis:hover {
+	overflow: visible;
+	white-space: normal;
+	height: auto;
 }

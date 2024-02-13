@@ -590,7 +590,10 @@ function render_monster(monster)
 	}
 	if(def.explanation)
 	{
-		html+=info_line({line:def.explanation,color:"gray"});
+		// https://www.w3schools.com/cssref/css3_pr_text-overflow.php
+		// html+=info_line({line:def.explanation,style:`display:inline-block; color: gray; overflow: hidden;text-overflow: ellipsis; max-width:100%;`});
+		const ellipsis = def.explanation && def.explanation.length > 20 ? true: false;
+		html+=info_line({line:def.explanation,color:"gray", ellipsis});
 	}
 	html+=button_line({name:"<span style='color:gray'>{}</span><span style='color:white'>:</span> INSPECT",onclick:"ui_inspect(xtarget||ctarget)",color:colors.inspect});
 	html+="</div>";
@@ -672,8 +675,9 @@ function info_line(info)
 	if(info.stunned) addition=" <span style='color: #FF9601'>[STUN]</span>";
 	if(info.line)
 	{
+		const classEllipsis = info.ellipsis ? " ellipsis" : "";
 		if(info.onclick) info.line="<span class='clickable tomimick inline-block' onclick=\""+info.onclick+"\" ontouchstart=\""+info.onclick+"\">"+info.line+"</span>";
-		html+="<span class='cbold' style='color: "+color+"'>"+info.line+"</span>"+addition+"<br />";
+		html+=`<span class='cbold${classEllipsis}' style='color: ${color}'>${info.line}</span>${addition}<br />`;
 	}
 	else if(info.vcolor) html+="<span class='cbold' style='color: "+color+"'>"+info.name+"</span>: <span style='color: "+info.vcolor+"'>"+info.value+addition+"</span><br />";
 	else html+="<span class='cbold' style='color: "+color+"'>"+info.name+"</span>: "+info.value+addition+"<br />";
