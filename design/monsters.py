@@ -100,6 +100,8 @@ monsters={
 					], 
 				"spawnAmount" : [1, 2],
 				# "boundary": [[-44.5, -419.5, 40.5, -364]], # TODO: this could limit where they can move
+				# TODO: could also configure the stop_pursuit causes to have different behaviour.
+				"stop_pursuit_despawn": False
 				}], 
 			[20000, "bee_drone", {
 				# Spawns 0..1 every 20s at the boss ignoring range to the player, targeting a random player that has attacked the boss
