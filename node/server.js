@@ -11504,6 +11504,8 @@ function new_monster(instance, map_def, args) {
 		monster.owner = map_def.owner;
 	} else if (map_def.stype == "spawn") {
 		monster.spawn = true;
+		monster.spawn_stop_pursuit_despawn =
+			map_def.spawn_stop_pursuit_despawn !== undefined ? map_def.spawn_stop_pursuit_despawn : true;
 		monster.x = map_def.x;
 		monster.y = map_def.y;
 		monster.master = map_def.master;
@@ -11877,8 +11879,11 @@ function stop_pursuit(monster, args) {
 	}
 
 	if (monster.spawn && !args.redirect) {
-		server_log(`${monster.id} being removed due to monster.spawn && !args.redirect`);
-		return remove_monster(monster, { method: "disappear" });
+		// TODO: handle cases where spawn_stop_pursuit_despawn is not a bool, e.g. args.cause is specified.
+		if (monster.spawn_stop_pursuit_despawn) {
+			server_log(`${monster.id} being removed due to monster.spawn && !args.redirect`);
+			return remove_monster(monster, { method: "disappear" });
+		}
 	}
 
 	if (is_sdk && args && args.cause) {
@@ -13359,6 +13364,7 @@ function update_instance_monster_spawn_minions(monster, instance) {
 						// TODO: don't despawn theese mobs if the player is "gone" / dies and stop_pursuit is called, should be an option, as this is how the current behaviour is on spike
 						// server.js attack_target_or_move calls stop_pursuit, we could extend with some retarge behaviour or the likes
 						stype: "spawn",
+						spawn_stop_pursuit_despawn: "stop_pursuit" in spawnOptions ? spawnOptions.stop_pursuit_despawn : undefined,
 						x: spot.x,
 						y: spot.y,
 						target: player.name,
