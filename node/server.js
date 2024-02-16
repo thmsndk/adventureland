@@ -13149,7 +13149,8 @@ function update_instance_monster_spawn_minions(monster, instance) {
 						// TODO: don't despawn theese mobs if the player is "gone" / dies and stop_pursuit is called, should be an option, as this is how the current behaviour is on spike
 						// server.js attack_target_or_move calls stop_pursuit, we could extend with some retarge behaviour or the likes
 						stype: "spawn",
-						spawn_stop_pursuit_despawn: "stop_pursuit" in spawnOptions ? spawnOptions.stop_pursuit_despawn : undefined,
+						spawn_stop_pursuit_despawn:
+							"stop_pursuit_despawn" in spawnOptions ? spawnOptions.stop_pursuit_despawn : undefined,
 						x: spot.x,
 						y: spot.y,
 						target: player.name,
