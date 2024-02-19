@@ -628,6 +628,24 @@ conditions={
 		"aura":True,
 		"duration":30*1000,
 	},
+	"bee_pheromones_attack":{
+		"skin":"placeholder",
+		"name":"Pheromone: Attack",
+		"interval":320,
+		"heal":200,
+		"duration":4*1000, # this duration does not seem to do anything?
+		"ui":True,
+		"buff":True,
+	},
+	"bee_pheromones_heal":{
+		"skin":"essenceoflife",
+		"name":"Pheromone: Heal",
+		"interval":320,
+		"heal":200,
+		"duration":4*1000, # this duration does not seem to do anything?
+		"ui":True,
+		"buff":True,
+	},
 }
 
 if 0:
