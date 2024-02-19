@@ -49,7 +49,7 @@ monsters={
 	},
 	"bee_queen":{
 		"name":"Queen Bee",
-		"speed":30,"hp":400000,"xp":100000, "gold":400,
+		"speed":30,"hp":600000,"xp":100000, "gold":400,
 		"attack":100,"damage_type":"physical","range":25,"frequency":1,
 		# "grow": True # can be defined in map.monsters respawns monsters untill the .count property on the map.monsters entry is reached
 		# respawn > 200 respawns the monster 200 * 720ms..1200ms = 144.000s..240.000s = 2.4m .. 4m after death
@@ -80,7 +80,7 @@ monsters={
 			# TODO: don't despawn theese mobs if the player is "gone" and stop_pursuit is called
 			# instead make them swarm a new target?
 			# TODO: Make the UI show the mechanics?
-			[10000, "bee_worker", {
+			[9000, "bee_worker", {
 				# TODO: ability to define a maxSpawnTime, so it could be random in a range.
 
 				# This is the default behaviour on crypt or crabxx, spawn monsters on players in 400 range
@@ -110,7 +110,10 @@ monsters={
 			}] 
 			# TODO: can we control spawning mechanics more? e.g. a wave with a random amount of monsters of different types
 		],
-		"explanation":"Her primary role is to lay eggs, and she is essential for the colony's survival. The queen produces pheromones that help maintain colony cohesion and regulate the behavior of other bees.",		
+		"explanation":"Her primary role is to lay eggs, and she is essential for the colony's survival. The queen produces pheromones that help maintain colony cohesion and regulate the behavior of other bees.",
+		"abilities":{
+			"bee_pheromones_queen_signal":{"cooldown":2500,"range":40},
+		},
 		
 	},
 	"bee_worker":{
