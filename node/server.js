@@ -12090,6 +12090,50 @@ function update_instance(instance) {
 							kill_monster(attacker, monster);
 						}
 					}
+
+					if (name === "bee_pheromones_attack") {
+						// if monster has no target, find a new target
+						if (!monster.target) {
+							for (const playerId in instance.players) {
+								const player = instance.players[playerId];
+
+								if (player.is_npc || player.rip) {
+									continue;
+								}
+
+								// TODO: This will potentially cause all left bee workers to acquire a target
+								// TODO: how do we prevent them swarming? causing terrified / petrified.
+								// var excess = max(0,max(player.targets_p - player.courage, max(player.targets_m - player.mcourage, player.targets_u - player.pcourage)),);
+								// TODO: perhaps we can p ut that into a smarter function to determine "excess" targets and if we can assign this target
+								if (distance(player, monster) < 150 /* TODO: don't hardcode */) {
+									// TODO: target_player will call increase_targets, we might be able to use that to detect if they are at their target limit and choose another player.
+									target_player(monster, player);
+									break;
+								}
+							}
+						}
+					}
+
+					if (name === "bee_pheromones_heal") {
+						// TODO: this condition needs an interval
+						// TODO: if we are healing, remove target?
+						// instance.monsters[monster.focus];
+						for (const mid in instance.monsters) {
+							const otherMonster = instance.monsters[mid];
+							if (otherMonster.type !== "bee_queen" /* TODO: configuration in condition */) {
+								continue;
+							}
+
+							// heal queen
+							const healAmount = G.conditions.bee_pheromones_heal.heal;
+							// if (monster.immune) {
+							// 	heal = 0;
+							// }
+							disappearing_text({}, otherMonster, "+" + healAmount, { color: "heal", xy: 1 });
+							otherMonster.hp = min(otherMonster.max_hp, otherMonster.hp + healAmount);
+						}
+					}
+
 					monster.u = true;
 					monster.cid++;
 				}
@@ -12138,6 +12182,8 @@ function update_instance(instance) {
 
 				if (name == "healing") {
 					var target = monster;
+					// TODO: use the range of the ability to decide if the target is the focus target
+					// TODO: is the monster allowed to heal itself?
 					if (focus && distance(focus, monster) < 120) {
 						target = focus;
 					}
@@ -12214,7 +12260,34 @@ function update_instance(instance) {
 					}
 				}
 
-				if (name == "bee_sting") {
+				if (name === "bee_pheromones_queen_signal") {
+					// find bee workers
+					// apply attack or heal condition
+					for (const mid in instance.monsters) {
+						const otherMonster = instance.monsters[mid];
+						// if (otherMonster.type !== "bee_queen" /* TODO: configuration in condition */) {
+						// 	continue;
+						// }
+						if (!otherMonster.spawn) {
+							continue;
+						}
+
+						// if monster does not have bee_pheromones_heal or bee_pheromones_attack and is spawned, they should get the condition added
+						if (!otherMonster.s.bee_pheromones_attack && !otherMonster.s.bee_pheromones_heal) {
+							if (Math.random() < 0.5) {
+								add_condition(otherMonster, "bee_pheromones_attack");
+							} else {
+								add_condition(otherMonster, "bee_pheromones_heal");
+							}
+						}
+
+						// TODO: change prefered conditions depending on remaining health and amount of spawned workers in the instance
+						// TODO: swap attackers to healers, or healers to attackers
+					}
+				}
+
+				if (name === "bee_sting") {
+					// TODO: prefer their target?
 					// TODO: Attack the closest player? or just the first player in proximity?
 					for (const playerId in instance.players) {
 						const player = instance.players[playerId];
@@ -12247,7 +12320,9 @@ function update_instance(instance) {
 
 							// TODO: calculate chance of killing itself by sting. Should we rather just do X% dmg to the monster?
 							// TODO: calculate chance of self inflicting damage, higher chance the more armor player has?
-							const selfDamageChance = 0.25; // TODO: move to aura definition
+							// https://www.desmos.com/calculator/k38oacwu4k
+							// https://www.desmos.com/calculator/i8ngwbtkuo
+							const selfDamageChance = 0.35; // TODO: move to aura definition
 							const triggerSelfDamage = Math.random() < selfDamageChance;
 
 							if (triggerSelfDamage) {
@@ -12439,6 +12514,7 @@ function update_instance(instance) {
 				stop_pursuit(monster, { force: true, cause: "bored" });
 				return;
 			}
+			// TODO: this should be configurable in the supporter configuration, e.g. minimum distance to focus target
 			if (focus && distance(focus, monster) > 40 && !monster.moving) {
 				if (mode.all_smart) {
 					if (!monster.worker) {
@@ -13357,7 +13433,7 @@ function update_instance_monster_spawn_minions(monster, instance) {
 				server_log(`${instance.map} ${instance.name} Potential targets: ${JSON.stringify(monster.points)}`);
 				for (let index = 0; index < spawnAmount; index++) {
 					server_log(
-						`${instance.map} ${instance.name} spawning 1/${spawnAmount} ${name} at [${spot.x},${spot.y}] targeting ${player.name}`,
+						`${instance.map} ${instance.name} spawning ${index}/${spawnAmount} ${name} at [${spot.x},${spot.y}] targeting ${player.name}`,
 					);
 					new_monster(instance.name, {
 						type: name,
