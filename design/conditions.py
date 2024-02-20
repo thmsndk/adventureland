@@ -631,20 +631,23 @@ conditions={
 	"bee_pheromones_attack":{
 		"skin":"placeholder",
 		"name":"Pheromone: Attack",
-		"interval":320,
-		"heal":200,
-		"duration":4*1000, # this duration does not seem to do anything?
+		"interval":5000, # Handle targeting every 5 seconds
+		# "heal":200,
+		"range": 150, # The minimum range for the bee to attack target
+		"duration":4*1000, 
 		"ui":True,
 		"buff":True,
+		"explanation": "A spawned minion without a target will aggro you if you get too close"
 	},
 	"bee_pheromones_heal":{
-		"skin":"essenceoflife",
+		"skin":"placeholder",
 		"name":"Pheromone: Heal",
-		"interval":320,
-		"heal":200,
-		"duration":4*1000, # this duration does not seem to do anything?
+		"interval":4000, # Heal every 4 seconds
+		"heal":150,
+		"duration":4*1000, 
 		"ui":True,
 		"buff":True,
+		"explanation": "Will aid & tend to the queen, healing the queen."
 	},
 }
 
