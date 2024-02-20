@@ -112,7 +112,7 @@ monsters={
 		],
 		"explanation":"Her primary role is to lay eggs, and she is essential for the colony's survival. The queen produces pheromones that help maintain colony cohesion and regulate the behavior of other bees.",
 		"abilities":{
-			"bee_pheromones_queen_signal":{"cooldown":2500,"range":40},
+			"bee_pheromones_queen_signal":{"cooldown":5000,"range":40},
 		},
 		
 	},
