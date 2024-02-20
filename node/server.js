@@ -12124,8 +12124,13 @@ function update_instance(instance) {
 								continue;
 							}
 
+							if (distance(player, monster) > def.range) {
+								// TODO: If we are conditioned to heal the queen, but is out of range, should we move towards the queen?
+								continue;
+							}
+
 							// heal queen
-							const healAmount = G.conditions.bee_pheromones_heal.heal;
+							const healAmount = def.heal;
 							// if (monster.immune) {
 							// 	heal = 0;
 							// }

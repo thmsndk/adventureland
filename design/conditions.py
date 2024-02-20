@@ -644,6 +644,7 @@ conditions={
 		"name":"Pheromone: Heal",
 		"interval":4000, # Heal every 4 seconds
 		"heal":150,
+		"range": 100, # The minimum range for the bee to heal the queen
 		"duration":4*1000, 
 		"ui":True,
 		"buff":True,
