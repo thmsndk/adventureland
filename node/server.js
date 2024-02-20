@@ -12105,7 +12105,7 @@ function update_instance(instance) {
 								// TODO: how do we prevent them swarming? causing terrified / petrified.
 								// var excess = max(0,max(player.targets_p - player.courage, max(player.targets_m - player.mcourage, player.targets_u - player.pcourage)),);
 								// TODO: perhaps we can p ut that into a smarter function to determine "excess" targets and if we can assign this target
-								if (distance(player, monster) < 150 /* TODO: don't hardcode */) {
+								if (distance(player, monster) < def.range /* TODO: don't hardcode */) {
 									// TODO: target_player will call increase_targets, we might be able to use that to detect if they are at their target limit and choose another player.
 									target_player(monster, player);
 									break;
@@ -12129,8 +12129,10 @@ function update_instance(instance) {
 							// if (monster.immune) {
 							// 	heal = 0;
 							// }
-							disappearing_text({}, otherMonster, "+" + healAmount, { color: "heal", xy: 1 });
+							disappearing_text({}, otherMonster, "+" + healAmount, { color: "heal", xy: 1 }); // TODO: should be batched with events instead of sent imediately.
 							otherMonster.hp = min(otherMonster.max_hp, otherMonster.hp + healAmount);
+							// TODO: implement a ui event where the type is draw_line, this should be between two entities, perhaps with the ability to draw lines between specific points.
+							events.push(["ui", { type: "cx_sent", sender: monster.id, receiver: otherMonster.id }]);
 						}
 					}
 
@@ -12298,9 +12300,9 @@ function update_instance(instance) {
 
 						if (distance(player, monster) < abilityDefinition.range) {
 							// TODO: forward ability definition to commence attack?
-							server_log(
-								`${instance.map} ${instance.name} ${monster.name} ${monster.is_player} bee_sting ${player.name} ${player.is_player}`,
-							);
+							// server_log(
+							// 	`${instance.map} ${instance.name} ${monster.name} ${monster.is_player} bee_sting ${player.name} ${player.is_player}`,
+							// );
 							// xy_emit(monster, "chat_log", { owner: "Grinch", message: phrase, id: monster.id, color: "#418343" });
 							events.push([
 								"game_log",
