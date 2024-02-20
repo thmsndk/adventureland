@@ -11919,9 +11919,9 @@ function update_instance(instance) {
 								continue;
 							}
 
-							if (distance(player, monster) > def.range) {
+							if (distance(monster, otherMonster) > def.range) {
 								// TODO: If we are conditioned to heal the queen, but is out of range, should we move towards the queen?
-								continue;
+								break;
 							}
 
 							// heal queen
