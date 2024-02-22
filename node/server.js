@@ -11889,6 +11889,9 @@ function update_instance(instance) {
 					if (name === "bee_pheromones_attack") {
 						// if monster has no target, find a new target
 						if (!monster.target) {
+							// Make them roam when they have no target
+							monster.map_def.roam = true;
+
 							for (const playerId in instance.players) {
 								const player = instance.players[playerId];
 
@@ -11919,8 +11922,42 @@ function update_instance(instance) {
 								continue;
 							}
 
+							monster.map_def.roam = true;
+
 							if (distance(monster, otherMonster) > def.range) {
-								// TODO: If we are conditioned to heal the queen, but is out of range, should we move towards the queen?
+								monster.map_def.roam = false;
+								// TODO: can we make it circle around the queen as movement behaviour?
+								// This movement logic is taken from .focus
+								if (!monster.moving) {
+									//  What exactly is this all_smart mode for?
+									if (mode.all_smart) {
+										if (!monster.worker) {
+											monster.working = true;
+											workers[wlast++ % workers.length].postMessage({
+												type: "fast_astar",
+												in: monster.in,
+												id: monster.id,
+												map: monster.map,
+												sx: monster.x,
+												sy: monster.y,
+												tx: otherMonster.x,
+												ty: otherMonster.y,
+											});
+										}
+									} else {
+										monster.ogoing_x = monster.going_x;
+										monster.ogoing_y = monster.going_y;
+										monster.going_x = monster.x + (otherMonster.x - monster.x) / 2;
+										monster.going_y = monster.y + (otherMonster.y - monster.y) / 2;
+										if (mode.path_checks && !can_move(monster)) {
+											monster.going_x = monster.ogoing_x;
+											monster.going_y = monster.ogoing_y;
+										} else {
+											start_moving_element(monster);
+										}
+									}
+								}
+
 								break;
 							}
 
