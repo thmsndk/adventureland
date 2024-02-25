@@ -18,5 +18,11 @@ fi
 # wait a second for the python stuff to come up
 sleep 5
 
+# pwd this scripts runs inside /adventureland/node
+
+# make sure that we have a lib folder if it has not been installed
+# this installs flask and any future requirements
+pip install -t ../lib -r ../requirements.txt
+
 echo "Starting $1 $2 on port $3"
 exec node /adventureland/node/server.js $1 $2 $3
