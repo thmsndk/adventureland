@@ -4,9 +4,27 @@ you can configure
 - map specific drops is an additional drop compared to the monster specific drop see server.js -> drop_something
 - monster specific drops
 
-the configuration is a tuple with a chance and an item. the item can also be a reference to a list of other items.
-[chance, open, "dropKey"]
-[chance, "itemKey"]
+The configuration is a tuple with a chance and an item. the item can also be a reference to a list of other items.
+
+- [chance, open, "dropKey"]
+- [chance, "itemKey"]
+
+Example of `G.drops.crypt`
+
+```python
+"cave":[
+	[0.0001,"wattire"],
+	[0.0001,"wgloves"],
+	[0.0004,"ringsj"],
+	[0.0006,"hpamulet"],
+	[0.0006,"hpbelt"],
+	[0.00008,"gem0"],
+	[1.0/600000,"cryptkey"]
+	#[0.001,"ornament"],
+	#[0.001,"mistletoe"],
+	#[0.001,"candycane"],
+]
+```
 
 You can also bundle drops and refernce them
 
@@ -37,11 +55,11 @@ So for each item in the drop table, you will have a chance for rolling a success
 This method is used
 
 - in `issue_monster_award`
-- if the monster is `cooperative` it will call `issue_monster_awards` and nothing else
-- else it will call `drop_something` and something with stats calculations
+  - if the monster is `cooperative` it will call `issue_monster_awards` and nothing else
+  - else it will call `drop_something` and something with stats calculations
 - in `issue_monster_awards`
-- if your share is bigger than 0.0025
-  \_ in `complete_attack` if the target has `.drop_on_hit`
+  - if your share is bigger than 0.0025
+- in `complete_attack` if the target has `.drop_on_hit`
 
 If monster has the `1hp` attribute the `global_mult` will be multiplied by `1000`
 
