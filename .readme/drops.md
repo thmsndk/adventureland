@@ -110,7 +110,28 @@ if (
 }
 ```
 
-Konami mode
+## monster.drops
+
+```js
+if (
+	((!monster.temp || item[0] > 0.00001) &&
+		Math.random() / share / player.luckm / monster.level / monster_mult < item[0]) ||
+	mode.drop_all
+) {
+	// /hp_mult - removed [13/07/18]
+	drop_item_logic(drop, item, is_in_pvp(player, 1));
+}
+```
+
+## konami `player.tskin == "konami"`
+
+```js
+D.drops.konami.forEach(function (item) {
+	if (Math.random() / share / player.luckm / monster.level < item[0] || mode.drop_all) {
+		drop_item_logic(drop, item, is_in_pvp(player, 1));
+	}
+});
+```
 
 # drop_one_thing(player, items, args)
 
