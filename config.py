@@ -124,6 +124,12 @@ update_notes=[
 	"Fix bug regarding shiny items #115",
 	"Add respawn time to game response #117",
 	"Fix bug with Giveaways #125",
+	"--- BEE DUNGEON ---",
+	" Added bee_sting ability to workers",
+	" Set pieces only drops from queen",
+	" Reworked queen room doorway guard spawn zones",
+	" Queen will buff workers to cause them to heal / attack"
+	" Created characers are lvl 55 with basic vendor gear"
 
 ]
 
