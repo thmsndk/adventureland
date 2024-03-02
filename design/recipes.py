@@ -509,10 +509,19 @@ craft={
 	},
     "honeypot":{
 		"items":[
-			[1,"bee_honey"],
-            [1,"bee_propolis"],
+			[10,"bee_honey"],
+            [10,"bee_propolis"],
 			[1,"hpot0"],
             [1,"mpot0"],
+		],
+		"cost":0,
+	},
+	"honeypot1":{
+		"items":[
+			[10,"bee_honey"],
+            [10,"bee_propolis"],
+			[1,"hpot1"],
+            [1,"mpot1"],
 		],
 		"cost":0,
 	},
