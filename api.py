@@ -467,12 +467,61 @@ def create_character_api(**args):
 		character=Character(name=simplify_name(name),owner=user.k(),type=char,referrer=owner.referrer,info=GG())
 		character.info.characterth=characterth
 		character.info.name=name
+		
 		character.info.gold=0
-		character.info.items=[{"name":"hpot0","q":200,"gift":1},{"name":"mpot0","q":200,"gift":1}]
+		character.info.items=[
+			{"name":"hpot0","q":9999,"gift":1},
+			{"name":"mpot0","q":9999,"gift":1},
+			# {"name":"honeyearring","q":1,"gift":1},
+			# {"name":"honeyring","q":1,"gift":1},
+			# {"name":"honeyamulet","q":1,"gift":1},
+			# {"name":"honeyamulet","q":1, "level": 2,"gift":1},
+			# {"name":"mpot0","q":1,"gift":1},
+			# {"name":"mpot0","q":1,"gift":1},
+			# {"name":"mpot0","q":1,"gift":1},
+		]
 		character.info.slots=copy.deepcopy(base["base_slots"])
 		if 1:
+			# basic vendor gear
 			character.info.slots["helmet"]={"name":"helmet","level":0,"gift":1}
 			character.info.slots["shoes"]={"name":"shoes","level":0,"gift":1}
+			character.info.slots["chest"]={"name":"coat","level":0,"gift":1}
+			character.info.slots["pants"]={"name":"pants","level":0,"gift":1}
+			character.info.slots["gloves"]={"name":"gloves","level":0,"gift":1}
+
+			#  increase level of basic gear for testing dungeon
+			character.level=55
+			for slot_name, slot in character.info.slots.items():
+				slot["level"] = 7
+				slot["stat_type"] = base["main_stat"]
+			
+			# belt
+			character.info.slots["belt"]={"name":"hpbelt","level":2,"gift":1}
+
+			# amulet
+			character.info.slots["amulet"]={"name":"hpamulet","level":2,"gift":1}
+
+			# earring
+			# lvl 0  stat earrings?, requires you to be smart about what you are farming
+			# character.info.slots["earring1"]={"name":base["main_stat"]+"earring","level":0,"gift":1}
+			# character.info.slots["earring2"]={"name":base["main_stat"]+"earring","level":0,"gift":1}
+			
+			# ring
+			character.info.slots["ring1"]={"name":"ringsj","level":1,"gift":1}
+			character.info.slots["ring2"]={"name":"ringsj","level":1,"gift":1}
+
+			# offhand
+			if(char == "ranger"):
+				character.info.slots["offhand"]={"name":"quiver","level":3,"gift":1}
+			if(char == "rogue"):
+				character.info.slots["offhand"]={"name":"claw","level":7,"gift":1}
+			if(char == "warrior"):
+				character.info.slots["offhand"]={"name":"blade","level":7,"gift":1}
+			if(char == "mage"):
+				character.info.slots["offhand"]={"name":"wbook0","level":1,"gift":1}
+			if(char == "priest"):
+				character.info.slots["offhand"]={"name":"wbook0","level":1,"gift":1}
+
 		character.info.stats={}
 		#character.info.gender=gender
 		character.info.skin=base["looks"][look][0]
