@@ -130,8 +130,13 @@ drops={
 			[1.0/10,"bee_propolis"],
 			[1.0/10,"bee_pollen"],
 			[1.0/50,"honeypot"],
+			[1.0/50,"honeypot"],
+			[1.0/50,"honeypot"],
+			[1.0/50,"honeypot1"],
+			[1.0/50,"honeypot1"],
+			[1.0/50,"honeypot1"],
 			# [1.0/600000,"open", "beeset"], # TODO: We could also type the drops in specifically?
-			[1.0/1000,"beekey"],
+			[1.0/2000,"beekey"],
 			
 		]
 	},
@@ -172,15 +177,29 @@ drops={
 			# [1.0/6000,"stinger"], # queens don't have a stinger!
 			[1.0/5,"beekey"],
 			[1.0/10,"open", "beeset"], # TODO: We could also type the drops in specifically?
+			[1.0/10,"open", "beeset"], # TODO: We could also type the drops in specifically?
 			[1.0/5,"honeypot"],
 			[1.0/5,"honeypot"],
+			[1.0/5,"honeypot"],
+			[1.0/5,"honeypot"],
+			[1.0/5,"honeypot1"],
+			[1.0/5,"honeypot1"],
+			[1.0/5,"honeypot1"],
+			[1.0/5,"honeypot1"],
 			
 		],
 		"bee_worker":[
 			[1.0/10,"beewings"],
 			[1.0/3000,"stinger"], # the stinger is developed instead of the queens reproductive organ.
 			[1.0/25,"honeypot"],
+			[1.0/25,"honeypot"],
+			[1.0/25,"honeypot"],
+			[1.0/25,"honeypot1"],
+			[1.0/25,"honeypot1"],
+			[1.0/25,"honeypot1"],
 			[1.0/2000,"beekey"],
+			[1/10,"bee_honey"],
+            [1/10,"bee_propolis"],
 		],
 		"bee_drone":[
 			[1.0/10,"beewings"],

@@ -5025,6 +5025,19 @@ pots={
 		"g":20,
 		"explanation": "A strict diet of this makes you a queen!"
 	},
+	"honeypot1":{
+		"type":"pot",
+		"skin":"honeypot",
+		"gives":[["hp",150*2],["mp",250*2]],
+		"bee_dungeon": {
+			"gives":[["hp",100]*2,["mp",150*2]],
+		},
+		"name":"Royal Jelly",
+		"cooldown":2000,
+		"s":True,
+		"g":20,
+		"explanation": "A strict diet of this makes you a queen!"
+	},
 }
 
 scrolls={
