@@ -5032,7 +5032,7 @@ pots={
 		"bee_dungeon": {
 			"gives":[["hp",100]*2,["mp",150*2]],
 		},
-		"name":"Royal Jelly",
+		"name":"Condensed Royal Jelly",
 		"cooldown":2000,
 		"s":True,
 		"g":20,
