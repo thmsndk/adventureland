@@ -120,7 +120,7 @@ monsters={
 		"name":"Worker Bee",
 		"skin": "bee",
 		"speed":40,"hp":5500,"xp":100,"gold":40,
-		"attack":150,"damage_type":"physical","range":20,"frequency":1,
+		"attack":80,"damage_type":"physical","range":20,"frequency":1,
 		"respawn":-1, # should not respawn on death
 		# "roam":True, # Roams around the map
 		"aggro":1.2, #"aggro": 0.5, // 50% chance to attack on sight
@@ -130,7 +130,6 @@ monsters={
 		"phresistance":60,
 		"armor":50,
 		"resistance":50,
-		#TODO: Poison sting ability. Has a chance to kill bee
 		"explanation":"Worker bees are females that do not reproduce. They perform various tasks such as foraging for nectar and pollen, tending to the queen and developing brood, cleaning and defending the hive, and producing beeswax. Worker bees are the most numerous bees in a hive.",
 		# Elena is a supporter, this makes the monster.focus property be set to another humanoid target at 300 distance
 		# if a monster has .focus 
@@ -150,7 +149,7 @@ monsters={
 		"name":"Drone Bee",
 		"skin": "bee",
 		"speed":20,"hp":300,"xp":150,"gold":40,
-		"attack":0,"damage_type":"physical","range":1,"frequency":0.5,
+		"attack":1,"damage_type":"physical","range":1,"frequency":0.5,
 		"respawn":-1, # should not respawn on death
 		# "roam":True, # Roams around the map
 		
