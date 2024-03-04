@@ -80,7 +80,7 @@ monsters={
 			# TODO: don't despawn theese mobs if the player is "gone" and stop_pursuit is called
 			# instead make them swarm a new target?
 			# TODO: Make the UI show the mechanics?
-			[7500, "bee_worker", {
+			[8500, "bee_worker", {
 				# TODO: ability to define a maxSpawnTime, so it could be random in a range.
 
 				# This is the default behaviour on crypt or crabxx, spawn monsters on players in 400 range
