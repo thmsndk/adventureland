@@ -643,9 +643,9 @@ conditions={
 		"skin":"placeholder",
 		"name":"Pheromone: Heal",
 		"interval":3000, # Heal every 3 seconds
-		"heal":250,
+		"heal":450,
 		"range": 100, # The minimum range for the bee to heal the queen
-		"duration":4*1000, 
+		"duration":5*1000, 
 		"ui":True,
 		"buff":True,
 		"explanation": "Will aid & tend to the queen, healing the queen."
