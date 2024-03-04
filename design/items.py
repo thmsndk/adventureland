@@ -1736,7 +1736,7 @@ armor={
 		"name":"Honey Cape",
 		"bee_dungeon": {
 			#TODO: additional stats / upgrade inside bee_dungeon
-			"courage" : 1
+			"courage" : 1,
 			"upgrade":{
 				"courage" : 0.5
 			},
@@ -1785,7 +1785,7 @@ armor={
 		},
 		"bee_dungeon": {
 			#TODO: additional stats / upgrade inside bee_dungeon
-			"courage" : 1
+			"courage" : 1,
 			"upgrade":{
 				"courage" : 0.5
 			},
@@ -4431,7 +4431,7 @@ offhands={
 		},
 		"bee_dungeon": {
 			#TODO: additional stats / upgrade inside bee_dungeon
-			"courage" : 1
+			"courage" : 1,
 			"upgrade":{
 				"courage" : 0.5
 			},
@@ -4524,7 +4524,7 @@ offhands={
 		},
 		"bee_dungeon": {
 			#TODO: additional stats / upgrade inside bee_dungeon
-			"courage" : 1
+			"courage" : 1,
 			"upgrade":{
 				"courage" : 0.5
 			},
@@ -4570,7 +4570,7 @@ offhands={
 		},
 		"bee_dungeon": {
 			#TODO: additional stats / upgrade inside bee_dungeon
-			"courage" : 1
+			"courage" : 1,
 			"upgrade":{
 				"courage" : 0.5
 			},
