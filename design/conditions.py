@@ -633,8 +633,8 @@ conditions={
 		"name":"Pheromone: Attack",
 		"interval":5000, # Handle targeting every 5 seconds
 		# "heal":200,
-		"range": 150, # The minimum range for the bee to attack target
-		"duration":4*1000, 
+		"range": 100, # The minimum range for the bee to attack target
+		"duration":10*1000, 
 		"ui":True,
 		"buff":True,
 		"explanation": "A spawned minion without a target will aggro you if you get too close"
@@ -645,7 +645,7 @@ conditions={
 		"interval":3000, # Heal every 3 seconds
 		"heal":350,
 		"range": 100, # The minimum range for the bee to heal the queen
-		"duration":5*1000, 
+		"duration":10*1000, 
 		"ui":True,
 		"buff":True,
 		"explanation": "Will aid & tend to the queen, healing the queen."
