@@ -119,8 +119,8 @@ monsters={
 	"bee_worker":{
 		"name":"Worker Bee",
 		"skin": "bee",
-		"speed":40,"hp":5500,"xp":100,"gold":40,
-		"attack":80,"damage_type":"physical","range":20,"frequency":1,
+		"speed":40,"hp":3500,"xp":100,"gold":40,
+		"attack":50,"damage_type":"physical","range":20,"frequency":1,
 		"respawn":-1, # should not respawn on death
 		# "roam":True, # Roams around the map
 		"aggro":1.2, #"aggro": 0.5, // 50% chance to attack on sight
