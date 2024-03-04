@@ -1736,6 +1736,10 @@ armor={
 		"name":"Honey Cape",
 		"bee_dungeon": {
 			#TODO: additional stats / upgrade inside bee_dungeon
+			"courage" : 1
+			"upgrade":{
+				"courage" : 0.5
+			},
 		},
 		"upgrade":{
 			"armor":1.5,
@@ -1778,6 +1782,13 @@ armor={
 			# "armor": 2.25,
 			# "resistance": 2.25
 			"vit": 1
+		},
+		"bee_dungeon": {
+			#TODO: additional stats / upgrade inside bee_dungeon
+			"courage" : 1
+			"upgrade":{
+				"courage" : 0.5
+			},
 		},
 		"name":"Honey Chest",
 		"g":480000,
@@ -4418,6 +4429,13 @@ offhands={
 			"armor":12,
 			"resistance":7,
 		},
+		"bee_dungeon": {
+			#TODO: additional stats / upgrade inside bee_dungeon
+			"courage" : 1
+			"upgrade":{
+				"courage" : 0.5
+			},
+		},
 		"name":"Shield",
 		"g":24000,
 		"grades":[4,8],
@@ -4504,6 +4522,13 @@ offhands={
 		"compound":{
 			"int":6,
 		},
+		"bee_dungeon": {
+			#TODO: additional stats / upgrade inside bee_dungeon
+			"courage" : 1
+			"upgrade":{
+				"courage" : 0.5
+			},
+		},
 		"name":"Book of Honey",
 		"g":12000,
 		"grades":[4,5],
@@ -4542,6 +4567,13 @@ offhands={
 			"dex":1.5,
 			"armor":2,
 			"range":3.5,
+		},
+		"bee_dungeon": {
+			#TODO: additional stats / upgrade inside bee_dungeon
+			"courage" : 1
+			"upgrade":{
+				"courage" : 0.5
+			},
 		},
 		"name":"Honey Quiver",
 		"g":24000,
@@ -7082,6 +7114,10 @@ elixirs={
 		"rpiercing": 10,
 		"duration":0.5,
 		# "withdrawal":"withdrawal"
+		"bee_dungeon": {
+			#TODO: additional stats / upgrade inside bee_dungeon
+			"courage" : 1
+		},
 	}
 }
 
@@ -7582,13 +7618,13 @@ sets={
 		"items":["honeyhelmet","honeychest","honeypants","honeyboots","honeygloves","honeyamulet","honeyring","honeyelixir", "honeyearring","honeybelt","honeycape", "honeyorb", "honeysource", "honeyquiver"],
 		"explanation":"A Bee themed set from the BEEginner dungeon",
 		"1":{"cuteness":1,},
-		"2":{"cuteness":1,},
-		"3":{"cuteness":1,},
-		"4":{"cuteness":1,},
-		"5":{"cuteness":1,},
-		"6":{"cuteness":1,},
-		"7":{"cuteness":1,},
-		"8":{"cuteness":1,},
+		"2":{"cuteness":1, "courage": 1},
+		"3":{"cuteness":1, "courage": 1},
+		"4":{"cuteness":1, "courage": 1},
+		"5":{"cuteness":1, "courage": 1},
+		"6":{"cuteness":1, "courage": 1},
+		"7":{"cuteness":1, "courage": 1},
+		"8":{"cuteness":1, "courage": 1},
 		# Only up to 8 pieces are shown in the UI 
 		"9":{"cuteness":1,},
 		"10":{"cuteness":1,},
