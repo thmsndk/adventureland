@@ -518,6 +518,7 @@ craft={
 	},
 	"honeypot1":{
 		"items":[
+			# being able to craft a higher tier gives established players a reason to buy honey/propolis from newer players
 			[10,"bee_honey"],
             [10,"bee_propolis"],
 			[1,"hpot1"],
