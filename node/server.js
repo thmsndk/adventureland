@@ -13303,7 +13303,8 @@ function update_instance_monster_spawn_minions(monster, instance) {
 			}
 
 			const pointInBoundary = random_point_in_boundary(boundary);
-			return get_safe_spot_near_point(monster.map, pointInBoundary.x, pointInBoundary.y);
+			return pointInBoundary; // safe spot might return a point outside the map it seems, as the boundary is close to the map edge.
+			// return get_safe_spot_near_point(monster.map, pointInBoundary.x, pointInBoundary.y);
 		} else if ("spawnAtBoss" in spawnOptions) {
 			return get_safe_spot_near_point(monster.map, monster.x, monster.y);
 		} else {
