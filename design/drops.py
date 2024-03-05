@@ -203,8 +203,8 @@ drops={
 			[1.0/25,"honeypot1"],
 			[1.0/25,"honeypot1"],
 			[1.0/6000,"beekey"],
-			[1/10,"bee_honey"],
-            [1/10,"bee_propolis"],
+			[1.0/10,"bee_honey"],
+            [1.0/10,"bee_propolis"],
 		],
 		"bee_drone":[
 			[1.0/10,"beewings"],
