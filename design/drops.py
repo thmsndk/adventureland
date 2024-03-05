@@ -176,8 +176,11 @@ drops={
 			[1.0/2.5,"beewings"],
 			# [1.0/6000,"stinger"], # queens don't have a stinger!
 			[1.0/5,"beekey"],
-			[1.0/10,"open", "beeset"], # TODO: We could also type the drops in specifically?
-			[1.0/10,"open", "beeset"], # TODO: We could also type the drops in specifically?
+			[1.0/50,"open", "beeset"], 
+			[1.0/50,"open", "beeset"], 
+			[1.0/50,"open", "beeset"], 
+			[1.0/50,"open", "beeset"], 
+			[1.0/50,"open", "beeset"], 
 			[1.0/5,"honeypot"],
 			[1.0/5,"honeypot"],
 			[1.0/5,"honeypot"],
@@ -186,6 +189,8 @@ drops={
 			[1.0/5,"honeypot1"],
 			[1.0/5,"honeypot1"],
 			[1.0/5,"honeypot1"],
+			[1.0/2000,"beekey"],
+			[1.0/2000,"beekey"],
 			
 		],
 		"bee_worker":[
@@ -197,7 +202,7 @@ drops={
 			[1.0/25,"honeypot1"],
 			[1.0/25,"honeypot1"],
 			[1.0/25,"honeypot1"],
-			[1.0/2000,"beekey"],
+			[1.0/6000,"beekey"],
 			[1/10,"bee_honey"],
             [1/10,"bee_propolis"],
 		],
