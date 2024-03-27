@@ -538,7 +538,7 @@ conditions={
 		"persistent":True,
 	},
 	# TODO: should be named quest, and used as a general purpose, the quest should also be able to override the skin
-	"beekeeper":{
+	"quest_beekeeper":{
 		"skin":"quest_monsterhunt",
 		"name":"Bee On The Hunt",
 		"ui":True,
