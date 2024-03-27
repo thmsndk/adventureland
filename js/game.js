@@ -3444,22 +3444,25 @@ function npc_right_click(event){
 							button: "Yes!",
 							onclick: function () {
 								socket.emit("quest", quest_request);
-								push_deferred("quest");
-								$("#merchant-item").html(
-									render_interaction(
-										{
-											auto: true,
-											skin: npc.skin,
-											message:
-												"Alrighty then! Now go defeat " +
-												character.s[questName].c +
-												" " +
-												G.monsters[character.s.monsterhunt.id].name +
-												"'s and come back here!",
-										},
-										"return_html",
-									),
-								);
+								push_deferred("quest").then(x => {
+									const quest = character.s[questName]
+									// if t === "quest_kill"
+									$("#merchant-item").html(
+										render_interaction(
+											{
+												auto: true,
+												skin: npc.skin,
+												message:
+													"Alrighty then! Now go defeat " +
+													quest.c +
+													" " +
+													G.monsters[quest.id].name +
+													"'s and come back here!",
+											},
+											"return_html",
+										),
+									);
+								});
 							},
 						},
 						"return_html",
