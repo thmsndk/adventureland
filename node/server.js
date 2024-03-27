@@ -2289,7 +2289,29 @@ function drop_something_pvp(player, target) {
 	}
 }
 
-// TODO: quest kill logic
+function quest_kill_logic(player, monster) {
+	for (const key in player.s) {
+		const quest = player.s[key];
+		if (quest.t !== "quest_kill") {
+			continue;
+		}
+
+		if (quest.sn !== region + " " + server_name) {
+			// must be on the same server
+			continue;
+		}
+
+		// Decrease remaining count
+		if (quest.id == monster.type && quest.c) {
+			quest.c--;
+		}
+
+		// Mark quest as complete
+		if (quest.c <= 0) {
+			quest.d = true;
+		}
+	}
+}
 
 function monster_hunt_logic(player, monster) {
 	var target = monster;
@@ -2399,6 +2421,7 @@ function issue_monster_awards(monster) {
 			var score = calculate_monster_score(current, monster, share);
 			current.p.stats.monsters[monster.type] = (current.p.stats.monsters[monster.type] || 0) + 1;
 			current.p.stats.monsters_diff[monster.type] = (current.p.stats.monsters_diff[monster.type] || 0) + (score - 1);
+			quest_kill_logic(current, monster, share);
 			monster_hunt_logic(current, monster, share);
 			if (current.type == "merchant") {
 				continue;
@@ -2439,6 +2462,7 @@ function issue_monster_award(monster) {
 		var score = calculate_monster_score(player, monster);
 		player.p.stats.monsters[monster.type] = (player.p.stats.monsters[monster.type] || 0) + 1;
 		player.p.stats.monsters_diff[monster.type] = (player.p.stats.monsters_diff[monster.type] || 0) + (score - 1);
+		quest_kill_logic(player, monster);
 		monster_hunt_logic(player, monster);
 		if (player.type == "merchant") {
 			return;
@@ -2464,6 +2488,7 @@ function issue_monster_award(monster) {
 			var score = calculate_monster_score(current, monster);
 			current.p.stats.monsters[monster.type] = (current.p.stats.monsters[monster.type] || 0) + 1;
 			current.p.stats.monsters_diff[monster.type] = (current.p.stats.monsters_diff[monster.type] || 0) + (score - 1);
+			quest_kill_logic(current, monster);
 			monster_hunt_logic(current, monster);
 			if (current.type == "merchant") {
 				return;
@@ -4766,7 +4791,7 @@ function init_io() {
 				return;
 			}
 
-			const questName = data.quest;
+			const questName = `quest_${data.quest}`;
 			const npcKey = data.npc; // TODO: can they omit the npc?
 
 			if (!questName) {
@@ -4800,7 +4825,7 @@ function init_io() {
 				return fail_response("quest_in_progress");
 			} else if (player.s[questName] && player.s[questName].d) {
 				// quest is completed, award a token
-				delete server.s[`${questName}_${player.s[questName].id}`]; // clear the tracked stats
+				// delete server.s[`${questName}_${player.s[questName].id}`]; // clear the tracked stats
 				delete player.s[questName];
 
 				// TODO:look up token; I think we need the npc we are interacting with, or a questname to look up rewards
@@ -4811,9 +4836,9 @@ function init_io() {
 				return success_response({ completed: true });
 			}
 
-			// TODO: Quest specific logic whne accepting a quest, should probably be extracted out in seperate modules
+			// TODO: Quest specific logic when accepting a quest, should probably be extracted out in seperate modules
 			switch (questName) {
-				case "beekeeper":
+				case "quest_beekeeper":
 					{
 						// Planned beekeeper quests
 						// killing the queen
@@ -4828,18 +4853,28 @@ function init_io() {
 						// TODO: considering this is from monsterhunts, the name/id was the name of the mob, perhaps we need to generate a unique id?
 						const quest_id = "bee_queen";
 						const count = 1;
+						// const quest_id = "bee";
+						// const count = 5;
 
 						// Give the player the quest
 						// TODO: What is dl? dl marks the monster for deleveling
-						player.s[questName] = { sn: region + " " + server_name, id: quest_id, c: count, ms: quest_ms, d: false };
+						player.s[questName] = {
+							sn: region + " " + server_name,
+							id: quest_id,
+							c: count,
+							tc: count,
+							ms: quest_ms,
+							d: false,
+							t: "quest_kill",
+						};
 
 						// keep track of the quest on the server, TODO: not sure why yet
-						server.s[`${questName}_${quest_id}`] = {
-							name: player.name,
-							id: quest_id,
-							ms: quest_ms,
-							type: "monsterhunt", // TODO: can we give it an icon?
-						};
+						// server.s[`${questName}_${quest_id}`] = {
+						// 	name: player.name,
+						// 	id: quest_id,
+						// 	ms: quest_ms,
+						// 	type: "monsterhunt", // TODO: can we give it an icon?
+						// };
 						player.hitchhikers.push(["game_response", "quest_started"]);
 						resend(player, "u+cid");
 						success_response({ started: true });
