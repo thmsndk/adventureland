@@ -2703,7 +2703,8 @@ function commence_attack(attacker, target, atype, { chained, targets, redirect }
 		targets,
 	}; // server projectile
 
-	if (!G.skills[atype].hostile) {
+	const gSkill = G.skills[atype];
+	if (!gSkill.hostile) {
 		info.positive = true;
 	}
 
@@ -2715,7 +2716,7 @@ function commence_attack(attacker, target, atype, { chained, targets, redirect }
 	// FAILURE SCENARIOS
 	if (
 		attacker.type == "merchant" &&
-		!G.skills[atype].merchant_use &&
+		!gSkill.merchant_use &&
 		!(atype == "attack" && attacker.slots.mainhand && G.items[attacker.slots.mainhand.name].wtype == "dartgun")
 	) {
 		attacker.socket.emit("game_response", { response: "attack_failed", id: target.id });
@@ -2751,8 +2752,8 @@ function commence_attack(attacker, target, atype, { chained, targets, redirect }
 	if (attacker.tskin == "konami") {
 		def.projectile = "stone_k";
 	}
-	if ((atype != "attack" || !def.projectile || atype == "heal") && G.skills[atype].projectile) {
-		def.projectile = G.skills[atype].projectile;
+	if ((atype != "attack" || !def.projectile || atype == "heal") && gSkill.projectile) {
+		def.projectile = gSkill.projectile;
 	}
 
 	// DAMAGE TYPE LOGIC
@@ -2765,20 +2766,17 @@ function commence_attack(attacker, target, atype, { chained, targets, redirect }
 	if (attacker.is_player && attacker.slots.mainhand && G.items[attacker.slots.mainhand.name].damage_type) {
 		info.damage_type = G.items[attacker.slots.mainhand.name].damage_type;
 	}
-	if (atype != "attack" && G.skills[atype].damage_type) {
-		info.damage_type = G.skills[atype].damage_type;
+	if (atype != "attack" && gSkill.damage_type) {
+		info.damage_type = gSkill.damage_type;
 	}
 
 	// PROCS
-	if (!attacker.is_player || G.skills[atype].procs) {
+	if (!attacker.is_player || gSkill.procs) {
 		info.procs = true;
 	}
 
 	// HEAL / POSITIVE
-	if (
-		G.skills[atype].heal ||
-		(attacker.is_player && attacker.slots.mainhand && attacker.slots.mainhand.name == "cupid")
-	) {
+	if (gSkill.heal || (attacker.is_player && attacker.slots.mainhand && attacker.slots.mainhand.name == "cupid")) {
 		info.heal = true;
 		info.positive = true;
 	}
@@ -2789,13 +2787,13 @@ function commence_attack(attacker, target, atype, { chained, targets, redirect }
 	}
 
 	// DAMAGE
-	if (G.skills[atype].damage) {
-		attack = G.skills[atype].damage;
+	if (gSkill.damage) {
+		attack = gSkill.damage;
 	}
 
 	// SKILL MP
-	if (G.skills[atype].mp) {
-		mp_cost = G.skills[atype].mp;
+	if (gSkill.mp) {
+		mp_cost = gSkill.mp;
 	}
 
 	if (info.procs && attacker.s.poisonous) {
@@ -2908,9 +2906,9 @@ function commence_attack(attacker, target, atype, { chained, targets, redirect }
 			info.conditions.push("frozen");
 		}
 	} else if (atype == "quickpunch" || atype == "quickstab" || atype == "smash") {
-		attack = attacker.attack * G.skills[atype].damage_multiplier;
+		attack = attacker.attack * gSkill.damage_multiplier;
 	} else if (atype == "mentalburst") {
-		attack = attacker.attack * G.skills[atype].damage_multiplier;
+		attack = attacker.attack * gSkill.damage_multiplier;
 	} else if (atype == "poisonarrow") {
 		info.conditions.push("poisoned");
 	} else if (attacker.is_monster) {
@@ -2921,7 +2919,7 @@ function commence_attack(attacker, target, atype, { chained, targets, redirect }
 		attacker.last.attack = future_ms(rng);
 	}
 
-	if (atype != "attack" && target.immune && (!G.skills[atype] || !G.skills[atype].pierces_immunity)) {
+	if (atype != "attack" && target.immune && (!gSkill || !gSkill.pierces_immunity)) {
 		disappearing_text(target.socket, target, "IMMUNE!", { xy: 1, color: "evade", nv: 1, from: attacker.id });
 		return { failed: true, reason: "skill_immune", place: atype, id: target.id };
 	}
@@ -3087,7 +3085,8 @@ function complete_attack(attacker, target, info) {
 	var pierce = "apiercing";
 	var combo = 1;
 	var combo_m = 1;
-	var atype = info.atype;
+	const atype = info.atype;
+	const gSkill = info.atype;
 	var evade = false;
 	var first = true;
 	var attack = info.attack;
@@ -3124,6 +3123,7 @@ function complete_attack(attacker, target, info) {
 			add_coop_points(attacker, target, attack * B.dps_tank_mult);
 		}
 	}
+
 	if (attacker.is_monster && attack > 0 && !info.heal) {
 		attacker.outgoing += min(target.hp, attack);
 	}
@@ -3575,8 +3575,8 @@ function complete_attack(attacker, target, info) {
 		var net = original - max(0, target.hp);
 		if (target.hp <= 0) {
 			def.kill = true;
-			if (G.skills[atype].kill_buff) {
-				add_condition(attacker, G.skills[atype].kill_buff);
+			if (gSkill.kill_buff) {
+				add_condition(attacker, gSkill.kill_buff);
 			}
 		}
 
