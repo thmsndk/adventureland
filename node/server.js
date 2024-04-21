@@ -2706,7 +2706,7 @@ function issue_player_award(attacker, target) {
 	}
 }
 
-function commence_attack(attacker, target, atype, { chained, targets, redirect } = { targets: [] }) {
+function commence_attack(attacker, target, atype, { projectile, chained, targets, redirect } = { targets: [] }) {
 	var attack = attacker.attack;
 	var mp_cost = 0;
 	var info = {
@@ -2779,6 +2779,11 @@ function commence_attack(attacker, target, atype, { chained, targets, redirect }
 
 	if ((atype != "attack" || !def.projectile || atype == "heal") && gSkill.projectile) {
 		def.projectile = gSkill.projectile;
+	}
+
+	// a specific projectile to use
+	if (projectile) {
+		def.projectile = projectile;
 	}
 
 	// DAMAGE TYPE LOGIC
@@ -8943,10 +8948,17 @@ function init_io() {
 					chainTargets.push(previousTarget);
 				}
 
+				let projectileKey = player.slots.offhand.name;
+				if (!G.projectiles[projectileKey]) {
+					// Default projectile
+					projectileKey = "crusader_shield";
+				}
+
 				const attack = commence_attack(player, target, data.name, {
 					chained: true,
 					targets: chainTargets,
 					redirect: true,
+					projectile: projectileKey,
 				});
 
 				if (!attack.failed) {
