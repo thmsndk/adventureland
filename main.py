@@ -169,8 +169,8 @@ def serve_datajs():
 		#if name=="test" and not is_sdk: key="test"
 		#logging.info(key)
 		dbmap=get_by_iid("map|%s"%key)
-			if dbmap:
-				geometry[name]=dbmap.info.data
+		if dbmap:
+			geometry[name]=dbmap.info.data
 				
 	data={
 		"version":game_version,
