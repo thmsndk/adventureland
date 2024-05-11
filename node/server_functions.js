@@ -2130,6 +2130,7 @@ function event_loop() {
 				change = true;
 			}
 		});
+
 		for (var name in instances) {
 			for (var id in instances[name].monsters) {
 				var monster = instances[name].monsters[id];
@@ -2439,6 +2440,77 @@ function event_loop() {
 			duel.seconds = instance.seconds;
 			instance_emit(id, "map_info", instance.info);
 		}
+
+		// TODO: Invasion event
+		// TODO: signups like goobrawl / abtesting?
+		// event enable / triggers
+		// monsters at a specific level?
+		// N time since last invasion event on map
+		// timers can be used to store timing data that broadcast_e should not broacast
+		// TODO: loop maps with a town dynamicly
+		const INVASION_COOLDOWN = 120; // 2 minutes
+		for (const mapName of ["main"]) {
+			const gMap = G.maps[mapName];
+			const invasionMapKey = `invasion_${mapName}`;
+			const last_event = timers[invasionMapKey];
+
+			if (!last_event) {
+				// Initialize cooldown after restart
+				timers[invasionMapKey] = future_s(INVASION_COOLDOWN);
+			}
+			/**
+			 * @type {{ map: string, stage: number, mtype: string}}
+			 */
+			let event = E[invasionMapKey];
+			if (!E[invasionMapKey] && c > last_event) {
+				// start new event, make sure next event starts in the future
+				timers[invasionMapKey] = future_s(INVASION_COOLDOWN); // TODO: random cooldown in a range
+				E[invasionMapKey] = event = {
+					map: mapName,
+					// portal coordinate?
+					stage: 0,
+					// TODO: When do they attack?
+					// TODO: find one with count > 0
+					// mtype: random_one(Object.keys(gMap.monsters)),
+					mtype: "goo",
+				};
+				broadcast("server_message", {
+					message: `Scout: ${G.monsters[event.mtype].name} seems to be up to something!`,
+					color: "#4BB6E1",
+				});
+				broadcast_e();
+			}
+
+			if (!event) {
+				continue;
+			}
+
+			const instance = instances[mapName];
+
+			// TODO: keep track of invasion monster counts
+
+			// TODO: How do we limit spawning each tick?
+			// TODO: Where do/should they spawn
+
+			// Spawn mobs / wave
+
+			// TODO: spawning crabx might mess with the crabxx event, some monsters should probably be filtered out
+			const monster_map_def = clone(gMap.monsters.find((x) => x.type === event.mtype));
+			monster_map_def.type = event.mtype;
+			var m = new_monster(mapName, monster_map_def);
+			m.invasion = true;
+			// m.skin = random_one(["goo0", "goo1", "goo2", "goo3", "goo4", "goo5", "goo6"]);
+			// m.drops=[[0.5,"funtoken"]];
+			// what is u and cid, and why is it important
+			m.u = true;
+			m.cid++;
+
+			broadcast("server_message", {
+				message: `${G.monsters[event.mtype].name} Are strengthening in numbers`,
+				color: "#4BB6E1",
+			});
+		}
+		// fort data could be stored on the fort map instance
 
 		for (var e in E) {
 			if ((E[e] && E[e].target) || Object.keys(E.duels || {}).length) {
