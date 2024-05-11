@@ -2450,6 +2450,7 @@ function event_loop() {
 		// TODO: loop maps with a town dynamicly
 		const INVASION_COOLDOWN = 120; // 2 minutes
 		for (const mapName of ["main"]) {
+			const instance = instances[mapName];
 			const gMap = G.maps[mapName];
 			const invasionMapKey = `invasion_${mapName}`;
 			const last_event = timers[invasionMapKey];
@@ -2465,6 +2466,8 @@ function event_loop() {
 			if (!E[invasionMapKey] && c > last_event) {
 				// start new event, make sure next event starts in the future
 				timers[invasionMapKey] = future_s(INVASION_COOLDOWN); // TODO: random cooldown in a range
+
+				// E is broadcasted to the players
 				E[invasionMapKey] = event = {
 					map: mapName,
 					// portal coordinate?
@@ -2474,10 +2477,26 @@ function event_loop() {
 					// mtype: random_one(Object.keys(gMap.monsters)),
 					mtype: "goo",
 				};
+
+				if (!instance.invasion) {
+					instance.invasion = {};
+				}
+
+				// TODO: spawning crabx might mess with the crabxx event, some monsters should probably be filtered out
+				const monster_map_def = clone(gMap.monsters.find((x) => x.type === event.mtype));
+				monster_map_def.grow = false;
+				instance.invasion.monster_map_def = monster_map_def;
+
+				// reset monsters
+				instance.invasion.monster_count = 0;
+				// TODO: what to do with existing monsters?
+				instance.invasion.monsters = [];
+
 				broadcast("server_message", {
 					message: `Scout: ${G.monsters[event.mtype].name} seems to be up to something!`,
 					color: "#4BB6E1",
 				});
+
 				broadcast_e();
 			}
 
@@ -2485,30 +2504,42 @@ function event_loop() {
 				continue;
 			}
 
-			const instance = instances[mapName];
-
-			// TODO: keep track of invasion monster counts
-
 			// TODO: How do we limit spawning each tick?
 			// TODO: Where do/should they spawn
 
 			// Spawn mobs / wave
+			// stage 0 spawn N monsters = def.count * (stage+10)
 
-			// TODO: spawning crabx might mess with the crabxx event, some monsters should probably be filtered out
-			const monster_map_def = clone(gMap.monsters.find((x) => x.type === event.mtype));
-			monster_map_def.type = event.mtype;
-			var m = new_monster(mapName, monster_map_def);
-			m.invasion = true;
-			// m.skin = random_one(["goo0", "goo1", "goo2", "goo3", "goo4", "goo5", "goo6"]);
-			// m.drops=[[0.5,"funtoken"]];
-			// what is u and cid, and why is it important
-			m.u = true;
-			m.cid++;
+			// TODO: reset stage data when new event starts?
+			// if (!instance.invasion[event.stage]) {
+			// 	instance.invasion[event.stage] = {
+			// 		m: [],
+			// 	};
+			// }
 
-			broadcast("server_message", {
-				message: `${G.monsters[event.mtype].name} Are strengthening in numbers`,
-				color: "#4BB6E1",
-			});
+			// TODO: if you where farming here you might be overwhelmed, make event visible and wait N before starting spawning.
+			// TODO: move calculation to event initialization
+			const spawmAmount = instance.invasion.monster_map_def.count * (event.stage + 10);
+			// console.log(instance.invasion.monster_count, spawmAmount);
+			if (instance.invasion.monster_count < spawmAmount) {
+				// monster_map_def.type = event.mtype;
+				const m = new_monster(mapName, instance.invasion.monster_map_def);
+				m.invasion = true;
+				m.cooperative = true;
+				// m.skin = random_one(["goo0", "goo1", "goo2", "goo3", "goo4", "goo5", "goo6"]);
+				// m.drops=[[0.5,"funtoken"]];
+				// what is u and cid, and why is it important
+				m.u = true;
+				m.cid++;
+
+				instance.invasion.monster_count++;
+				instance.invasion.monsters.push(m);
+
+				broadcast("server_message", {
+					message: `${G.monsters[event.mtype].name} Are strengthening in numbers`,
+					color: "#4BB6E1",
+				});
+			}
 		}
 		// fort data could be stored on the fort map instance
 
