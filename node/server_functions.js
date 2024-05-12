@@ -2448,7 +2448,8 @@ function event_loop() {
 		// N time since last invasion event on map
 		// timers can be used to store timing data that broadcast_e should not broacast
 		// TODO: loop maps with a town dynamicly
-		const INVASION_COOLDOWN = 120; // 2 minutes
+		// const INVASION_COOLDOWN = 120; // 2 minutes
+		const INVASION_COOLDOWN = 30;
 		for (const mapName of ["main"]) {
 			const instance = instances[mapName];
 			const gMap = G.maps[mapName];
@@ -2486,6 +2487,12 @@ function event_loop() {
 				const monster_map_def = clone(gMap.monsters.find((x) => x.type === event.mtype));
 				monster_map_def.grow = false;
 				instance.invasion.monster_map_def = monster_map_def;
+				instance.invasion.stages = [
+					{
+						// Stage 0
+						spawnAmount: instance.invasion.monster_map_def.count * 1,
+					},
+				];
 
 				// reset monsters
 				instance.invasion.monster_count = 0;
@@ -2519,9 +2526,54 @@ function event_loop() {
 
 			// TODO: if you where farming here you might be overwhelmed, make event visible and wait N before starting spawning.
 			// TODO: move calculation to event initialization
-			const spawmAmount = instance.invasion.monster_map_def.count * (event.stage + 10);
+			const { spawnAmount } = instance.invasion.stages[event.stage] || {};
+
+			// console.log(instance.invasion.stages);
+			// console.log(spawnAmount);
+
+			if (event.stage === 0 && instance.invasion.monster_count === spawnAmount) {
+				// TODO: set a timer for next stage activation
+				event.stage = 1;
+
+				broadcast("server_message", {
+					message: `Scout: ${G.monsters[event.mtype].name} are starting to move towards town!`,
+					color: "#4BB6E1",
+				});
+			}
+
+			// move towards town
+			if (event.stage > 0) {
+				const targetPoint = { x: gMap.spawns[0][0], y: gMap.spawns[0][1] };
+				// not sure if a target is required
+				// TODO: make all invaders move towards town
+				// TODO: monster movement should be extracted out to a function
+				for (const monster of instance.invasion.monsters) {
+					// goos are constantly moving inside their boundary
+					if (distance(targetPoint, monster) < 40) {
+						continue;
+					}
+
+					// TODO: They stop moving after a while?
+					if (mode.all_smart) {
+						if (!monster.worker) {
+							monster.working = true;
+							workers[wlast++ % workers.length].postMessage({
+								type: "fast_astar",
+								in: monster.in,
+								id: monster.id,
+								map: monster.map,
+								sx: monster.x,
+								sy: monster.y,
+								tx: targetPoint.x,
+								ty: targetPoint.y,
+							});
+						}
+					}
+				}
+			}
+
 			// console.log(instance.invasion.monster_count, spawmAmount);
-			if (instance.invasion.monster_count < spawmAmount) {
+			if (spawnAmount && instance.invasion.monster_count < spawnAmount) {
 				// monster_map_def.type = event.mtype;
 				const m = new_monster(mapName, instance.invasion.monster_map_def);
 				m.invasion = true;
