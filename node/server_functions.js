@@ -2454,9 +2454,9 @@ function event_loop() {
 			const instance = instances[mapName];
 			const gMap = G.maps[mapName];
 			const invasionMapKey = `invasion_${mapName}`;
-			const last_event = timers[invasionMapKey];
+			const next_event = timers[invasionMapKey];
 
-			if (!last_event) {
+			if (!next_event) {
 				// Initialize cooldown after restart
 				timers[invasionMapKey] = future_s(INVASION_COOLDOWN);
 			}
@@ -2464,7 +2464,7 @@ function event_loop() {
 			 * @type {{ map: string, stage: number, mtype: string}}
 			 */
 			let event = E[invasionMapKey];
-			if (!E[invasionMapKey] && c > last_event) {
+			if (!E[invasionMapKey] && c > next_event) {
 				// start new event, make sure next event starts in the future
 				timers[invasionMapKey] = future_s(INVASION_COOLDOWN); // TODO: random cooldown in a range
 
@@ -2511,29 +2511,48 @@ function event_loop() {
 				continue;
 			}
 
-			// TODO: How do we limit spawning each tick?
-			// TODO: Where do/should they spawn
+			const aliveInvasionMonsters = instance.invasion.monsters.filter((m) => !m.rip);
+			event.c = aliveInvasionMonsters.length;
+			if (event.end && c > event.end) {
+				// FAILURE: Time has run out
+				delete E[invasionMapKey];
 
-			// Spawn mobs / wave
-			// stage 0 spawn N monsters = def.count * (stage+10)
+				timers[invasionMapKey] = future_s(INVASION_COOLDOWN); // TODO: random cooldown in a range
 
-			// TODO: reset stage data when new event starts?
-			// if (!instance.invasion[event.stage]) {
-			// 	instance.invasion[event.stage] = {
-			// 		m: [],
-			// 	};
-			// }
+				// TODO: decrease difficulty
+
+				// TODO: remove remaining alive invasion monsters?
+
+				broadcast("server_message", {
+					message: `Scout: ${G.monsters[event.mtype].name} has won, we have failed!`,
+					color: "#e14b4b",
+				});
+			}
+
+			if (event.stage > 0 && event.c === 0) {
+				// SUCCESS: All invasion monsters killed.
+				delete E[invasionMapKey];
+
+				timers[invasionMapKey] = future_s(INVASION_COOLDOWN); // TODO: random cooldown in a range
+
+				// TODO: increase difficulty
+
+				broadcast("server_message", {
+					message: `Scout: ${G.monsters[event.mtype].name} invasion is over, we won huzzah!`,
+					color: "#4be170",
+				});
+
+				continue;
+			}
 
 			// TODO: if you where farming here you might be overwhelmed, make event visible and wait N before starting spawning.
 			// TODO: move calculation to event initialization
 			const { spawnAmount } = instance.invasion.stages[event.stage] || {};
 
-			// console.log(instance.invasion.stages);
-			// console.log(spawnAmount);
-
 			if (event.stage === 0 && instance.invasion.monster_count === spawnAmount) {
-				// TODO: set a timer for next stage activation
+				// TODO: set a timer for next stage activation and push it to E so players knows it
 				event.stage = 1;
+				event.end = future_s(INVASION_COOLDOWN); // TODO: random cooldown in a range
 
 				broadcast("server_message", {
 					message: `Scout: ${G.monsters[event.mtype].name} are starting to move towards town!`,
@@ -2553,7 +2572,7 @@ function event_loop() {
 						continue;
 					}
 
-					// TODO: They stop moving after a while?
+					// TODO: Can we optimize how often we pathfind? assuming it's expensive
 					if (mode.all_smart) {
 						if (!monster.worker) {
 							monster.working = true;
@@ -2572,6 +2591,7 @@ function event_loop() {
 				}
 			}
 
+			// spawn monsters
 			// console.log(instance.invasion.monster_count, spawmAmount);
 			if (spawnAmount && instance.invasion.monster_count < spawnAmount) {
 				// monster_map_def.type = event.mtype;
