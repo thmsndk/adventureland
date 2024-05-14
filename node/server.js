@@ -2354,6 +2354,10 @@ function calculate_monster_score(player, monster, share) {
 	return score;
 }
 
+/**
+ * Issues rewards for a cooperative monster
+ * @param {*} monster
+ */
 function issue_monster_awards(monster) {
 	var total = 0.1;
 	for (var name in monster.points) {
@@ -11007,6 +11011,9 @@ function remove_monster(target, args) {
 		target.map_def.live--;
 		monster_c[target.type]--;
 	}
+
+	// TODO: decouple this by raising an event that invasion can listen for instead
+	invasion_remove_monster(target);
 }
 
 function new_monster(instance, map_def, args) {
