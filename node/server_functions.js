@@ -2441,180 +2441,7 @@ function event_loop() {
 			instance_emit(id, "map_info", instance.info);
 		}
 
-		// TODO: Invasion event
-		// TODO: signups like goobrawl / abtesting?
-		// event enable / triggers
-		// monsters at a specific level?
-		// N time since last invasion event on map
-		// timers can be used to store timing data that broadcast_e should not broacast
-		// TODO: loop maps with a town dynamicly
-		// const INVASION_COOLDOWN = 120; // 2 minutes
-		const INVASION_COOLDOWN = 30;
-		for (const mapName of ["main"]) {
-			const instance = instances[mapName];
-			const gMap = G.maps[mapName];
-			const invasionMapKey = `invasion_${mapName}`;
-			const next_event = timers[invasionMapKey];
-
-			if (!next_event) {
-				// Initialize cooldown after restart
-				timers[invasionMapKey] = future_s(INVASION_COOLDOWN);
-			}
-			/**
-			 * @type {{ map: string, stage: number, mtype: string}}
-			 */
-			let event = E[invasionMapKey];
-			if (!E[invasionMapKey] && c > next_event) {
-				// start new event, make sure next event starts in the future
-				timers[invasionMapKey] = future_s(INVASION_COOLDOWN); // TODO: random cooldown in a range
-
-				// E is broadcasted to the players
-				E[invasionMapKey] = event = {
-					map: mapName,
-					// portal coordinate?
-					stage: 0,
-					// TODO: When do they attack?
-					// TODO: find one with count > 0
-					// mtype: random_one(Object.keys(gMap.monsters)),
-					mtype: "goo",
-				};
-
-				if (!instance.invasion) {
-					instance.invasion = {};
-				}
-
-				// TODO: spawning crabx might mess with the crabxx event, some monsters should probably be filtered out
-				const monster_map_def = clone(gMap.monsters.find((x) => x.type === event.mtype));
-				monster_map_def.grow = false;
-				instance.invasion.monster_map_def = monster_map_def;
-				instance.invasion.stages = [
-					{
-						// Stage 0
-						spawnAmount: instance.invasion.monster_map_def.count * 1,
-					},
-				];
-
-				// reset monsters
-				instance.invasion.monster_count = 0;
-				// TODO: what to do with existing monsters?
-				instance.invasion.monsters = [];
-
-				broadcast("server_message", {
-					message: `Scout: ${G.monsters[event.mtype].name} seems to be up to something!`,
-					color: "#4BB6E1",
-				});
-
-				broadcast_e();
-			}
-
-			if (!event) {
-				continue;
-			}
-
-			const aliveInvasionMonsters = instance.invasion.monsters.filter((m) => !m.rip && !m.dead);
-			event.c = aliveInvasionMonsters.length;
-
-			if (event.end && c > event.end) {
-				// FAILURE: Time has run out
-				delete E[invasionMapKey];
-
-				timers[invasionMapKey] = future_s(INVASION_COOLDOWN); // TODO: random cooldown in a range
-
-				// TODO: decrease difficulty
-
-				// TODO: remove remaining alive invasion monsters?
-
-				broadcast("server_message", {
-					message: `Scout: ${G.monsters[event.mtype].name} has won, we have failed!`,
-					color: "#e14b4b",
-				});
-			}
-
-			if (event.stage > 0 && event.c === 0) {
-				// SUCCESS: All invasion monsters killed.
-				delete E[invasionMapKey];
-
-				timers[invasionMapKey] = future_s(INVASION_COOLDOWN); // TODO: random cooldown in a range
-
-				// TODO: increase difficulty
-
-				broadcast("server_message", {
-					message: `Scout: ${G.monsters[event.mtype].name} invasion is over, we won huzzah!`,
-					color: "#4be170",
-				});
-
-				continue;
-			}
-
-			// TODO: if you where farming here you might be overwhelmed, make event visible and wait N before starting spawning.
-			// TODO: move calculation to event initialization
-			const { spawnAmount } = instance.invasion.stages[event.stage] || {};
-
-			if (event.stage === 0 && instance.invasion.monster_count === spawnAmount) {
-				// TODO: set a timer for next stage activation and push it to E so players knows it
-				event.stage = 1;
-				event.end = future_s(INVASION_COOLDOWN * 4); // TODO: random cooldown in a range
-
-				broadcast("server_message", {
-					message: `Scout: ${G.monsters[event.mtype].name} are starting to move towards town!`,
-					color: "#4BB6E1",
-				});
-			}
-
-			// move towards town
-			if (event.stage > 0) {
-				const targetPoint = { x: gMap.spawns[0][0], y: gMap.spawns[0][1] };
-				// not sure if a target is required
-				// TODO: make all invaders move towards town
-				// TODO: monster movement should be extracted out to a function
-				for (const monster of aliveInvasionMonsters) {
-					// goos are constantly moving inside their boundary
-					if (distance(targetPoint, monster) < 40) {
-						continue;
-					}
-
-					// TODO: Can we optimize how often we pathfind? assuming it's expensive
-					if (mode.all_smart) {
-						if (!monster.worker) {
-							monster.working = true;
-							workers[wlast++ % workers.length].postMessage({
-								type: "fast_astar",
-								in: monster.in,
-								id: monster.id,
-								map: monster.map,
-								sx: monster.x,
-								sy: monster.y,
-								tx: targetPoint.x,
-								ty: targetPoint.y,
-							});
-						}
-					}
-				}
-			}
-
-			// spawn monsters
-			// console.log(instance.invasion.monster_count, spawmAmount);
-			if (spawnAmount && instance.invasion.monster_count < spawnAmount) {
-				// monster_map_def.type = event.mtype;
-				const m = new_monster(mapName, instance.invasion.monster_map_def);
-				m.invasion = true;
-				m.cooperative = true;
-				// m.skin = random_one(["goo0", "goo1", "goo2", "goo3", "goo4", "goo5", "goo6"]);
-				// m.drops=[[0.5,"funtoken"]];
-				// what is u and cid, and why is it important
-				m.u = true;
-				m.cid++;
-
-				instance.invasion.monster_count++;
-				instance.invasion.monsters.push(m);
-
-				broadcast("server_message", {
-					message: `${G.monsters[event.mtype].name} Are strengthening in numbers`,
-					color: "#4BB6E1",
-				});
-			}
-		}
-		// fort data could be stored on the fort map instance
+		event_loop_invasion(c);
 
 		for (var e in E) {
 			if ((E[e] && E[e].target) || Object.keys(E.duels || {}).length) {
@@ -2627,6 +2454,218 @@ function event_loop() {
 		}
 	} catch (e) {
 		log_trace("Critical-event_loop: ", e);
+	}
+}
+
+function event_loop_invasion(c) {
+	// TODO: Invasion event
+	// TODO: signups like goobrawl / abtesting?
+	// event enable / triggers
+	// monsters at a specific level?
+	// N time since last invasion event on map
+	// timers can be used to store timing data that broadcast_e should not broacast
+	// TODO: loop maps with a town dynamicly
+	// const INVASION_COOLDOWN = 120; // 2 minutes
+	const INVASION_COOLDOWN = 30;
+
+	// fort data could be stored on the fort map instance
+
+	for (const mapName of ["main"]) {
+		const instance = instances[mapName];
+		const gMap = G.maps[mapName];
+		const invasionMapKey = `invasion_${mapName}`;
+		const next_event = timers[invasionMapKey];
+
+		if (!next_event) {
+			// Initialize cooldown after restart
+			timers[invasionMapKey] = future_s(INVASION_COOLDOWN);
+		}
+		/**
+		 * @type {{ map: string, stage: number, mtype: string}}
+		 */
+		let event = E[invasionMapKey];
+		if (!E[invasionMapKey] && c > next_event) {
+			// start new event, make sure next event starts in the future
+			timers[invasionMapKey] = future_s(INVASION_COOLDOWN); // TODO: random cooldown in a range
+
+			// E is broadcasted to the players
+			E[invasionMapKey] = event = {
+				map: mapName,
+				// portal coordinate?
+				stage: 0,
+				// TODO: When do they attack?
+				// TODO: find one with count > 0
+				// mtype: random_one(Object.keys(gMap.monsters)),
+				mtype: "goo",
+				points: {},
+			};
+
+			if (!instance.invasion) {
+				instance.invasion = {};
+			}
+
+			// TODO: spawning crabx might mess with the crabxx event, some monsters should probably be filtered out
+			const monster_map_def = clone(gMap.monsters.find((x) => x.type === event.mtype));
+			monster_map_def.grow = false;
+			instance.invasion.monster_map_def = monster_map_def;
+			instance.invasion.stages = [
+				{
+					// Stage 0
+					spawnAmount: instance.invasion.monster_map_def.count * 1,
+				},
+			];
+
+			// reset monsters
+			instance.invasion.monster_count = 0;
+			// TODO: what to do with existing monsters?
+			instance.invasion.monsters = [];
+
+			broadcast("server_message", {
+				message: `Scout: ${G.monsters[event.mtype].name} seems to be up to something!`,
+				color: "#4BB6E1",
+			});
+
+			broadcast_e();
+		}
+
+		if (!event) {
+			continue;
+		}
+
+		const aliveInvasionMonsters = instance.invasion.monsters.filter((m) => !m.rip && !m.dead);
+		event.c = aliveInvasionMonsters.length;
+
+		if (event.end && c > event.end) {
+			// FAILURE: Time has run out
+			delete E[invasionMapKey];
+
+			timers[invasionMapKey] = future_s(INVASION_COOLDOWN); // TODO: random cooldown in a range
+
+			// TODO: decrease difficulty
+			// TODO: remove remaining alive invasion monsters?
+			broadcast("server_message", {
+				message: `Scout: ${G.monsters[event.mtype].name} has won, we have failed!`,
+				color: "#e14b4b",
+			});
+		}
+
+		if (event.stage > 0 && event.c === 0) {
+			// SUCCESS: All invasion monsters killed.
+			delete E[invasionMapKey];
+
+			timers[invasionMapKey] = future_s(INVASION_COOLDOWN); // TODO: random cooldown in a range
+
+			// TODO: increase difficulty
+			// TODO: Issue rewards based on participation points, like cooperative
+			// server.js complete_attack adds coop points to a monster +1
+			// server.js add_coop_points adds N coop points
+			// 	being the target of the monster and taking dmg gives tank points
+			//  healing adds coop points
+			//  if monster has a master, if it stops pursuit (no redirect) you get the hp or max 300 points to the master
+			//  if you are the burner, burn dmg gives you points
+			// console.log("success", event.points);
+
+			broadcast("server_message", {
+				message: `Scout: ${G.monsters[event.mtype].name} invasion is over, we won huzzah!`,
+				color: "#4be170",
+			});
+
+			continue;
+		}
+
+		// TODO: if you where farming here you might be overwhelmed, make event visible and wait N before starting spawning.
+		// TODO: move calculation to event initialization
+		const { spawnAmount } = instance.invasion.stages[event.stage] || {};
+
+		if (event.stage === 0 && instance.invasion.monster_count === spawnAmount) {
+			// TODO: set a timer for next stage activation and push it to E so players knows it
+			event.stage = 1;
+			event.end = future_s(INVASION_COOLDOWN * 4); // TODO: random cooldown in a range
+
+			broadcast("server_message", {
+				message: `Scout: ${G.monsters[event.mtype].name} are starting to move towards town!`,
+				color: "#4BB6E1",
+			});
+		}
+
+		// move towards town
+		if (event.stage > 0) {
+			const targetPoint = { x: gMap.spawns[0][0], y: gMap.spawns[0][1] };
+			// not sure if a target is required
+			// TODO: make all invaders move towards town
+			// TODO: monster movement should be extracted out to a function
+			for (const monster of aliveInvasionMonsters) {
+				// goos are constantly moving inside their boundary
+				if (distance(targetPoint, monster) < 40) {
+					continue;
+				}
+
+				// TODO: Can we optimize how often we pathfind? assuming it's expensive
+				if (mode.all_smart) {
+					if (!monster.worker) {
+						monster.working = true;
+						workers[wlast++ % workers.length].postMessage({
+							type: "fast_astar",
+							in: monster.in,
+							id: monster.id,
+							map: monster.map,
+							sx: monster.x,
+							sy: monster.y,
+							tx: targetPoint.x,
+							ty: targetPoint.y,
+						});
+					}
+				}
+			}
+		}
+
+		// spawn monsters
+		// console.log(instance.invasion.monster_count, spawmAmount);
+		if (spawnAmount && instance.invasion.monster_count < spawnAmount) {
+			// monster_map_def.type = event.mtype;
+			const m = new_monster(mapName, instance.invasion.monster_map_def);
+			m.invasion = true;
+			m.cooperative = true;
+			// m.skin = random_one(["goo0", "goo1", "goo2", "goo3", "goo4", "goo5", "goo6"]);
+			// m.drops=[[0.5,"funtoken"]];
+			// what is u and cid, and why is it important
+			m.u = true;
+			m.cid++;
+
+			instance.invasion.monster_count++;
+			instance.invasion.monsters.push(m);
+
+			broadcast("server_message", {
+				message: `${G.monsters[event.mtype].name} Are strengthening in numbers`,
+				color: "#4BB6E1",
+			});
+		}
+	}
+}
+
+// TODO: remove this to an invasion event specific file.
+function invasion_remove_monster(monster) {
+	if (!monster.invasion) {
+		return;
+	}
+	const invasionMapKey = `invasion_${monster.map}`;
+	const event = E[invasionMapKey];
+
+	if (!event) {
+		return;
+	}
+
+	if (!event.points) {
+		event.points = {};
+	}
+
+	// forward contribution points to invasion event
+	for (var name in monster.points) {
+		if (!event.points[name]) {
+			event.points[name] = 0;
+		}
+		const points = max(0, monster.points[name]);
+		event.points[name] += points;
 	}
 }
 
