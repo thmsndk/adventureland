@@ -2497,7 +2497,6 @@ function event_loop_invasion(c) {
 				// TODO: find one with count > 0
 				// mtype: random_one(Object.keys(gMap.monsters)),
 				mtype: "goo",
-				points: {},
 			};
 
 			if (!instance.invasion) {
@@ -2514,6 +2513,8 @@ function event_loop_invasion(c) {
 					spawnAmount: instance.invasion.monster_map_def.count * 1,
 				},
 			];
+
+			instance.invasion.points = {};
 
 			// reset monsters
 			instance.invasion.monster_count = 0;
@@ -2543,6 +2544,7 @@ function event_loop_invasion(c) {
 
 			// TODO: decrease difficulty
 			// TODO: remove remaining alive invasion monsters?
+			// debuff players not participating at all
 			broadcast("server_message", {
 				message: `Scout: ${G.monsters[event.mtype].name} has won, we have failed!`,
 				color: "#e14b4b",
@@ -2563,7 +2565,7 @@ function event_loop_invasion(c) {
 			//  healing adds coop points
 			//  if monster has a master, if it stops pursuit (no redirect) you get the hp or max 300 points to the master
 			//  if you are the burner, burn dmg gives you points
-			// console.log("success", event.points);
+			console.log("success", instance.invasion.points);
 
 			broadcast("server_message", {
 				message: `Scout: ${G.monsters[event.mtype].name} invasion is over, we won huzzah!`,
@@ -2648,24 +2650,25 @@ function invasion_remove_monster(monster) {
 	if (!monster.invasion) {
 		return;
 	}
-	const invasionMapKey = `invasion_${monster.map}`;
-	const event = E[invasionMapKey];
 
-	if (!event) {
+	const instance = instances[monster.map];
+	const invasion = instance.invasion;
+
+	if (!invasion) {
 		return;
 	}
 
-	if (!event.points) {
-		event.points = {};
+	if (!invasion.points) {
+		invasion.points = {};
 	}
 
 	// forward contribution points to invasion event
 	for (var name in monster.points) {
-		if (!event.points[name]) {
-			event.points[name] = 0;
+		if (!invasion.points[name]) {
+			invasion.points[name] = 0;
 		}
 		const points = max(0, monster.points[name]);
-		event.points[name] += points;
+		invasion.points[name] += points;
 	}
 }
 
