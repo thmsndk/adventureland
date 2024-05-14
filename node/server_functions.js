@@ -2511,8 +2511,9 @@ function event_loop() {
 				continue;
 			}
 
-			const aliveInvasionMonsters = instance.invasion.monsters.filter((m) => !m.rip);
+			const aliveInvasionMonsters = instance.invasion.monsters.filter((m) => !m.rip && !m.dead);
 			event.c = aliveInvasionMonsters.length;
+
 			if (event.end && c > event.end) {
 				// FAILURE: Time has run out
 				delete E[invasionMapKey];
@@ -2552,7 +2553,7 @@ function event_loop() {
 			if (event.stage === 0 && instance.invasion.monster_count === spawnAmount) {
 				// TODO: set a timer for next stage activation and push it to E so players knows it
 				event.stage = 1;
-				event.end = future_s(INVASION_COOLDOWN); // TODO: random cooldown in a range
+				event.end = future_s(INVASION_COOLDOWN * 4); // TODO: random cooldown in a range
 
 				broadcast("server_message", {
 					message: `Scout: ${G.monsters[event.mtype].name} are starting to move towards town!`,
@@ -2566,7 +2567,7 @@ function event_loop() {
 				// not sure if a target is required
 				// TODO: make all invaders move towards town
 				// TODO: monster movement should be extracted out to a function
-				for (const monster of instance.invasion.monsters) {
+				for (const monster of aliveInvasionMonsters) {
 					// goos are constantly moving inside their boundary
 					if (distance(targetPoint, monster) < 40) {
 						continue;
