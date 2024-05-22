@@ -971,6 +971,21 @@ drops={
 		[1,"pvptoken"],
 		[0.5,"empty"],
 	],
+	"town_invasion":[
+		[1,"invasiontoken"],
+		[1,"invasiontoken",2],
+		[1,"invasiontoken",3],
+		[0.5,"invasiontoken",4],
+		[0.25,"invasiontoken",5],
+		[0.125,"invasiontoken",6],
+		[0.0675,"invasiontoken",20],
+		# TODO: invasion gear box?
+		# [0.0025,"fury"],
+	],
+	"town_invasion_defeat":[
+		[1,"invasiontoken"],
+		[0.5,"empty"],
+	],
 	"weaponofthedead":[
 		[0.85,"bowofthedead"],
 		[0.35,"swordofthedead"],

@@ -5653,6 +5653,14 @@ misc={
 		"s":True,
 		"g":36000,
 	},
+	"invasiontoken":{
+		"type":"token",
+		"skin":"placeholder",
+		"name":"Invasion Token",
+		"explanation":"A token representing efforts during an invasion!",
+		"s":True,
+		"g":12000,
+	},
 	"emptyheart":{
 		"type":"material",
 		"skin":"emptyheart",

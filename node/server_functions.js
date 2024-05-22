@@ -2457,6 +2457,41 @@ function event_loop() {
 	}
 }
 
+function groupObjectsIntoBins(obj, numBins) {
+	// Extract values and keys from the object
+	const entries = Object.entries(obj);
+	const values = entries.map(([key, value]) => value);
+
+	// Determine the range of the values
+	const min = Math.min(...values);
+	const max = Math.max(...values);
+
+	// Calculate the bin width
+	const binWidth = (max - min) / numBins;
+
+	// Initialize bins
+	const bins = Array.from({ length: numBins }, () => ({}));
+
+	// Function to determine which bin a value belongs to
+	function getBinIndex(value) {
+		if (value === max) {
+			// Handle edge case for max value
+			return numBins - 1;
+		}
+
+		return Math.floor((value - min) / binWidth);
+	}
+
+	// Distribute objects into bins
+	entries.forEach(([key, value]) => {
+		const binIndex = getBinIndex(value);
+
+		bins[binIndex][key] = value;
+	});
+
+	return bins;
+}
+
 function event_loop_invasion(c) {
 	// TODO: Invasion event
 	// TODO: signups like goobrawl / abtesting?
@@ -2538,9 +2573,13 @@ function event_loop_invasion(c) {
 
 		if (event.end && c > event.end) {
 			// FAILURE: Time has run out
+			// TODO: monsters should attack and kill an invasion npc?
+
 			delete E[invasionMapKey];
 
 			timers[invasionMapKey] = future_s(INVASION_COOLDOWN); // TODO: random cooldown in a range
+
+			broadcast_e();
 
 			// TODO: decrease difficulty
 			// TODO: remove remaining alive invasion monsters?
@@ -2557,6 +2596,8 @@ function event_loop_invasion(c) {
 
 			timers[invasionMapKey] = future_s(INVASION_COOLDOWN); // TODO: random cooldown in a range
 
+			broadcast_e();
+
 			// TODO: increase difficulty
 			// TODO: Issue rewards based on participation points, like cooperative
 			// server.js complete_attack adds coop points to a monster +1
@@ -2565,8 +2606,32 @@ function event_loop_invasion(c) {
 			//  healing adds coop points
 			//  if monster has a master, if it stops pursuit (no redirect) you get the hp or max 300 points to the master
 			//  if you are the burner, burn dmg gives you points
-			console.log("success", instance.invasion.points);
+			// console.log("success", instance.invasion.points);
+			const numBins = 10;
+			const bins = groupObjectsIntoBins(instance.invasion.points, numBins);
 
+			console.log("success", bins);
+			// TODO: trim empty bins so the exchange multiplier is lowered if not enough players participate?
+			for (let index = 0; index < bins.length; index++) {
+				const participants = bins[index];
+
+				for (const playerName in participants) {
+					// TODO: Should the player still be on the map?
+					// TODO: inventory size?
+					// TODO: mail if offline?
+					const player = get_entity(playerName);
+					// Participants are guarenteed at least 1 token
+					add_item(player, "invasiontoken");
+
+					// The tier acts as a multiplier for how many exchanges we do.
+					for (let exchangeIndex = 0; exchangeIndex < index; exchangeIndex++) {
+						exchange(player, "town_invasion");
+					}
+
+					// Refresh player inventory on client
+					resend(player, "u+cid");
+				}
+			}
 			broadcast("server_message", {
 				message: `Scout: ${G.monsters[event.mtype].name} invasion is over, we won huzzah!`,
 				color: "#4be170",
