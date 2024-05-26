@@ -637,6 +637,18 @@ sprites={
 			[None,"newupgrade",None,None,]
 		]
 	},
+	"scout":{
+		"file":"/images/tiles/npcs/bush_tf.png",
+		"rows":4,
+		"columns":1,
+		"type":"animation",
+		"matrix":[
+			[None],
+			["scout_hidden"],
+			["scout_curious"],
+			[None],
+		]
+	},
 	"elementals":{
 		"file":"/images/tiles/monsters/elemental.png",
 		"rows":2,
