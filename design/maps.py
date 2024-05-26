@@ -586,6 +586,7 @@ maps={
 			{"id":"monsterhunter","position":[126,-413]},
 			{"id":"mcollector","position":[81,-283,1]},
 			#{"id":"newyear_tree","position":[64,-88]}, #xmas
+			{"id":"invasion_scout","position":[0,0]},
 		],
 		"monsters":[
 			#square
