@@ -3401,6 +3401,10 @@ function npc_right_click(event){
 			$("#merchant-item").html(render_interaction({auto:true,skin:"daisy",message:"Well done, well done! A token for your service!"},"return_html"));
 		}
 	}
+	else if (this.token) {
+		render_token_exchange(this.token);
+	}
+	
 	if(this.role=="announcer")
 	{
 		render_interaction({auto:true,skin:"lionsuit",message:"Daily Events? Yes. Soon. Hopefully ... Definitely one day."});

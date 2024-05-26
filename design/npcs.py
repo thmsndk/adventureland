@@ -83,6 +83,15 @@ npcs={
 		"says":"Hi!",
 		"color":"#B4FAA0",
 	},
+	"invasion_scout":{
+		# "role":"monstertokens",
+		"token":"invasiontoken",
+		"name":"????",
+		"skin":"scout_curious",
+		# "type":"fullstatic",
+		"says":"Hi!",
+		"color":"#B4FAA0",
+	},
 	"mcollector":{
 		"role":"mcollector",
 		"quest":"mcollector",
