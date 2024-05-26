@@ -34,10 +34,10 @@ tokens={
 		"cxjar-xgravestone2":4,
 	},
 	"invasiontoken": {
-		"armorbox":5,
-		"troll":14,
-		"weaponbox":1
+		"armorbox":10,
+		"troll":28,
+		"weaponbox":10,
 		# lglitch / glitch?
-		# "jewellerybox": 1 # kinda boring, could we make something more interesting?
+		"invasion_scrollbox_tier0": 100,
 	}
 }
