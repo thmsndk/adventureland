@@ -1264,6 +1264,9 @@ drops["cosmo3"].append([1.0/12,"cx","hat309"])
 drops["cosmo3"].append([1.0/12,"cx","hat400"])
 drops["cosmo3"].append([1.0/12,"cx","hat405"])
 
+# invasion boxes
+drops["invasion_scrollbox_tier0"] = []
+
 for key in drops.keys():
 	if key.find(",")!=-1:
 		t=drops[key]
@@ -1273,6 +1276,7 @@ for key in drops.keys():
 		drops[key]=t
 
 for name in items:
+	item = items[name]
 	if not items[name].get("ignore") and not items[name].get("exclusive"):
 		if items[name].get("grades") and (items[name].get("upgrade") and items[name]["grades"][2]<8 or items[name].get("compound") and items[name]["grades"][2]<3):
 			drops["glitch"].append([0.1,name])
@@ -1282,6 +1286,25 @@ for name in items:
 			drops["glitch"].append([0.25,name])
 		else:
 			drops["glitch"].append([1,name])
+		
+		# Property Scrolls (str,luck..)
+		if item["type"] == "pscroll":
+			# make some stats harder to roll
+			if item["stat"] in ["gold","luck", "lifesteal","manasteal","mp_cost"]:
+				drops["invasion_scrollbox_tier0"].append([0.1,name])
+			else
+				drops["invasion_scrollbox_tier0"].append([0.25,name])
+		# Upgrade / Compound scrolls
+		elif item["type"] == "uscroll" or item["type"] == "cscroll":
+			# TODO: amount of scrolls given?
+			if item["grade"] > 0:
+				drops["invasion_scrollbox_tier0"].append([10.0 / item["grade"], name])
+			else:
+				drops["invasion_scrollbox_tier0"].append([10.0, name])
+
+# sort invasion boxes highest to lowest value
+drops["invasion_scrollbox_tier0"].sort()
+drops["invasion_scrollbox_tier0"].reverse()
 
 for name in items:
 	if "g" not in items[name]:
