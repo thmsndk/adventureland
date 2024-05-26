@@ -33,4 +33,11 @@ tokens={
 	"friendtoken":{
 		"cxjar-xgravestone2":4,
 	},
+	"invasiontoken": {
+		"armorbox":5,
+		"troll":14,
+		"weaponbox":1
+		# lglitch / glitch?
+		# "jewellerybox": 1 # kinda boring, could we make something more interesting?
+	}
 }
