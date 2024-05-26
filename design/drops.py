@@ -1266,6 +1266,17 @@ drops["cosmo3"].append([1.0/12,"cx","hat405"])
 
 # invasion boxes
 drops["invasion_scrollbox_tier0"] = []
+# computer parts, network card?
+# materials box? type == "material"
+# keys? dungeons, bkey,ukey,dkey?
+# type == "elixir"
+# type == "shoes"
+# type == "pants"
+# type == "orb"
+# type == "cape"
+# type == "helmet", chest, gloves, 
+drops["invasion_jewellerybox_tier0"] = []
+# ring, earring, amulet
 
 for key in drops.keys():
 	if key.find(",")!=-1:
@@ -1278,13 +1289,18 @@ for key in drops.keys():
 for name in items:
 	item = items[name]
 	if not items[name].get("ignore") and not items[name].get("exclusive"):
+		grade_chance = 0
 		if items[name].get("grades") and (items[name].get("upgrade") and items[name]["grades"][2]<8 or items[name].get("compound") and items[name]["grades"][2]<3):
+			grade_chance = 0.1
 			drops["glitch"].append([0.1,name])
 		elif items[name].get("grades") and items[name]["grades"][2]==0:
+			grade_chance = 0.1
 			drops["glitch"].append([0.1,name])
 		elif items[name].get("grades") and items[name]["grades"][1]==0:
+			grade_chance = 0.25
 			drops["glitch"].append([0.25,name])
 		else:
+			grade_chance = 1
 			drops["glitch"].append([1,name])
 		
 		# Property Scrolls (str,luck..)
@@ -1292,8 +1308,9 @@ for name in items:
 			# make some stats harder to roll
 			if item["stat"] in ["gold","luck", "lifesteal","manasteal","mp_cost"]:
 				drops["invasion_scrollbox_tier0"].append([0.1,name])
-			else
+			else:
 				drops["invasion_scrollbox_tier0"].append([0.25,name])
+				
 		# Upgrade / Compound scrolls
 		elif item["type"] == "uscroll" or item["type"] == "cscroll":
 			# TODO: amount of scrolls given?
@@ -1301,10 +1318,18 @@ for name in items:
 				drops["invasion_scrollbox_tier0"].append([10.0 / item["grade"], name])
 			else:
 				drops["invasion_scrollbox_tier0"].append([10.0, name])
+		
+		if item["type"] in ["ring","earring", "amulet"]:
+			# TODO: tier modifier?
+			if grade_chance > 0:
+				drops["invasion_jewellerybox_tier0"].append([grade_chance, name])
 
 # sort invasion boxes highest to lowest value
 drops["invasion_scrollbox_tier0"].sort()
 drops["invasion_scrollbox_tier0"].reverse()
+
+drops["invasion_jewellerybox_tier0"].sort()
+drops["invasion_jewellerybox_tier0"].reverse()
 
 for name in items:
 	if "g" not in items[name]:

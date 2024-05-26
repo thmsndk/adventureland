@@ -39,5 +39,6 @@ tokens={
 		"weaponbox":10,
 		# lglitch / glitch?
 		"invasion_scrollbox_tier0": 100,
+		"invasion_jewellerybox_tier0": 100.
 	}
 }
