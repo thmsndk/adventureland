@@ -5470,6 +5470,28 @@ gems={
 	# 	"a":True,
 	# 	"event":True,
 	# },
+	"invasion_jewellerybox":{
+		"type":"box",
+		"skin":"chest3",
+		"name":"Invasion Jewellery Box",
+		"explanation":"Can be exchanged for a random acessory.",
+		#"cash":2320,
+		"g":24000,
+		"e":1,
+		"a":True,
+		"s":True,
+	},
+	"invasion_scrollbox_tier0":{
+		"type":"box",
+		"skin":"placeholder",
+		"name":"Invasion Scroll Box",
+		"explanation":"Can be exchanged for a random scroll.",
+		#"cash":2320,
+		"g":24000,
+		"e":1,
+		"a":True,
+		"s":True,
+	},
 }
 
 misc={
