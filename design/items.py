@@ -5470,7 +5470,7 @@ gems={
 	# 	"a":True,
 	# 	"event":True,
 	# },
-	"invasion_jewellerybox":{
+	"invasion_jewellerybox_tier0":{
 		"type":"box",
 		"skin":"chest3",
 		"name":"Invasion Jewellery Box",
