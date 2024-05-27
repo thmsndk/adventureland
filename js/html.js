@@ -279,6 +279,42 @@ function render_server()
 		var minutes=S.minutes%60; if(!minutes) minutes="00"; else if(minutes<10) minutes="0"+minutes;
 		$(".minutesui").html(hours+":"+minutes);
 	}
+
+	// Events
+	for (const key in S) {
+		const event = S[key];
+		if (event.etype === "invasion") {
+			// Render invasion
+			// const scolor="#ECECEC";
+			const lcolor="#ECECEC";
+			const lphrase="INVASION!";
+			// if(type=="goobrawl") lcolor="#FF5D34",s="rgoo";
+			// if(type=="abtesting") lcolor="#E10029",s="thehelmet";
+			// else if(G.monsters[type] && G.monsters[type].announce) 
+				// 	lcolor=G.monsters[type].announce;
+			// TODO: perhaps also a guide for the event?
+			// const onClick = `onclick='pcs(event); open_guide(\"event-${type}\",\"/docs/ref/event-${type}\")'`;
+			const onClick = ``;
+			html += ` <div class='gamebutton' style='width: 150px; padding: 6px 8px 6px 8px; font-size: 24px; line-height: 18px' ${onClick}>`;
+			html += 
+			`<div style="display:flex; flex-direction:row">
+				<div>
+				${sprite(event.mtype, {overflow:true})}
+				</div>
+				<div style="display:flex; flex-direction:column; flex-grow:1">
+					<div style='color:${lcolor}; margin-top: 1px'>${event.map}</div>
+					<div style='color:${lcolor}; margin-top: 1px'>STAGE ${event.stage}</div>
+					<div style='color:${lcolor}; margin-top: 1px'>${event.c? `${event.c} LEFT` : ''}</div>
+				</div>
+			</div>`,
+			// TODO: map, time untill invasion, time left of invasion?, monster count
+			// html+="<div style='color:"+scolor+"; margin-top: 1px'>"+parseInt(round(-msince(new Date(S[type].spawn))))+"M</div>";
+			html += `<div style='color:${lcolor}; margin-top: 1px'>${lphrase}</div>`;
+			html += "</div>";
+			content=true;
+		}
+	}
+
 	["crabxx","goobrawl","abtesting","franky","icegolem"].forEach(function(type){
 		if(S[type])
 		{
@@ -351,6 +387,7 @@ function render_server()
 		html+="</div>";
 		content=true;
 	}
+
 	$("#serverinfo").html(html);
 	if(!content) $("#serverinfo").hide();
 	else $("#serverinfo").show();
