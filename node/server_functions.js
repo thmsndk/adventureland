@@ -2525,6 +2525,7 @@ function event_loop_invasion(c) {
 
 			// E is broadcasted to the players
 			E[invasionMapKey] = event = {
+				etype: "invasion",
 				map: mapName,
 				// portal coordinate?
 				stage: 0,
@@ -2686,6 +2687,7 @@ function event_loop_invasion(c) {
 			}
 		}
 
+		// TODO: moles from tunnel, need to specify dynamic map def
 		// spawn monsters
 		// console.log(instance.invasion.monster_count, spawmAmount);
 		if (spawnAmount && instance.invasion.monster_count < spawnAmount) {
