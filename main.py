@@ -273,6 +273,12 @@ def serve_maps(order=""):
 		for m in Map.query().order(-Map.updated).fetch(5000,keys_only=True): html+=map_to_html(m)
 	return html
 
+@app.route('/drops/exchange')
+def serve_drops_exchange():
+	domain=gdi(request)
+	mode,items=gdmul(request,"mode","items")
+	return whtml(request,"utility/htmls/drops/exchange.html",domain=domain,mode=mode,items=items)
+
 @app.route('/privacy')
 def serve_privacy():
 	domain=gdi(request); user=get_user(request,domain)
