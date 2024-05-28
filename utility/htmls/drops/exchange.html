@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script
+			src="/js/jquery/jquery-{{domain.jquery_version}}.min.js"
+			{%if
+			domain.electron%}
+			onload="if(typeof require!=='undefined') window.$=window.jQuery=module.exports;"
+			{%endif%}
+		></script>
+		<script src="/js/common_functions.js?v={{domain.v}}"></script>
+		<script src="/js/functions.js?v={{domain.v}}"></script>
+		<script src="/js/html.js?v={{domain.v}}"></script>
+		<script src="/data.js?v={{domain.v}}"></script>
+		<link href="/css/index.css?v={{domain.v}}" rel="stylesheet" type="text/css" />
+		<link href="/css/common.css?v={{domain.v}}" rel="stylesheet" type="text/css" />
+		<style>
+			html,
+			body {
+				/* background: black;
+				font-family: "Courier New"; */
+				overflow: scroll;
+			}
+			/* https://codepen.io/cesarrrguez/pen/MWegWYa */
+			:root {
+				--primary-color: white;
+				--secondary-color: rgb(61, 68, 73);
+				--highlight-color: #3282b8;
+
+				--dt-status-available-color: greenyellow;
+				--dt-status-away-color: lightsalmon;
+				--dt-status-offline-color: lightgray;
+
+				--dt-padding: 12px;
+				--dt-padding-s: 6px;
+				--dt-padding-xs: 2px;
+
+				--dt-border-radius: 3px;
+
+				--dt-background-color-container: #2a3338;
+				--dt-border-color: var(--secondary-color);
+				--dt-bg-color: var(--highlight-color);
+				--dt-text-color: var(--primary-color);
+				--dt-bg-active-button: var(--highlight-color);
+				--dt-text-color-button: var(--primary-color);
+				--dt-text-color-active-button: var(--primary-color);
+				--dt-hover-cell-color: var(--highlight-color);
+				--dt-even-row-color: var(--secondary-color);
+				--dt-focus-color: var(--highlight-color);
+				--dt-input-background-color: var(--secondary-color);
+				--dt-input-color: var(--primary-color);
+			}
+
+			.datatable-container,
+			body {
+				font-family: sans-serif;
+				background-color: var(--dt-background-color-container);
+				border-radius: var(--dt-border-radius);
+				color: var(--dt-text-color);
+				/* max-width: 1140px;
+				min-width: 950px; */
+				margin: 0 auto;
+				font-size: 12px;
+			}
+
+			table.datatable {
+				border-collapse: collapse;
+				width: 100%;
+			}
+
+			table.datatable,
+			table.datatable th,
+			table.datatable td {
+				padding: var(--dt-padding-s) var(--dt-padding-s);
+			}
+
+			table.datatable th {
+				font-weight: bolder;
+				text-align: left;
+				border-bottom: solid 1px var(--dt-border-color);
+			}
+
+			table.datatable td {
+				border-bottom: solid 1px var(--dt-border-color);
+			}
+
+			table.datatable tbody tr:nth-child(even) {
+				background-color: var(--dt-even-row-color);
+			}
+
+			table.datatable tbody tr:hover {
+				background-color: var(--dt-hover-cell-color);
+			}
+
+			table.sticky-header th {
+				position: sticky;
+				top: 0;
+				left: 0;
+				background-color: var(--dt-background-color-container);
+				z-index: 10;
+			}
+
+			tr td:nth-child(1),
+			tr td:nth-child(2) {
+				position: sticky;
+				left: 0;
+				z-index: 9;
+			}
+
+			tr th:nth-child(2),
+			tr td:nth-child(2) {
+				left: 95px;
+			}
+
+			/* table tr:nth-child(odd) {
+				background: grey;
+			} */
+
+			/* table tr:hover {
+				background: silver;
+				cursor: pointer;
+				color: black;
+			} */
+		</style>
+		<script>
+			function hide_row(element) {
+				console.log("parent", this, $(element).closest("tr"));
+				$(element).closest("tr").hide();
+				return false;
+			}
+
+			document.addEventListener("DOMContentLoaded", function (event) {
+				// loop a drop table and render each "treshhold" item
+				// table.forEach(function (drop) {
+				// 	total += drop[0];
+				// });
+				// result = Math.random() * total;
+				// table.forEach(function (drop) {
+				// 	if (done) {
+				// 		return;
+				// 	}
+				// 	current += drop[0];
+				// 	if (result <= current) {
+				// 		done = true;
+
+				// TODO: simulating exchange could just be a loop as well, so we want two columns, the loot table, and the loot simulation
+
+				let html = "";
+				// Draw item table
+				html += "<table style='width:25%' class='datatable sticky-header'>";
+				html += "<tr>";
+				html += `<th>item</th>`;
+				html += `<th>amount</th>`;
+				html += `<th>"chance"</th>`;
+				html += `<th>current</th>`;
+				html += `<th><= Math.random roll</th>`;
+
+				html += "</tr>";
+
+				const table = G.drops.troll;
+				let total = 0;
+				for (const [chance, itemKey, amount] of table) {
+					total += chance;
+				}
+
+				const normalize = (val, minVal, maxVal) => {
+					return (val - minVal) / (maxVal - minVal);
+				};
+
+				let current = 0;
+				for (const [chance, itemKey, amount] of table) {
+					if (itemKey.startsWith("cosmo")) {
+						// chance is reduced if we have it?
+						// if (player.p.acx[drop[2]]) {
+						// 	drop[0] /= 10 ** player.p.acx[drop[2]];
+						// }
+						// continue;
+					}
+					const gItem = G.items[itemKey];
+
+					current += chance;
+
+					const styles = "vertical-align: top; margin-right: 10px";
+
+					// const grade = calculate_item_grade(gItem, actual);
+
+					let name = gItem.name;
+
+					// Render item icon like in inventory
+					let actual = { name: itemKey };
+					let icon = item_container({ skin: gItem.skin, onclick: `render_item_info('${itemKey}')` }, actual);
+
+					html += "<tr>";
+					html += `<td title='${name}'>`;
+					html += '<div style="display:flex; flex-direction: row">';
+					html += '<div style="display:flex; flex-direction: column">';
+					html += `<span style="display:inline-block; vertical-align:middle">${icon}</span>`;
+					html += "</div>";
+					html += '<div style="display:flex; flex-direction: column">';
+					html += ` <span>${gItem.type} ${gItem.wtype ?? ""}</span>`;
+					html += ` <span>${itemKey}</span>`;
+					if (gItem.tier) {
+						html += ` <span>Tier: ${gItem.tier}</span>`;
+					}
+					html += ` <a onclick="hide_row(this);">Hide</a>`;
+					html += "</div>";
+
+					html += "</div>";
+					html += `</td>`;
+					html += `<td>${amount ?? 1}</td>`;
+					html += `<td>${chance}</td>`;
+					html += `<td>${current}</td>`;
+					html += `<td> ${normalize(current, 0, total)}</td>`;
+
+					// for (let level = 0; level <= maxLevel; level++) {
+					// 	if (!gItem.upgrade && !gItem.compound && level > 0) {
+					// 		// empty td, because it's simple, could use colspan
+					// 		html += `<td></td>`;
+					// 		continue;
+					// 	}
+
+					// 	// compound only goes to 5
+					// 	if (gItem.c	sompound && level > 5) {
+					// 		// empty td, because it's simple, could use colspan
+					// 		html += `<td></td>`;
+					// 		continue;
+					// 	}
+
+					// 	if (level > 0) {
+					// 		// TODO: look at render_item and extract it out
+					// 		name = gItem.name + " +" + level;
+					// 	}
+
+					// 	const actual = { name: itemKey, level };
+
+					// 	// calculate stats for upgrade
+					// 	const prop = calculate_item_properties(
+					// 		actual,
+					// 		// TODO: class & map can have an effect on stats
+					// 		// { def: item, class: window.character && character.ctype, map: window.character && character.map },
+					// 		{ def: gItem, class: character.ctype, map: character.map },
+					// 	);
+
+					// 	icon = item_container({ skin: gItem.skin, onclick: `render_item_info('${itemKey}')` }, actual);
+
+					// 	html += `<td title='${name}' style=\"vertical-align:top;\">`;
+					// 	html += '<div style="display:flex; flex-direction: row">';
+					// 	html += `<span style="display:inline-block; vertical-align:middle">${icon}</span> `;
+					// 	// TODO: flex container with the properties
+					// 	// html += `<span style="vertical-align:middle">${itemKey}</span>`;
+					// 	html += '<div style="display:flex; flex-direction: column">';
+					// 	for (const key in property_columns) {
+					// 		let value = prop[key];
+					// 		// if (value == 0) value = "";
+					// 		if (!value) continue;
+					// 		html += `<span>${key}: ${value ?? ""}</span>`;
+					// 	}
+					// 	html += "</div>";
+					// 	html += "</div>";
+					// 	html += `</td>`;
+					// }
+					html += "</tr>";
+				}
+				$("#items").append(html);
+				html += "</table>";
+			});
+		</script>
+		<style>
+			.buyitem {
+				display: inline-block;
+				margin: 6px;
+				vertical-align: top;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="items"></div>
+	</body>
+</html>
