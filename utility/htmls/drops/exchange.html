@@ -19,7 +19,7 @@
 			body {
 				/* background: black;
 				font-family: "Courier New"; */
-				overflow: scroll;
+				overflow: auto;
 			}
 			/* https://codepen.io/cesarrrguez/pen/MWegWYa */
 			:root {
@@ -100,7 +100,7 @@
 				z-index: 10;
 			}
 
-			tr td:nth-child(1),
+			/* tr td:nth-child(1),
 			tr td:nth-child(2) {
 				position: sticky;
 				left: 0;
@@ -110,7 +110,7 @@
 			tr th:nth-child(2),
 			tr td:nth-child(2) {
 				left: 95px;
-			}
+			} */
 
 			/* table tr:nth-child(odd) {
 				background: grey;
@@ -157,7 +157,7 @@
 
 				html += "</tr>";
 
-				const table = G.drops.troll;
+				const table = G.drops.invasion_scrollbox_tier0;
 				let total = 0;
 				for (const [chance, itemKey, amount] of table) {
 					total += chance;
@@ -188,7 +188,7 @@
 
 					// Render item icon like in inventory
 					let actual = { name: itemKey };
-					let icon = item_container({ skin: gItem.skin, onclick: `render_item_info('${itemKey}')` }, actual);
+					let icon = item_container({ size: 20, skin: gItem.skin, onclick: `render_item_info('${itemKey}')` }, actual);
 
 					html += "<tr>";
 					html += `<td title='${name}'>`;
@@ -202,64 +202,34 @@
 					if (gItem.tier) {
 						html += ` <span>Tier: ${gItem.tier}</span>`;
 					}
-					html += ` <a onclick="hide_row(this);">Hide</a>`;
+					// html += ` <a onclick="hide_row(this);">Hide</a>`;
 					html += "</div>";
 
 					html += "</div>";
 					html += `</td>`;
 					html += `<td>${amount ?? 1}</td>`;
-					html += `<td>${chance}</td>`;
+					const probability = chance / total;
+					// html += `<td title="${probability}">
+					// 			<div style="width:100%; position:relative;">
+					// 				<div style="height:20px; background-color:blue; width:${probability * 100}%;"></div>
+					// 				<div style="position:absolute; top:0;">${chance}</div>
+					// 			</div>
+					// 		</td>`;
+					html += `<td title="${probability}">
+								${chance} (${probability})
+							</td>`;
 					html += `<td>${current}</td>`;
 					html += `<td> ${normalize(current, 0, total)}</td>`;
 
-					// for (let level = 0; level <= maxLevel; level++) {
-					// 	if (!gItem.upgrade && !gItem.compound && level > 0) {
-					// 		// empty td, because it's simple, could use colspan
-					// 		html += `<td></td>`;
-					// 		continue;
-					// 	}
-
-					// 	// compound only goes to 5
-					// 	if (gItem.c	sompound && level > 5) {
-					// 		// empty td, because it's simple, could use colspan
-					// 		html += `<td></td>`;
-					// 		continue;
-					// 	}
-
-					// 	if (level > 0) {
-					// 		// TODO: look at render_item and extract it out
-					// 		name = gItem.name + " +" + level;
-					// 	}
-
-					// 	const actual = { name: itemKey, level };
-
-					// 	// calculate stats for upgrade
-					// 	const prop = calculate_item_properties(
-					// 		actual,
-					// 		// TODO: class & map can have an effect on stats
-					// 		// { def: item, class: window.character && character.ctype, map: window.character && character.map },
-					// 		{ def: gItem, class: character.ctype, map: character.map },
-					// 	);
-
-					// 	icon = item_container({ skin: gItem.skin, onclick: `render_item_info('${itemKey}')` }, actual);
-
-					// 	html += `<td title='${name}' style=\"vertical-align:top;\">`;
-					// 	html += '<div style="display:flex; flex-direction: row">';
-					// 	html += `<span style="display:inline-block; vertical-align:middle">${icon}</span> `;
-					// 	// TODO: flex container with the properties
-					// 	// html += `<span style="vertical-align:middle">${itemKey}</span>`;
-					// 	html += '<div style="display:flex; flex-direction: column">';
-					// 	for (const key in property_columns) {
-					// 		let value = prop[key];
-					// 		// if (value == 0) value = "";
-					// 		if (!value) continue;
-					// 		html += `<span>${key}: ${value ?? ""}</span>`;
-					// 	}
-					// 	html += "</div>";
-					// 	html += "</div>";
-					// 	html += `</td>`;
-					// }
 					html += "</tr>";
+					// html += "<tr>";
+					// html += `<td colspan="5" title="${probability}">
+					// 		<div style="width:100%; position:relative;">
+					// 			<div style="height:20px; background-color:blue; width:${probability * 100}%;"></div>
+					// 			<div style="position:absolute; top:0;">${chance}</div>
+					// 		</div>
+					// 	</td>`;
+					// html += "</tr>";
 				}
 				$("#items").append(html);
 				html += "</table>";
