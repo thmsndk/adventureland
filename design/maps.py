@@ -734,6 +734,21 @@ maps={
 			}
 		],
 		"outside":True,
+		"invasion" :{
+			# TODO: what is the target? there could be multiple targets?
+			"town": [0,0],
+			# TODO: what types of invasions are enabled?
+			# TODO: any specific monsters on the map that should not be part of an invasion?
+			# disable fairies
+			# "disable":["crabxx"],
+			# TODO: combined invasion of different mobs?
+			# TODO: failure conditions?
+			# TODO: "nearby" monster invasions, moles for example emergin from tunnels
+			# "extra": [
+			# 	# moles emerge from tunnel
+			# 	["tunnel","mole", [535,1677]]
+			# ]
+		}
 	},
 	"mansion":{
 		"key":"jayson_Mansion",
@@ -1244,6 +1259,9 @@ maps={
 		#"irregular":True,
 		"drop_norm":1000,
 		"outside":True,
+		"invasion" :{
+			"town": [0,0],
+		}
 	},
 	"shellsisland":{
 		"key":"jayson_shells_island01",
