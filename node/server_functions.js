@@ -2505,9 +2505,23 @@ function event_loop_invasion(c) {
 
 	// fort data could be stored on the fort map instance
 
-	for (const mapName of ["main"]) {
-		const instance = instances[mapName];
+	for (const mapName in G.maps) {
 		const gMap = G.maps[mapName];
+		if (!gMap.invasion) {
+			// skip map if it is not invasion enabled
+			continue;
+		}
+
+		const instance = instances[mapName];
+
+		if (!instance) {
+			continue;
+		}
+
+		if (!instance.invasion) {
+			instance.invasion = { monsters: [] };
+		}
+
 		const invasionMapKey = `invasion_${mapName}`;
 		const next_event = timers[invasionMapKey];
 
@@ -2523,30 +2537,31 @@ function event_loop_invasion(c) {
 			// start new event, make sure next event starts in the future
 			timers[invasionMapKey] = future_s(INVASION_COOLDOWN); // TODO: random cooldown in a range
 
+			// TODO: check extra for additional monsters, like moles
+			// TODO: spawning crabx might mess with the crabxx event, some monsters should probably be filtered out
+			const monster_map_def = clone(random_one(Object.values(gMap.monsters)));
+			monster_map_def.grow = false;
+			console.log(monster_map_def);
+
+			// TODO: each 5 levels increases chance to spawn
+			// TODO: chance to start invasion
+
 			// E is broadcasted to the players
 			E[invasionMapKey] = event = {
 				etype: "invasion",
 				map: mapName,
 				// portal coordinate?
 				stage: 0,
-				// TODO: When do they attack?
-				// TODO: find one with count > 0
-				// mtype: random_one(Object.keys(gMap.monsters)),
-				mtype: "goo",
+				mtype: monster_map_def.type,
+				// TODO: hide mtype initially?
 			};
 
-			if (!instance.invasion) {
-				instance.invasion = {};
-			}
-
-			// TODO: spawning crabx might mess with the crabxx event, some monsters should probably be filtered out
-			const monster_map_def = clone(gMap.monsters.find((x) => x.type === event.mtype));
-			monster_map_def.grow = false;
 			instance.invasion.monster_map_def = monster_map_def;
 			instance.invasion.stages = [
 				{
 					// Stage 0
-					spawnAmount: instance.invasion.monster_map_def.count * 1,
+					// TODO: multipier should be configurable
+					spawnAmount: instance.invasion.monster_map_def.count * 10,
 				},
 			];
 
@@ -2575,6 +2590,10 @@ function event_loop_invasion(c) {
 		if (event.end && c > event.end) {
 			// FAILURE: Time has run out
 			// TODO: monsters should attack and kill an invasion npc?
+			// TODO: tally up score on remaining monsters in case nothing was killed.
+
+			// TODO: cooldown for next event
+			// timers[invasionMapKey] = future_s(INVASION_COOLDOWN); // TODO: random cooldown in a range
 
 			delete E[invasionMapKey];
 
@@ -2595,6 +2614,7 @@ function event_loop_invasion(c) {
 			// SUCCESS: All invasion monsters killed.
 			delete E[invasionMapKey];
 
+			// TODO: cooldown for next event
 			timers[invasionMapKey] = future_s(INVASION_COOLDOWN); // TODO: random cooldown in a range
 
 			broadcast_e();
@@ -2648,8 +2668,11 @@ function event_loop_invasion(c) {
 		if (event.stage === 0 && instance.invasion.monster_count === spawnAmount) {
 			// TODO: set a timer for next stage activation and push it to E so players knows it
 			event.stage = 1;
+
+			// TODO: moving monsters from a far away spawn takes time to reach, the failure time should first start once an invader gets in range of town
 			event.end = future_s(INVASION_COOLDOWN * 4); // TODO: random cooldown in a range
 
+			// TODO: custom messages, chickens have gone mad and are running rampant!
 			broadcast("server_message", {
 				message: `Scout: ${G.monsters[event.mtype].name} are starting to move towards town!`,
 				color: "#4BB6E1",
@@ -2658,13 +2681,17 @@ function event_loop_invasion(c) {
 
 		// move towards town
 		if (event.stage > 0) {
-			const targetPoint = { x: gMap.spawns[0][0], y: gMap.spawns[0][1] };
+			const targetPoint =
+				gMap.invasion && gMap.invasion.town
+					? { x: gMap.invasion.town[0], y: gMap.invasion.town[1] }
+					: { x: gMap.spawns[0][0], y: gMap.spawns[0][1] };
 			// not sure if a target is required
 			// TODO: make all invaders move towards town
 			// TODO: monster movement should be extracted out to a function
 			for (const monster of aliveInvasionMonsters) {
+				const distanceToTargetPoint = distance(targetPoint, monster);
 				// goos are constantly moving inside their boundary
-				if (distance(targetPoint, monster) < 40) {
+				if (distanceToTargetPoint < 40) {
 					continue;
 				}
 
