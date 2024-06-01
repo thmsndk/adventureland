@@ -94,12 +94,50 @@
 				background-color: var(--dt-hover-cell-color);
 			}
 
-			table.sticky-header th {
+			/* table.sticky-header th {
 				position: sticky;
 				top: 0;
 				left: 0;
 				background-color: var(--dt-background-color-container);
 				z-index: 10;
+			} */
+
+			#container {
+				display: flex;
+				flex-direction: row;
+				flex-wrap: wrap;
+				width: 100%;
+			}
+
+			#items {
+				display: flex;
+				flex-direction: column;
+				flex-basis: 100%;
+				flex: 0.5;
+			}
+
+			#rolls-column {
+				display: flex;
+				flex-direction: column;
+				flex-basis: 100%;
+				flex: 0.5;
+			}
+
+			#rolls {
+				display: flex;
+				flex-direction: row;
+				justify-content: space-evenly;
+				/* align-items: flex-start; */
+				flex-basis: 100%;
+				/* flex: 0.5; */
+				/* width: 100%; */
+				flex-wrap: wrap;
+			}
+
+			#rolls > * {
+				flex: 0 0 200px;
+				background-color: var(--secondary-color);
+				margin: var(--dt-padding-s) var(--dt-padding-s);
 			}
 
 			/* tr td:nth-child(1),
@@ -125,10 +163,29 @@
 			} */
 		</style>
 		<script>
+			const table = G.drops.{{table}};//G.drops.invasion_accessoriesbox_tier0;
+
 			function hide_row(element) {
 				console.log("parent", this, $(element).closest("tr"));
 				$(element).closest("tr").hide();
 				return false;
+			}
+
+			function exchange(table){
+				const total = table.reduce((sum,drop) => sum += drop[0],0)
+
+				const roll = Math.random();
+				const result = roll * total;
+				// console.log(total, roll, result)
+
+				let current = 0;
+				for (const [chance, itemKey, amount] of table) {
+
+					current += chance;
+					if (result <= current) {
+						return [roll, itemKey]
+					}
+				}
 			}
 
 			document.addEventListener("DOMContentLoaded", function (event) {
@@ -149,7 +206,7 @@
 
 				let html = "";
 				// Draw item table
-				html += "<table style='width:25%' class='datatable sticky-header'>";
+				html += "<table  class='datatable sticky-header'>";
 				html += "<tr>";
 				html += `<th>item</th>`;
 				html += `<th>amount</th>`;
@@ -159,7 +216,7 @@
 
 				html += "</tr>";
 
-				const table = G.drops.{{table}};//G.drops.invasion_accessoriesbox_tier0;
+
 				let total = 0;
 				for (const [chance, itemKey, amount] of table) {
 					total += chance;
@@ -233,8 +290,37 @@
 						</td>`;
 					html += "</tr>";
 				}
-				$("#items").append(html);
 				html += "</table>";
+				$("#items").append(html);
+
+				html = "<div id=\"rolls\">"
+				// table of rolls ?
+				for (let index = 0; index < 100; index++) {
+					const [roll, itemKey] = exchange(table)
+					const gItem = G.items[itemKey];
+
+					let actual = { name: itemKey };
+					let icon = item_container({ size: 20, skin: gItem.skin, onclick: `render_item_info('${itemKey}')` }, actual);
+
+					html += '<div style="display:flex; flex-direction: row">';
+					html += '<div style="display:flex; flex-direction: column">';
+					html += `<span style="display:inline-block; vertical-align:middle">${icon}</span>`;
+					html += "</div>";
+					html += '<div style="display:flex; flex-direction: column">';
+					html += ` <span>${gItem.type} ${gItem.wtype ?? ""}</span>`;
+					html += ` <span>${itemKey}</span>`;
+					if (gItem.tier) {
+						html += ` <span>Tier: ${gItem.tier}</span>`;
+					}
+					html += ` <span>Roll: ${roll}</span>`;
+					// html += ` <a onclick="hide_row(this);">Hide</a>`;
+					html += "</div>";
+
+					html += "</div>";
+
+				}
+				html += "</div>";
+				$("#rolls-column").append(html);
 			});
 		</script>
 		<style>
@@ -246,6 +332,9 @@
 		</style>
 	</head>
 	<body>
-		<div id="items"></div>
+		<div id="container">
+			<div id="items"></div>
+			<div id="rolls-column"></div>
+		</div>
 	</body>
 </html>
