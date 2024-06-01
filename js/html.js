@@ -285,7 +285,7 @@ function render_server()
 		const event = S[key];
 		if (event.etype === "invasion") {
 			// Render invasion
-			// const scolor="#ECECEC";
+			const scolor="#ECECEC";
 			const lcolor="#ECECEC";
 			const lphrase="INVASION!";
 			// if(type=="goobrawl") lcolor="#FF5D34",s="rgoo";
@@ -307,8 +307,9 @@ function render_server()
 					<div style='color:${lcolor}; margin-top: 1px'>${event.c? `${event.c} LEFT` : ''}</div>
 				</div>
 			</div>`,
-			// TODO: map, time untill invasion, time left of invasion?, monster count
-			// html+="<div style='color:"+scolor+"; margin-top: 1px'>"+parseInt(round(-msince(new Date(S[type].spawn))))+"M</div>";
+			// TODO: time untill invasion
+			// TODO: render better time when less than a mminute left
+			html += `<div style='color:${scolor}; margin-top: 1px'>${parseInt(round(-msince(new Date(event.end))))}M</div>`;
 			html += `<div style='color:${lcolor}; margin-top: 1px'>${lphrase}</div>`;
 			html += "</div>";
 			content=true;
