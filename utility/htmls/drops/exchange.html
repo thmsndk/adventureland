@@ -72,6 +72,8 @@
 			table.datatable th,
 			table.datatable td {
 				padding: var(--dt-padding-s) var(--dt-padding-s);
+				padding-top: 0px;
+				padding-bottom: 0px;
 			}
 
 			table.datatable th {
@@ -157,7 +159,7 @@
 
 				html += "</tr>";
 
-				const table = G.drops.invasion_scrollbox_tier0;
+				const table = G.drops.{{table}};//G.drops.invasion_accessoriesbox_tier0;
 				let total = 0;
 				for (const [chance, itemKey, amount] of table) {
 					total += chance;
@@ -222,14 +224,14 @@
 					html += `<td> ${normalize(current, 0, total)}</td>`;
 
 					html += "</tr>";
-					// html += "<tr>";
-					// html += `<td colspan="5" title="${probability}">
-					// 		<div style="width:100%; position:relative;">
-					// 			<div style="height:20px; background-color:blue; width:${probability * 100}%;"></div>
-					// 			<div style="position:absolute; top:0;">${chance}</div>
-					// 		</div>
-					// 	</td>`;
-					// html += "</tr>";
+					html += "<tr>";
+					html += `<td colspan="5" title="${probability}" style="padding:0px;">
+							<div style="width:100%; position:relative;">
+								<div style="height:5px; background-color:blue; width:${probability * 100}%;"></div>
+								<div style="position:absolute; top:0;"></div>
+							</div>
+						</td>`;
+					html += "</tr>";
 				}
 				$("#items").append(html);
 				html += "</table>";

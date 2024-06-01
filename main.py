@@ -276,8 +276,8 @@ def serve_maps(order=""):
 @app.route('/drops/exchange')
 def serve_drops_exchange():
 	domain=gdi(request)
-	mode,items=gdmul(request,"mode","items")
-	return whtml(request,"utility/htmls/drops/exchange.html",domain=domain,mode=mode,items=items)
+	table=gdmul(request,"table")
+	return whtml(request,"utility/htmls/drops/exchange.html",domain=domain,table=table)
 
 @app.route('/privacy')
 def serve_privacy():
