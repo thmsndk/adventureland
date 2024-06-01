@@ -2702,7 +2702,7 @@ function event_loop_invasion(c) {
 
 				// TODO: Can we optimize how often we pathfind? assuming it's expensive
 				if (mode.all_smart) {
-					if (!monster.worker) {
+					if (!monster.worker && !monster.working) {
 						monster.working = true;
 						workers[wlast++ % workers.length].postMessage({
 							type: "fast_astar",
