@@ -2669,9 +2669,6 @@ function event_loop_invasion(c) {
 			// TODO: set a timer for next stage activation and push it to E so players knows it
 			event.stage = 1;
 
-			// TODO: moving monsters from a far away spawn takes time to reach, the failure time should first start once an invader gets in range of town
-			event.end = future_s(INVASION_COOLDOWN * 4); // TODO: random cooldown in a range
-
 			// TODO: custom messages, chickens have gone mad and are running rampant!
 			broadcast("server_message", {
 				message: `Scout: ${G.monsters[event.mtype].name} are starting to move towards town!`,
@@ -2690,7 +2687,15 @@ function event_loop_invasion(c) {
 			// TODO: monster movement should be extracted out to a function
 			for (const monster of aliveInvasionMonsters) {
 				const distanceToTargetPoint = distance(targetPoint, monster);
-				// goos are constantly moving inside their boundary
+
+				// TODO: configurable range in G
+				if (!event.end && distanceToTargetPoint < 250) {
+					// Invaders has reached the town, start failure cooldown
+					// moving monsters from a far away spawn takes time to reach, the failure time should first start once an invader gets in range of town
+					event.end = future_s(INVASION_COOLDOWN * 4); // TODO: random cooldown in a range
+				}
+
+				// goos are constantly moving towards their boundary
 				if (distanceToTargetPoint < 40) {
 					continue;
 				}
