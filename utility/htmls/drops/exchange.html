@@ -113,14 +113,14 @@
 				display: flex;
 				flex-direction: column;
 				flex-basis: 100%;
-				flex: 0.5;
+				flex: 0.4;
 			}
 
 			#rolls-column {
 				display: flex;
 				flex-direction: column;
 				flex-basis: 100%;
-				flex: 0.5;
+				flex: 0.6;
 			}
 
 			#rolls {
@@ -135,7 +135,7 @@
 			}
 
 			#rolls > * {
-				flex: 0 0 200px;
+				flex: 0 0 170px;
 				background-color: var(--secondary-color);
 				margin: var(--dt-padding-s) var(--dt-padding-s);
 			}
@@ -312,7 +312,7 @@
 					if (gItem.tier) {
 						html += ` <span>Tier: ${gItem.tier}</span>`;
 					}
-					html += ` <span>Roll: ${roll}</span>`;
+					html += ` <span>${roll}</span>`;
 					// html += ` <a onclick="hide_row(this);">Hide</a>`;
 					html += "</div>";
 
