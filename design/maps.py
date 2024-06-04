@@ -740,7 +740,17 @@ maps={
 			# TODO: what types of invasions are enabled?
 			# TODO: any specific monsters on the map that should not be part of an invasion?
 			# disable fairies
-			# "disable":["crabxx"],
+			"exclude":[
+				"crabxx",
+				"puppy1",
+				"puppy2",
+				"puppy3",
+				"puppy4",
+				"kitty1",
+				"kitty2",
+				"kitty3",
+				"kitty4",
+			],
 			# TODO: combined invasion of different mobs?
 			# TODO: failure conditions?
 			# TODO: "nearby" monster invasions, moles for example emergin from tunnels
