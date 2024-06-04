@@ -2537,14 +2537,20 @@ function event_loop_invasion(c) {
 			// start new event, make sure next event starts in the future
 			timers[invasionMapKey] = future_s(INVASION_COOLDOWN); // TODO: random cooldown in a range
 
-			// TODO: check extra for additional monsters, like moles
-			// TODO: spawning crabx might mess with the crabxx event, some monsters should probably be filtered out
-			const monster_map_def = clone(random_one(Object.values(gMap.monsters)));
+			// TODO: spawning crabx might mess with the crabxx event,
+			// some monsters should probably be filtered out, spawning crabxx seems like a bad idea
+			const exclude = gMap.invasion.exclude;
+			const potentialInvaders = Object.values(gMap.monsters).filter((x) => !exclude || !exclude.includes(x.type));
+
+			// TODO: check/add extra for additional monsters, like moles
+			// TODO: do we pick a random monster? or should we prefer high level spawns?
+			// TODO: roll for success
+			// TODO: each 5 levels increases chance to spawn?
+			// TODO: chance to start invasion
+
+			const monster_map_def = clone(random_one(potentialInvaders));
 			monster_map_def.grow = false;
 			console.log(monster_map_def);
-
-			// TODO: each 5 levels increases chance to spawn
-			// TODO: chance to start invasion
 
 			// E is broadcasted to the players
 			E[invasionMapKey] = event = {
@@ -2580,6 +2586,7 @@ function event_loop_invasion(c) {
 			broadcast_e();
 		}
 
+		// Bail out, no active event.
 		if (!event) {
 			continue;
 		}
@@ -2628,7 +2635,7 @@ function event_loop_invasion(c) {
 			//  if monster has a master, if it stops pursuit (no redirect) you get the hp or max 300 points to the master
 			//  if you are the burner, burn dmg gives you points
 			// console.log("success", instance.invasion.points);
-			const numBins = 10;
+			const numBins = 5;
 			const bins = groupObjectsIntoBins(instance.invasion.points, numBins);
 
 			console.log("success", bins);
@@ -2662,7 +2669,6 @@ function event_loop_invasion(c) {
 		}
 
 		// TODO: if you where farming here you might be overwhelmed, make event visible and wait N before starting spawning.
-		// TODO: move calculation to event initialization
 		const { spawnAmount } = instance.invasion.stages[event.stage] || {};
 
 		if (event.stage === 0 && instance.invasion.monster_count === spawnAmount) {
@@ -2683,7 +2689,7 @@ function event_loop_invasion(c) {
 					? { x: gMap.invasion.town[0], y: gMap.invasion.town[1] }
 					: { x: gMap.spawns[0][0], y: gMap.spawns[0][1] };
 			// not sure if a target is required
-			// TODO: make all invaders move towards town
+
 			// TODO: monster movement should be extracted out to a function
 			for (const monster of aliveInvasionMonsters) {
 				const distanceToTargetPoint = distance(targetPoint, monster);
@@ -2744,7 +2750,7 @@ function event_loop_invasion(c) {
 	}
 }
 
-// TODO: remove this to an invasion event specific file.
+// TODO: move this to an invasion event specific file.
 function invasion_remove_monster(monster) {
 	if (!monster.invasion) {
 		return;
