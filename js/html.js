@@ -789,6 +789,7 @@ function render_transports_npc()
 		// html+="<div class='clickable' onclick='transport_to(\"underworld\")'>&gt; Underworld</div>"; // <span style='color: #D23F3A'>[Soon!]</span>
 		html+="<div class='clickable' onclick='transport_to(\"desertland\",1)'>&gt; Desertland</div>"; //  <span style='color: #D2CB7E'>[Soon!]</span>
 		// html+="<div class='clickable' onclick='transport_to(\"halloween\",1)'>&gt; Spooky Forest</div>"; //  <span style='color: #D26D1E'>[Halloween!]</span>
+		html+="<div class='clickable' onclick='transport_to(\"wasteland\",0)'>&gt; Wasteland</div>";
 	if(S.duels)
 	{
 		for(var name in S.duels)

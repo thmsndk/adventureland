@@ -360,6 +360,7 @@ function init_game() {
 					create_instance("winter_cave");
 					create_instance("winter_cove");
 					create_instance("desertland");
+					create_instance("wasteland")
 					create_instance("level1");
 					create_instance("level2");
 					create_instance("level2n");

@@ -288,7 +288,7 @@ sprites={
 		"columns":4,
 		"matrix":[
 			["spkc","spkw","bunny","bouncer"],
-			[None,None,None,None]
+			[None,"stonewar",None,None]
 		]
 	},
 	"jsonx":{
@@ -547,6 +547,42 @@ sprites={
 		"matrix":[
 			["oneeye",None,None,None],
 			[None,None,None,None]
+		],
+	},
+	"creatures3":{
+		"file":"/images/tiles/monsters/creatures3.png",
+		"rows":2,"columns":4,
+		"matrix":[
+			[None,None,None,None],
+			["sssnake",None,None,None]
+		],
+	},
+	"bghoul":{
+		"file":"/images/tiles/monsters/mghoulA_1.png",
+		"rows":1,"columns":1,
+		"matrix":[
+			["bghoul"],
+		],
+	},
+	"gghoul":{
+		"file":"/images/tiles/monsters/mghoulB_1.png",
+		"rows":1,"columns":1,
+		"matrix":[
+			["gghoul"],
+		],
+	},
+	"gargoyle":{
+		"file":"/images/tiles/monsters/gargoyle_1.png",
+		"rows":1,"columns":1,
+		"matrix":[
+			["gargoyle"],
+		],
+	},
+	"gwyvern":{
+		"file":"/images/tiles/monsters/wyvern_single_green_1.png",
+		"rows":1,"columns":1,
+		"matrix":[
+			["gwyvern"],
 		],
 	},
 	"jrpumpkins":{

@@ -1634,7 +1634,40 @@ maps={
 		"unlist":True,
 		"lux":0.4,
 	},
-
+"wasteland":{
+		"key":"wasteland",
+		"name":"Wasteland",
+		"npcs":[
+			{"id":"transporter","position":[-30,-30]},
+		],
+		"monsters":[
+			{"type":"goo8","boundary":[492.89,39.47,628.85,239.90],"count":6},
+			{"type":"sssnake","boundary":[1220.38,231.43,1398.30,518.33],"count":8},
+			{"type":"bghoul","boundary":[39.44,-774.57,386.77,-667.64],"count":4},
+			{"type":"gghoul","boundary":[236.40,-1096.55,342.36,-886.63],"count":5},
+			{"type":"gghoul","boundary":[236.43,-1002.07,494.80,-934.62],"count":3},
+			{"type":"stonewar","boundary":[-214.10,-1135.06,-104.16,-1033.13],"count":1},
+			{"type":"gargoyle","boundary":[1662.43,-546.06,1831.87,-353.65],"count":2},
+			{"type":"gargoyle","boundary":[1870.89,-412.08,2053.31,-239.64],"count":2},
+			{"type":"gwyvern","boundary":[1725.42,-1729.55,2169.74,-1456.67],"count":1},
+		],
+		"spawns":[
+			[0,0],
+			[214,97], #upper island 1
+			[762,426], #bridge
+			[89,-652], #topleft island
+			[1938,-242], #middle island
+			[1968,-1355],#boss arena
+		],
+		"doors":[
+			#[0,-3,20,50,"level3",1,0],
+		],
+		"quirks":[
+		],
+		"drop_norm":1000,
+		"outside":True,
+		"lux":0.4,
+	},
 }
 for name in maps:
 	if not maps[name].get("doors"): maps[name]["doors"]=[]
