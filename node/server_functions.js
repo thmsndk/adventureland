@@ -2547,6 +2547,11 @@ function event_loop_invasion(c) {
 			// TODO: roll for success
 			// TODO: each 5 levels increases chance to spawn?
 			// TODO: chance to start invasion
+			if (Math.random() < 0.4) {
+				timers[invasionMapKey] = future_s(INVASION_COOLDOWN) * (Math.random() * 5);
+				console.log(`${mapName} spawn will be delayed`);
+				continue;
+			}
 
 			const monster_map_def = clone(random_one(potentialInvaders));
 			monster_map_def.grow = false;
