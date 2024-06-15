@@ -1667,6 +1667,42 @@ maps={
 		"drop_norm":1000,
 		"outside":True,
 		"lux":0.4,
+		"traps":[
+			{
+				"type":"wasteland",
+				"damage": 10,
+				"damage_increment": 1,
+				"damage_max": 20, # TODO: If max is not defined, perhaps a formula could be used to decide max?
+				"intensity": 1, # A Zone multiplier 
+				"duration": 12000, # define duration, a higher tier zone could last longer before running out
+				"polygon":[
+					[-88, -32],
+					[152, -32],
+					[152, 80],
+					[72, 80],
+					[72, 160],
+					[-88, 160]
+				]
+			},
+			{
+				"type":"wasteland",
+				"damage": 10,
+				"damage_increment": 2,
+				"damage_max": 50,
+				"intensity": 2,  # A Zone multiplier 
+				"duration": 120000, # higher tier zone with longer duration
+				"polygon":[
+					[-88, 168],
+					[72, 168],
+					[72, 376],
+					[-88, 376]
+				]
+			},
+		],
+		# define where we spawn if we die on the map
+		"on_death":["wasteland",0],
+		# can't remember what on exit is
+		# "on_exit":["main",0],
 	},
 }
 for name in maps:
