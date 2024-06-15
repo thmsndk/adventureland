@@ -1543,7 +1543,8 @@ def create_server_api(**args):
 	for name in maps:
 		key=maps[name]["key"]
 		if maps[name].get("ignore"): continue
-			dbmap=get_by_iid("map|%s"%key)
+		
+		dbmap=get_by_iid("map|%s"%key)
 		if dbmap:
 			geometry[name]=dbmap.info.data
 		else:
