@@ -362,6 +362,7 @@ function init_game() {
 					create_instance("winter_cave");
 					create_instance("winter_cove");
 					create_instance("desertland");
+					create_instance("wasteland")
 					create_instance("level1");
 					create_instance("level2");
 					create_instance("level2n");
@@ -11435,7 +11436,8 @@ function stop_pursuit(monster, args) {
 	monster.u = true;
 	monster.irregular = 2;
 	calculate_monster_stats(monster);
-	xy_emit(monster, "ui", { id: monster.id, type: "disengage", event: true });
+	// Forward args.cause to the UI so it can give different messages
+	xy_emit(monster, "ui", { id: monster.id, type: "disengage", event: true, cause: args.cause });
 }
 
 function defeated_by_a_monster(attacker, player) {
@@ -11757,7 +11759,7 @@ function update_instance(instance) {
 					var theone = random_one(c);
 					if (theone) {
 						if (monster.target && get_player(monster.target)) {
-							stop_pursuit(monster);
+							stop_pursuit(monster, { cause: "anger" });
 						}
 						target_player(monster, theone);
 					}
@@ -11782,7 +11784,7 @@ function update_instance(instance) {
 						var theone = random_one(c);
 						if (theone) {
 							if (monster.target && get_player(monster.target)) {
-								stop_pursuit(monster);
+								stop_pursuit(monster, { cause: "warpstomp" });
 							}
 							target_player(monster, theone);
 							port_monster(monster, theone, { stomp: 160 });

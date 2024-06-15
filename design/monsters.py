@@ -1243,6 +1243,15 @@ monsters={
 		]
 	},
 
+	#Wasteland
+	"goo8":{"name":"Toxic Goo","speed":6,"charge":12,"hp":100,"xp":100,"attack":5,"damage_type":"physical","respawn":1,"gold":20,"range":15,"frequency":0.4,"aggro":0,"aa":1,},
+	"sssnake":{"name":"Mutated Snake","speed":6,"charge":12,"hp":100,"xp":100,"attack":5,"damage_type":"physical","respawn":1,"gold":20,"range":15,"frequency":0.4,"aggro":0,"aa":1,},
+	"bghoul":{"name":"Brown Ghoul","speed":6,"charge":12,"hp":100,"xp":100,"attack":5,"damage_type":"physical","respawn":1,"gold":20,"range":15,"frequency":0.4,"aggro":0,"aa":1,},
+	"gghoul":{"name":"Green Ghoul","speed":6,"charge":12,"hp":100,"xp":100,"attack":5,"damage_type":"physical","respawn":1,"gold":20,"range":15,"frequency":0.4,"aggro":0,"aa":1,},
+	"stonewar":{"name":"Warrior Statue","speed":6,"charge":12,"hp":100,"xp":100,"attack":5,"damage_type":"physical","respawn":1,"gold":20,"range":15,"frequency":0.4,"aggro":0,"aa":1,},
+	"gargoyle":{"name":"Gargoyle","speed":6,"charge":12,"hp":100,"xp":100,"attack":5,"damage_type":"physical","respawn":1,"gold":20,"range":15,"frequency":0.4,"aggro":0,"aa":1,},
+	"gwyvern":{"name":"Wyvern","speed":6,"charge":12,"hp":100,"xp":100,"attack":5,"damage_type":"physical","respawn":1,"gold":20,"range":15,"frequency":0.4,"aggro":0,"aa":1,},
+
 	#humanoids
 	"d_wiz":{"name":"Dark Wizard","skin":"shadow","speed":12,"charge":90,"hp":100000,"xp":10000,"attack":5200,"damage_type":"magical","respawn":6000,"gold":20,"range":240,"frequency":2,"aggro":1,
 		"slots":{"mainhand":{"name":"oozingterror","level":13}},"abilities":{"self_healing":{"heal":4800,"cooldown":2000}},
