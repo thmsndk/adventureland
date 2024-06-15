@@ -2695,6 +2695,10 @@ function event_loop_invasion(c) {
 					: { x: gMap.spawns[0][0], y: gMap.spawns[0][1] };
 			// not sure if a target is required
 
+			// TODO: monsters should attempt to kill the scout
+			// TODO: scout should respawn every ~24 hours
+			// TODO: if the scout is not allive, event provides less information
+
 			// TODO: monster movement should be extracted out to a function
 			for (const monster of aliveInvasionMonsters) {
 				const distanceToTargetPoint = distance(targetPoint, monster);
@@ -2704,12 +2708,19 @@ function event_loop_invasion(c) {
 					// Invaders has reached the town, start failure cooldown
 					// moving monsters from a far away spawn takes time to reach, the failure time should first start once an invader gets in range of town
 					event.end = future_s(INVASION_COOLDOWN * 4); // TODO: random cooldown in a range
+
+					// Make invasion monsters aggressive, causing them to attack and target players
+					monster.aggro = 1;
+					monster.rage = 1;
 				}
 
 				// goos are constantly moving towards their boundary
 				if (distanceToTargetPoint < 40) {
 					continue;
 				}
+
+				// TODO: scorpions never seem to move towards point?
+				// it' seems to log heap fast_astar?
 
 				// TODO: Can we optimize how often we pathfind? assuming it's expensive
 				if (mode.all_smart) {
@@ -2747,6 +2758,7 @@ function event_loop_invasion(c) {
 			instance.invasion.monster_count++;
 			instance.invasion.monsters.push(m);
 
+			// TODO: map specific announcements?
 			broadcast("server_message", {
 				message: `${G.monsters[event.mtype].name} Are strengthening in numbers`,
 				color: "#4BB6E1",
