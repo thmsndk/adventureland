@@ -342,6 +342,14 @@ conditions={
 		"debuff":True,
 		"defense":"firesistance",
 	},
+	"wasteland":{
+		"name":"Wasteland Toxicity",
+		"skin":"placeholder", # TODO: find a better skin for the debuff
+		"interval":210, # how often should it tick / trigger
+		"ui":True,
+		"debuff":True,
+		# "defense":"firesistance",
+	},
 	"shocked":{
 		"name":"Shocked",
 		"skin":"essenceofthunder",
