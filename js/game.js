@@ -2668,6 +2668,50 @@ function init_socket(args)
 					}
 				}
 			}
+			else if(data.type=="polygon"){
+				
+				// var entity=get_entity(data.name);
+				
+
+				// TODO: styles from event
+				const graphics = new PIXI.Graphics();
+				
+
+				// Set the line style (width, color, alpha)
+				graphics.lineStyle(1, 0x0000FF, 1);
+
+				// Set the fill color
+				graphics.beginFill(0xDE3249);
+
+				// Draw the polygon
+				const points = data.points.reduce((res, p) => {
+					res.push(p.x, p.y)
+					return res;
+				},[])
+
+				graphics.drawPolygon(points);
+
+				graphics.endFill();
+
+				map.addChild(graphics);
+
+				function disappear(step,sprite)
+				{
+					return function(){
+						sprite.alpha-=0.08;
+						// we render 10 steps, each step is 1000 ms
+						if(step<10) draw_timeout(disappear(step+1,sprite), 100);
+						else
+						{
+							remove_sprite(sprite);
+							try{ sprite.destroy(); }catch(e){}
+						}
+					}
+				}
+
+				draw_timeout(disappear(0, graphics), 1000);
+
+			}
 			else if(is_sdk)
 				console.log("Unhandled 'ui': "+data.type);
 		});

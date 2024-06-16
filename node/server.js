@@ -11728,7 +11728,8 @@ function update_instance(instance) {
 
 					// TODO: be able to offset the polygon start point by N lenght from the monster
 					// Frontal Cone, using the monsters own angle
-					const cone = generatePolygon(monster, 100, monster.angle /* south */);
+					const cone = generatePolygon(monster, 200, monster.angle /* south */);
+					// TODO: should the polygon handle collisions as "line of sight" so it can't effect them
 
 					// is_point_inside expects an array of tubles [[x1,y1],[x2,y2]]
 					const polygon = cone.map((p) => [p.x, p.y]);
@@ -11749,11 +11750,10 @@ function update_instance(instance) {
 						setTimeout(() => {
 							// TODO: this calculation seems kinda off when lookin at the client and the server decision
 							if (is_point_inside([player.x, player.y], polygon)) {
-								// TODO: knockback alculationbbbbbbbbbb depending on angles and such
 								console.log(`${player.name} is inside the polygon!`);
-
+								const knockbackPoints = knockback(player, monster, 250);
 								// TODO: We can also supply an effect to transport?
-								transport_player_to(player, monster.map, [player.x, player.y - 150]);
+								transport_player_to(player, monster.map, knockbackPoints[knockbackPoints.length - 1]);
 								resend(player, "u+cid");
 
 								monster.moving = true;

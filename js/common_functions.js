@@ -1173,6 +1173,48 @@ function is_in_front(observer,entity)
 	return false;
 }
 
+function knockback(player, monster, knockbackDistance) {
+    const dx = player.x - monster.x;
+    const dy = player.y - monster.y;
+    
+    const dist = Math.sqrt(dx * dx + dy * dy);
+    
+    // Avoid division by zero
+    if (dist === 0) {
+        return [[player.x, player.y]];
+    }
+    
+    const unitDx = dx / dist;
+    const unitDy = dy / dist;
+    
+    // Check points along the path
+	// const stepSize = 15;
+    const steps = 100; // Number of steps to check along the path
+    const validPoints = [];
+	let previousPoint = player;
+    for (let i = 1; i <= steps; i++) {
+        const intermediateX = player.x + unitDx * (knockbackDistance * i / steps);
+        const intermediateY = player.y + unitDy * (knockbackDistance * i / steps);
+        const intermediatePoint = { x: intermediateX, y: intermediateY };
+        
+		if(can_move({
+			map:player.map,
+			x:previousPoint.x,
+			y:previousPoint.y,
+			going_x:intermediatePoint.x,
+			going_y:intermediatePoint.y,
+			base:player.base})) {
+        
+			validPoints.push(intermediatePoint)
+        } else {
+            break;
+        }
+		previousPoint = intermediatePoint;
+    }
+    
+    return validPoints.map(p => [p.x,p.y]);
+}
+
 function calculate_movex(map, cur_x, cur_y, target_x, target_y) {
 	if(target_x==Infinity) target_x=CINF;
 	if(target_y==Infinity) target_y=CINF;
