@@ -362,7 +362,7 @@ function init_game() {
 					create_instance("winter_cave");
 					create_instance("winter_cove");
 					create_instance("desertland");
-					create_instance("wasteland")
+					create_instance("wasteland");
 					create_instance("level1");
 					create_instance("level2");
 					create_instance("level2n");
@@ -11718,6 +11718,53 @@ function update_instance(instance) {
 					monster.cid++;
 					monster.u = true;
 					change = true;
+				}
+				if (name == "cone_attack") {
+					// if (is_in_front(monster, player) && can_attack(monster, player)) {
+					console.log("monster angle", monster.angle);
+					// TODO: halt / freeze the monster so it does not move
+					monster.moving = false;
+					// const cone = generatePolygon(monster, 100, 270 /* south */);
+
+					// TODO: be able to offset the polygon start point by N lenght from the monster
+					// Frontal Cone, using the monsters own angle
+					const cone = generatePolygon(monster, 100, monster.angle /* south */);
+
+					// is_point_inside expects an array of tubles [[x1,y1],[x2,y2]]
+					const polygon = cone.map((p) => [p.x, p.y]);
+
+					// broadcast polygon to client to visualize where to GTFO from
+					// TODO: are theese events limited to the instance?
+					// xy_emit(player, "ui", { type: "polygon", name: monster.id, points: cone });
+					events.push(["ui", { type: "polygon", name: monster.id, points: cone }]);
+					// TODO: make the monster stand still
+					// TODO: commence attack after a timeout so players can move away
+					for (const id in instances[monster.in].players) {
+						const player = instances[monster.in].players[id];
+
+						if (player.rip || player.npc) {
+							continue;
+						}
+
+						setTimeout(() => {
+							// TODO: this calculation seems kinda off when lookin at the client and the server decision
+							if (is_point_inside([player.x, player.y], polygon)) {
+								// TODO: knockback alculationbbbbbbbbbb depending on angles and such
+								console.log(`${player.name} is inside the polygon!`);
+
+								// TODO: We can also supply an effect to transport?
+								transport_player_to(player, monster.map, [player.x, player.y - 150]);
+								resend(player, "u+cid");
+
+								monster.moving = true;
+							} else {
+								console.log(`${player.name} NOT is inside the polygon!`);
+							}
+						}, 1000);
+						// if (distance(player, monster) < 480) {
+						// 	commence_attack(monster, player, "fireball");
+						// }
+					}
 				}
 				if (name == "multi_freeze") {
 					for (var name in monster.points || {}) {
