@@ -11700,8 +11700,13 @@ function update_instance(instance) {
 				if (name == "cone_attack") {
 					// if (is_in_front(monster, player) && can_attack(monster, player)) {
 					console.log("monster angle", monster.angle);
+					// TODO: halt / freeze the monster so it does not move
+					monster.moving = false;
+					// const cone = generatePolygon(monster, 100, 270 /* south */);
 
-					const cone = generatePolygon(monster, 100, 270 /* south */);
+					// TODO: be able to offset the polygon start point by N lenght from the monster
+					// Frontal Cone, using the monsters own angle
+					const cone = generatePolygon(monster, 100, monster.angle /* south */);
 
 					// is_point_inside expects an array of tubles [[x1,y1],[x2,y2]]
 					const polygon = cone.map((p) => [p.x, p.y]);
@@ -11719,17 +11724,21 @@ function update_instance(instance) {
 							continue;
 						}
 
-						// TODO: this calculation seems kinda off when lookin at the client and the server decision
-						if (is_point_inside([player.x, player.y], polygon)) {
-							// TODO: knockback alculation depending on angles and such
-							console.log(`${player.name} is inside the polygon!`);
+						setTimeout(() => {
+							// TODO: this calculation seems kinda off when lookin at the client and the server decision
+							if (is_point_inside([player.x, player.y], polygon)) {
+								// TODO: knockback alculationbbbbbbbbbb depending on angles and such
+								console.log(`${player.name} is inside the polygon!`);
 
-							// TODO: We can also supply an effect to transport?
-							transport_player_to(player, monster.map, [player.x, player.y - 150]);
-							resend(player, "u+cid");
-						} else {
-							console.log(`${player.name} NOT is inside the polygon!`);
-						}
+								// TODO: We can also supply an effect to transport?
+								transport_player_to(player, monster.map, [player.x, player.y - 150]);
+								resend(player, "u+cid");
+
+								monster.moving = true;
+							} else {
+								console.log(`${player.name} NOT is inside the polygon!`);
+							}
+						}, 1000);
 						// if (distance(player, monster) < 480) {
 						// 	commence_attack(monster, player, "fireball");
 						// }
