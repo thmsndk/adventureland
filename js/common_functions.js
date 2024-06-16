@@ -1165,6 +1165,38 @@ function recalculate_vxy(monster)
 	}
 }
 
+function generatePolygon(entity, radius, angle){
+	// Cone / Triangle at an angle
+	// https://www.desmos.com/calculator/zdhbvpsiek
+
+	const points = [];
+
+	// Entity's position
+	const ex = entity.x;
+	const ey = entity.y;
+
+	points.push({ x: ex, y: ey });
+
+	// Left edge of the cone
+	const leftAngleRad = (angle - 45) * Math.PI / 180;
+	points.push({
+		x: ex + radius * Math.cos(leftAngleRad),
+		y: ey + radius * Math.sin(leftAngleRad)
+	});
+
+	// Right edge of the cone
+	const rightAngleRad = (angle + 45) * Math.PI / 180;
+	points.push({
+		x: ex + radius * Math.cos(rightAngleRad),
+		y: ey + radius * Math.sin(rightAngleRad)
+	});
+
+	// close the loop
+	points.push({ x: ex, y: ey });
+
+	return points;
+}
+
 function is_in_front(observer,entity)
 {
 	var angle=Math.atan2(get_y(entity)-get_y(observer),get_x(entity)-get_x(observer))*180/Math.PI;
