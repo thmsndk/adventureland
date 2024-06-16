@@ -2688,24 +2688,8 @@ function init_socket(args)
 					res.push(p.x, p.y)
 					return res;
 				},[])
+
 				graphics.drawPolygon(points);
-
-				// graphics.drawPolygon(
-				// 	new PIXI.Point(get_x(character),get_y(character)),
-				// 	new PIXI.Point(get_x(character)-10,get_y(character)-100),
-				// 	new PIXI.Point(get_x(character)+10,get_y(character)-100),
-
-				// );
-
-				// // End the fill
-				// graphics.endFill();
-				
-
-				// graphics.moveTo(get_x(entity),get_y(entity));
-				// graphics.lineTo(get_x(character),get_y(character)-2);
-
-				// graphics.drawCircle(get_x(entity),get_y(entity), 20);
-				// graphics.drawCircle(get_x(character),get_y(character), 20);
 
 				graphics.endFill();
 
