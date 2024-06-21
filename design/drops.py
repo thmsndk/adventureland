@@ -1306,33 +1306,11 @@ drops["invasion_accessoriesbox_tier0"].append([0.001,"invasion_accessoriesbox_ti
 drops["invasion_accessoriesbox_tier0"].append([0.00001,"invasion_accessoriesbox_tier2"])
 drops["invasion_accessoriesbox_tier1"].append([0.001,"invasion_accessoriesbox_tier2"])
 
-# Fillers, potions, upgrade scrolls, g	em0 x N? 
-
-
-for key in drops.keys():
-	if key.find(",")!=-1:
-		t=drops[key]
-		del drops[key]
-		key=key.split(","); key.sort()
-		key=",".join(key)
-		drops[key]=t
+# Fillers, potions, upgrade scrolls, gem0 x N? offering?
 
 for name in items:
 	item = items[name]
 	if not items[name].get("ignore") and not items[name].get("exclusive"):
-		grade_chance = 0
-		if items[name].get("grades") and (items[name].get("upgrade") and items[name]["grades"][2]<8 or items[name].get("compound") and items[name]["grades"][2]<3):
-			grade_chance = 0.1
-			drops["glitch"].append([0.1,name])
-		elif items[name].get("grades") and items[name]["grades"][2]==0:
-			grade_chance = 0.1
-			drops["glitch"].append([0.1,name])
-		elif items[name].get("grades") and items[name]["grades"][1]==0:
-			grade_chance = 0.25
-			drops["glitch"].append([0.25,name])
-		else:
-			grade_chance = 1
-			drops["glitch"].append([1,name])
 		
 		# Property Scrolls (str,luck..)
 		if item["type"] == "pscroll":
@@ -1374,19 +1352,41 @@ for name in items:
 
 		#		drops["invasion_accessoriesbox_tier0"].append([minChance, name])
 
+invasion_boxes = ["invasion_scrollbox_tier0",
+			"invasion_accessoriesbox_tier0",
+			"invasion_accessoriesbox_tier1",
+			"invasion_accessoriesbox_tier2"
+			]
 # sort invasion boxes highest to lowest value
-drops["invasion_scrollbox_tier0"].sort()
-drops["invasion_scrollbox_tier0"].reverse()
+for key in invasion_boxes:
+	drops[key].sort()
+	drops[key].reverse()
 
-drops["invasion_accessoriesbox_tier0"].sort()
-drops["invasion_accessoriesbox_tier0"].reverse()
+for key in drops.keys():
+	if key.find(",")!=-1:
+		t=drops[key]
+		del drops[key]
+		key=key.split(","); key.sort()
+		key=",".join(key)
+		drops[key]=t
 
-drops["invasion_accessoriesbox_tier1"].sort()
-drops["invasion_accessoriesbox_tier1"].reverse()
-
-drops["invasion_accessoriesbox_tier2"].sort()
-drops["invasion_accessoriesbox_tier2"].reverse()
-
+for name in items:
+	item = items[name]
+	if not items[name].get("ignore") and not items[name].get("exclusive"):
+		grade_chance = 0
+		if items[name].get("grades") and (items[name].get("upgrade") and items[name]["grades"][2]<8 or items[name].get("compound") and items[name]["grades"][2]<3):
+			grade_chance = 0.1
+			drops["glitch"].append([0.1,name])
+		elif items[name].get("grades") and items[name]["grades"][2]==0:
+			grade_chance = 0.1
+			drops["glitch"].append([0.1,name])
+		elif items[name].get("grades") and items[name]["grades"][1]==0:
+			grade_chance = 0.25
+			drops["glitch"].append([0.25,name])
+		else:
+			grade_chance = 1
+			drops["glitch"].append([1,name])
+		
 
 for name in items:
 	if "g" not in items[name]:
