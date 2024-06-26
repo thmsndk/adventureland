@@ -750,6 +750,14 @@ maps={
 				"kitty2",
 				"kitty3",
 				"kitty4",
+    			# Targets has no attack, so we ignore them for now, although having them "revolt" is kinda funny
+				"target",
+				"target_a500",
+				"target_a750",
+				"target_r500",
+				"target_r750",
+				"target_ar900",
+				"target_ar500red",
 			],
 			# TODO: combined invasion of different mobs?
 			# TODO: failure conditions?
