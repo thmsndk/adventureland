@@ -2712,10 +2712,20 @@ function event_loop_invasion(c) {
 					// Make invasion monsters aggressive, causing them to attack and target players
 					monster.aggro = 1;
 					monster.rage = 1;
+					monster.last_aggro = new Date();
+
+					// give them a boundary inside town they can move around in once they reach town
+					// This defines a 100x100 boundary around targetPoint
+					monster.map_def.boundary = [
+						targetPoint.x - 100,
+						targetPoint.y - 100,
+						targetPoint.x + 100,
+						targetPoint.y + 100,
+					];
 				}
 
-				// goos are constantly moving towards their boundary
-				if (distanceToTargetPoint < 40) {
+				if (distanceToTargetPoint < 250) {
+					// in town, no need to force move, assuming the boundary works
 					continue;
 				}
 
