@@ -22,3 +22,9 @@ Thumbs.db
 /lib/
 /include/
 *.cfg
+
+# when running the server in docker
+/appserver/storage/
+/config/secrets.py
+/config/environment.py
+/config/variables.js

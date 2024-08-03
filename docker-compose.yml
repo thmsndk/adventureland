@@ -1,0 +1,55 @@
+# This docker-compose file is to spin up a test server to play on
+services:
+  adventureland:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+
+    volumes:
+      # make sure that the database is persisted across image rebuild
+      # also expose python config files
+      # appserver-entrypoint is responsible for initializing default storage if the folder is empty
+      # you will need to initialize the config files before docker can start, it will fail to mount if they don't exist
+      - ./appserver/storage:/appserver/storage
+      - ./config/environment.py:/adventureland/environment.py
+      - ./config/secrets.py:/adventureland/secrets.py
+
+    restart: always
+    ports:
+      - "8083:8083"
+      - "8000:8000"
+    entrypoint: ["bash", "/adventureland/appserver-entrypoint.sh"]
+
+  game_server:
+    build:
+      context: ./
+      # TODO: use another Dockerfile, we only need the adventureland repository in this image not the app server
+      dockerfile: Dockerfile
+    image: game_server_image
+    # This service is only used to build the image, so we don't need to run it
+    # Thus, we can specify "command: echo Building image" to make it do nothing
+    command: echo Building image
+
+  eu1:
+    image: game_server_image
+
+    ports:
+      - "8022:8022"
+    entrypoint: ["bash", "/adventureland/node-server-entrypoint.sh", "EU", "I", "8022"]
+    depends_on:
+      - adventureland
+    volumes:
+      # you will need to initialize the config file before docker can start, it will fail to mount if they don't exist
+      - ./config/variables.js:/adventureland/node/variables.js
+
+  us1:
+    image: game_server_image
+
+    ports:
+      - "8023:8023"
+    entrypoint: ["bash", "/adventureland/node-server-entrypoint.sh", "US", "I", "8023"]
+    depends_on:
+      - adventureland
+    volumes:
+      # you will need to initialize the config file before docker can start, it will fail to mount if they don't exist
+      - ./config/variables.js:/adventureland/node/variables.js
