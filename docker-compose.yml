@@ -29,7 +29,7 @@ services:
     # This service is only used to build the image, so we don't need to run it
     # Thus, we can specify "command: echo Building image" to make it do nothing
     command: echo Building image
-    restart: never
+    restart: no
 
   eu1:
     image: game_server_image
