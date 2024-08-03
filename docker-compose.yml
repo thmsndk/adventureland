@@ -17,7 +17,7 @@ services:
     restart: always
     ports:
       - "8083:8083"
-      - "8000:8000"
+      - "8084:8000" # coolify binds the control panel to 8000, so we choose another one
     entrypoint: ["bash", "/adventureland/appserver-entrypoint.sh"]
 
   game_server:
