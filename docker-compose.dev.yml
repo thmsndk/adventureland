@@ -1,0 +1,55 @@
+# This docker-compose file is to spin up a development environment where the adventureland code is mounted and a restart of the server will cause new code to run
+
+version: "3.7"
+services:
+  adventureland:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+
+    volumes:
+      # - ..:/workspace:cached
+      # - ../appserver/storage:/appserver/storage
+      # - ./design:/adventureland/design
+      # - ./node:/adventureland/node
+      - ./:/adventureland
+
+    restart: always
+    ports:
+      - "8083:8083"
+      - "8000:8000"
+    entrypoint: ["bash", "/adventureland/appserver-entrypoint.sh"]
+  eu1:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+
+    volumes:
+      # - ..:/workspace:cached
+      # - ../appserver/storage:/appserver/storage
+      # - ./design:/adventureland/design
+      # - ./node:/adventureland/node
+      - ./:/adventureland
+
+    ports:
+      - "8022:8022"
+    entrypoint: ["bash", "/adventureland/node-server-entrypoint.sh", "EU", "I", "8022"]
+    depends_on:
+      - adventureland
+  us1:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+
+    volumes:
+      # - ..:/workspace:cached
+      # - ../appserver/storage:/appserver/storage
+      # - ./design:/adventureland/design
+      # - ./node:/adventureland/node
+      - ./:/adventureland
+
+    ports:
+      - "8023:8023"
+    entrypoint: ["bash", "/adventureland/node-server-entrypoint.sh", "US", "I", "8023"]
+    depends_on:
+      - adventureland
