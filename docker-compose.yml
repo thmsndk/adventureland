@@ -29,6 +29,7 @@ services:
     # This service is only used to build the image, so we don't need to run it
     # Thus, we can specify "command: echo Building image" to make it do nothing
     command: echo Building image
+    restart: never
 
   eu1:
     image: game_server_image
@@ -42,14 +43,14 @@ services:
       # you will need to initialize the config file before docker can start, it will fail to mount if they don't exist
       - ./config/variables.js:/adventureland/node/variables.js
 
-  us1:
-    image: game_server_image
+  # us1:
+  #   image: game_server_image
 
-    ports:
-      - "8023:8023"
-    entrypoint: ["bash", "/adventureland/node-server-entrypoint.sh", "US", "I", "8023"]
-    depends_on:
-      - adventureland
-    volumes:
-      # you will need to initialize the config file before docker can start, it will fail to mount if they don't exist
-      - ./config/variables.js:/adventureland/node/variables.js
+  #   ports:
+  #     - "8023:8023"
+  #   entrypoint: ["bash", "/adventureland/node-server-entrypoint.sh", "US", "I", "8023"]
+  #   depends_on:
+  #     - adventureland
+  #   volumes:
+  #     # you will need to initialize the config file before docker can start, it will fail to mount if they don't exist
+  #     - ./config/variables.js:/adventureland/node/variables.js
