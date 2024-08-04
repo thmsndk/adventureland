@@ -1596,7 +1596,6 @@ def create_server_api(**args):
 	for name in maps:
 		key=maps[name]["key"]
 		if maps[name].get("ignore"): continue
-
 		dbmap=get_by_iid("map|%s"%key)
 		if dbmap:
 			geometry[name]=dbmap.info.data
@@ -1613,7 +1612,7 @@ def create_server_api(**args):
 					process_map(map)
 					map.updated=datetime.now()
 					map.put()
-
+					
 	jhtml(self,{
 		"id":server.k(),
 		"auth":server.info.auth,

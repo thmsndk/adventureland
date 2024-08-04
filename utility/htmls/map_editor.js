@@ -1034,14 +1034,7 @@ function show_upload_modal() {
 	$("#toprightcorner").show();
 }
 
-function export_map(params) {
-	// TODO: generate file with map data
-	// TODO: download json file
-}
-
 function show_import_map() {
-	// TODO: paste json
-
 	function onImportMapJsonChange(event) {
 		var reader = new FileReader();
 		reader.onload = onReaderLoad;
@@ -1145,15 +1138,15 @@ function redraw_map() {
 	deleted = false;
 
 	if (map_data.placements) {
-	for (var i = 0; i < map_data.placements.length; i++) {
-		var tile = map_data.placements[i];
-		try {
-			if (!is_nun(tile[3])) place_area(tile[0], tile[1], tile[2], tile[3], tile[4], "yes");
-			else place_tile(tile[0], tile[1], tile[2], "yes");
-		} catch (e) {
-			console.log("Faulty tile detected + deleted");
-			deleted = true;
-			to_delete.push(i);
+		for (var i = 0; i < map_data.placements.length; i++) {
+			var tile = map_data.placements[i];
+			try {
+				if (!is_nun(tile[3])) place_area(tile[0], tile[1], tile[2], tile[3], tile[4], "yes");
+				else place_tile(tile[0], tile[1], tile[2], "yes");
+			} catch (e) {
+				console.log("Faulty tile detected + deleted");
+				deleted = true;
+				to_delete.push(i);
 			}
 		}
 	}
