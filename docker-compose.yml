@@ -34,9 +34,13 @@ services:
   eu1:
     image: game_server_image
 
+    # coolify + traefik runs on port 80/433 by default and maps a domain name to an internal service e.g. eu1.thmsn.adventureland.community points to eu1:8022 inside docker
+    # if you want to run this on localhost, change port 443 to 8022
     ports:
-      - "8022:8022"
-    entrypoint: ["bash", "/adventureland/node-server-entrypoint.sh", "EU", "I", "8022"]
+      - "8022:443"
+      # - "8022:8022"
+    entrypoint: ["bash", "/adventureland/node-server-entrypoint.sh", "EU", "I", "443"]
+    # entrypoint: ["bash", "/adventureland/node-server-entrypoint.sh", "EU", "I", "8022"]
     depends_on:
       - adventureland
     volumes:
@@ -44,14 +48,14 @@ services:
       - ./config/variables.js:/adventureland/node/variables.js
     labels:
       # let traefik listen to this port as well and not only 80/433
-      - "traefik.http.services.websocket.loadbalancer.server.port=8022"
+      # - "traefik.http.services.websocket.loadbalancer.server.port=8022"
 
   # us1:
   #   image: game_server_image
 
   #   ports:
-  #     - "8023:8023"
-  #   entrypoint: ["bash", "/adventureland/node-server-entrypoint.sh", "US", "I", "8023"]
+  #     - "8023:80"
+  #   entrypoint: ["bash", "/adventureland/node-server-entrypoint.sh", "US", "I", "80"]
   #   depends_on:
   #     - adventureland
   #   volumes:
