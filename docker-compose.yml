@@ -35,9 +35,8 @@ services:
     image: game_server_image
 
     # coolify + traefik runs on port 80/433 by default and maps a domain name to an internal service e.g. eu1.thmsn.adventureland.community points to eu1:8022 inside docker
-    # if you want to run this on localhost, expose it
-    # ports:
-    # - "8022:8022"
+    ports:
+      - "8022:443"
     # setting the port to 443 makes the port be saved and pushed out to clients
     entrypoint: ["bash", "/adventureland/node-server-entrypoint.sh", "EU", "I", "443"]
     # entrypoint: ["bash", "/adventureland/node-server-entrypoint.sh", "EU", "I", "8022"]
