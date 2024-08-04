@@ -5162,35 +5162,6 @@ function init_io() {
 				} else {
 					return fail_response("cant_enter");
 				}
-			} else if (data.place == "crypt" || data.place == "winter_instance") {
-				var f = "cave";
-				var ref = G.maps.cave.spawns[2];
-				var item = "cryptkey";
-				if (data.place == "winter_instance") {
-					f = "winterland";
-					ref = G.maps.winterland.spawns[5];
-					item = "frozenkey";
-				}
-				if (simple_distance(player, { in: f, map: f, x: ref[0], y: ref[1] }) > 120) {
-					return fail_response("transport_cant_reach");
-				}
-				if (data.name) {
-					// Player requested to enter an existing instance
-					if (instances[data.name] && instances[data.name].map == data.place) {
-						// The instance exists
-						transport_player_to(player, data.name);
-					} else {
-						// The instance doesn't exist
-						return fail_response("transport_cant_invalid");
-					}
-				} else {
-					if (!consume_one_by_id(player, item)) {
-						return fail_response("transport_cant_item");
-					}
-					instance = create_instance(name, data.place);
-					transport_player_to(player, name);
-				}
-				resend(player, "u+cid+reopen");
 			} else if (data.place == "dungeon0" && player.role == "gm") {
 				instance = create_instance(name, "dungeon0", { solo: player.id });
 				transport_player_to(player, name);
@@ -5295,23 +5266,31 @@ function init_io() {
 					instance.players[NPC_prefix + npc.id] = npc;
 				}
 			} else {
-				const map = data.place && G.maps[data.place];
-				if (map && map.instance) {
+				const gMap = data.place && G.maps[data.place];
+				if (gMap && gMap.instance) {
 					// Generic instance creation and transportation
 					// data.place is the name of the instance e.g bee_dungeon
 					// data.name is the id of the instance usually a number
 
 					const instanceExists = data.name && instances[data.name] && instances[data.name].map == data.place;
 
+					if (data.name) {
+						// Player requested to enter an existing instance
+						if (!instances[data.name]) {
+							// The instance doesn't exist
+							return fail_response("transport_cant_invalid");
+						}
+					}
+
 					// Requirements for entering
-					if (map.enter) {
+					if (gMap.enter) {
 						// Is there a place you need to be near to use the key
-						const validateRange = map.enter.locations && map.enter.locations.length > 0;
+						const validateRange = gMap.enter.locations && gMap.enter.locations.length > 0;
 						let inRange = !validateRange;
 
 						if (validateRange) {
-							server_log(`${map.enter.locations.length} locations to validate`);
-							for (const [locationsMapKey, locationType, locationIndex, range = 120] of map.enter.locations) {
+							server_log(`${gMap.enter.locations.length} locations to validate`);
+							for (const [locationsMapKey, locationType, locationIndex, range = 120] of gMap.enter.locations) {
 								if (!G.maps[locationsMapKey]) {
 									server_log(`G.maps.${locationsMapKey} does not exist`);
 									continue;
@@ -5351,11 +5330,11 @@ function init_io() {
 						}
 
 						// We check that the instance does not exist so the cost is not paid multiple times.
-						if (map.enter.items && !instanceExists) {
+						if (gMap.enter.items && !instanceExists) {
 							const itemsToConsume = [];
 
 							const quantityByItem = {};
-							for (const [itemKey, quantity] of map.enter.items) {
+							for (const [itemKey, quantity] of gMap.enter.items) {
 								quantityByItem[itemKey] = quantity;
 							}
 
