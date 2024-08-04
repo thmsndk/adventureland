@@ -800,6 +800,14 @@ sprites={
 			["bloodworm","snake","bee","bat"]
 		]
 	},
+	"bee_queen_sprite":{
+		"file":"/images/tiles/monsters/bee_queen_move.png",
+		"rows":1,
+		"columns":1,
+		"matrix":[
+			["bee_queen"],
+		]
+	},
 	"animals1":{
 		"file":"/images/tiles/monsters/animals1.png",
 		"rows":2,
@@ -963,6 +971,12 @@ sprites={
 			["m1","m2","m3","m4","b2","br1","o1","j1",None,None],
 		]
 	},
+	"beekeeper":{
+		"file":"/images/tiles/characters/beekeeper_1.png",
+		"rows":1,
+		"columns":1,
+		"matrix":[["beekeeper"]],
+	},
 
 }
 bodysets=[
@@ -1109,6 +1123,13 @@ imagesets={
 		"file":"/images/tiles/items/custom.png?v=9",
 		"load":True,
 	},
+	"pack_20_bee_items":{
+		"size":20,
+		"rows":21,
+		"columns":9,
+		"file":"/images/tiles/items/pack_20_bee_items.png",
+		# "load":True,
+	},
 }
 tilesets={
 	"castle":{"file":"/images/tiles/map/castle.png?v=2"},
@@ -1136,4 +1157,5 @@ tilesets={
 	"ruins":{"file":"/images/tiles/map/ruins.png?v=2"},
 	"tree":{"file":"/images/tiles/map/tree.png"},
 	"lights":{"file":"/images/tiles/map/lights.png?v=3","light":"yes"}, # "frames":3,"frame_width":48,
+	"honey_bee_nest":{"file":"/images/tiles/map/honey_bee_nest.png"},
 }

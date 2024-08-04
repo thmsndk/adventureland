@@ -120,7 +120,17 @@ SALES=4+5+388+5101+125/20 #donation+manual+macos+steam+sales
 update_notes=[
 	"Last Update [April 25th]",
 	"Cost reduction trial"
+
+	"--- BEE DUNGEON ---",
+	" Added bee_sting ability to workers",
+	" Set pieces only drops from queen",
+	" Reworked queen room doorway guard spawn zones",
+	" Queen will buff workers to cause them to heal / attack"
+	" Created characers are lvl 55 with basic vendor gear"
+
 ]
+
+#IMPORTANT: SPECIAL PAGE RULES ARE NEEDED: https://dash.cloudflare.com/b6f5a13bded5fdd273e4a1cd3777162d/adventure.land/page-rules - uss1 / eus1 was best
 ip_to_subdomain=environment.IP_TO_SUBDOMAIN
 HTTPS_MODE=True #IMPORTANT: converts server IP's to subdomain urls at create_server_api [17/11/18]
 always_amazon_ses=True

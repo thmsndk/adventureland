@@ -849,25 +849,35 @@ function update_overlays()
 
 function showhide_quirks_logic()
 {
-	if(!character) return;
-	var initial=quirks; quirks={};
+	if (!character) return;
+	var initial = quirks;
+	quirks = {};
 	// $(".quirks").hide();
-	(G.maps[character.map].quirks||[]).forEach(function(q){
-		if(q[4]=="info" && point_distance(character.real_x,character.real_y,q[0],q[1])<200)
-		{
-			quirks[q[5]]=true;
+	(G.maps[character.map].quirks || []).forEach(function (q) {
+		const [x, y, w, h, type, quirkKey, range = 200] = q;
+		if (type == "info" && point_distance(character.real_x, character.real_y, x, y) < range) {
+			quirks[quirkKey] = true;
 		}
 	});
-	(G.maps[character.map].zones||[]).forEach(function(zone){
-		[[0,-48,3],[-48,0,1],[48,0,2],[0,48,0],[0,-24,3],[-24,0,1],[24,0,2],[0,24,0]].forEach(function(m){
-			if(is_point_inside([character.real_x+m[0],character.real_y+m[1]],zone.polygon))
-			{
-				quirks[zone.type]=true;
+
+	(G.maps[character.map].zones || []).forEach(function (zone) {
+		[
+			[0, -48, 3],
+			[-48, 0, 1],
+			[48, 0, 2],
+			[0, 48, 0],
+			[0, -24, 3],
+			[-24, 0, 1],
+			[24, 0, 2],
+			[0, 24, 0],
+		].forEach(function (m) {
+			if (is_point_inside([character.real_x + m[0], character.real_y + m[1]], zone.polygon)) {
+				quirks[zone.type] = true;
 			}
 		});
 	});
-	if(JSON.stringify(initial) !== JSON.stringify(quirks))
-		render_server();
+
+	if (JSON.stringify(initial) !== JSON.stringify(quirks)) render_server();
 }
 
 var last_loader={progress:0};
@@ -2244,6 +2254,7 @@ function init_socket(args)
 			{
 				$("#merchant-item").html(render_interaction({auto:true,skin:"daisy",message:"Huh? A merchant? On the hunt? Hahahahahahahaha ... Go sell cake or something ..."},"return_html"));
 			}
+			// TODO: handle quest responses
 			else
 			{
 				console.log("Missed game_response: "+response);
@@ -3387,43 +3398,131 @@ function npc_right_click(event){
 	{
 		socket.emit("interaction",{type:"newyear_tree"});
 	}
-	if(this.role=="pvptokens")
-	{
+
+	// Handle token exchanges
+	if (this.role == "pvptokens") {
 		render_token_exchange("pvptoken");
-	}
-	if(this.role=="friendtokens")
-	{
+	} else if (this.role == "friendtokens") {
 		render_token_exchange("friendtoken");
-	}
-	if(this.role=="funtokens")
-	{
+	} else if (this.role == "funtokens") {
 		render_token_exchange("funtoken");
-	}
-	if(this.role=="cx")
-	{
-		render_exchange_shrine("cx");
-	}
-	if(this.role=="petkeeper")
-	{
-		render_pet_shrine();
-	}
-	if(this.role=="monstertokens")
-	{
+	} else if (this.role == "monstertokens") {
 		render_token_exchange("monstertoken");
-		if(!character.s.monsterhunt)
-			$("#merchant-item").html(render_interaction({auto:true,skin:"daisy",message:"Would you like to go on a hunt? However, I have to warn you. It's not for the faint-hearted!"+(gameplay=="hardcore"&&" [100 TOKENS!]"||""),button:"I CAN HANDLE IT!",onclick:function(){socket.emit('monsterhunt'); push_deferred("monsterhunt")}},"return_html"));
-		else if(character.s.monsterhunt.c)
-			$("#merchant-item").html(render_interaction({auto:true,skin:"daisy",message:"Go now, go! Come back after you completed your hunt ..."},"return_html"));
-		else
-		{
-			socket.emit('monsterhunt');
-			push_deferred("monsterhunt")
-			$("#merchant-item").html(render_interaction({auto:true,skin:"daisy",message:"Well done, well done! A token for your service!"},"return_html"));
+		if (!character.s.monsterhunt)
+			$("#merchant-item").html(
+				render_interaction(
+					{
+						auto: true,
+						skin: "daisy",
+						message:
+							"Would you like to go on a hunt? However, I have to warn you. It's not for the faint-hearted!" +
+							((gameplay == "hardcore" && " [100 TOKENS!]") || ""),
+						button: "I CAN HANDLE IT!",
+						onclick: function () {
+							socket.emit("monsterhunt");
+							push_deferred("monsterhunt");
+						},
+					},
+					"return_html",
+				),
+			);
+		else if (character.s.monsterhunt.c)
+			$("#merchant-item").html(
+				render_interaction(
+					{ auto: true, skin: "daisy", message: "Go now, go! Come back after you completed your hunt ..." },
+					"return_html",
+				),
+			);
+		else {
+			socket.emit("monsterhunt");
+			push_deferred("monsterhunt");
+			$("#merchant-item").html(
+				render_interaction(
+					{ auto: true, skin: "daisy", message: "Well done, well done! A token for your service!" },
+					"return_html",
+				),
+			);
+		}
+	} else if (this.token) {
+		render_token_exchange(this.token);
+		// quests, giving the player an entry in character.s like monstertokens
+		if (this.role === "questgiver") {
+			// TODO: multiple quest types?
+			const questName = `quest_${this.quest}`; // e.g. quest_beekeper
+			// TODO: this.skin is not a thing either
+			console.log("questgiver", this.npc, this.quest, this);
+			const quest_request = { npc: this.npc, quest: this.quest };
+			if (!character.s[questName]) {
+				// the character does not have an active quest show a random welcome interaction
+				$("#merchant-item").html(
+					render_interaction(
+						{
+							auto: true,
+							skin: npc.skin,
+							// TODO: Dynamic messages
+							message: "Would you like to go on a quest?",
+							button: "Yes!",
+							onclick: function () {
+								socket.emit("quest", quest_request);
+								push_deferred("quest").then(x => {
+									const quest = character.s[questName]
+									// if t === "quest_kill"
+									$("#merchant-item").html(
+										render_interaction(
+											{
+												auto: true,
+												skin: npc.skin,
+												message:
+													"Alrighty then! Now go defeat " +
+													quest.c +
+													" " +
+													G.monsters[quest.id].name +
+													"'s and come back here!",
+											},
+											"return_html",
+										),
+									);
+								});
+							},
+						},
+						"return_html",
+					),
+				);
+			} else if (!character.s[questName].d) {
+				// Inform the player that the quest is not done yet
+				$("#merchant-item").html(
+					// TODO: Dynamic messages
+					render_interaction(
+						{ auto: true, skin: npc.skin, message: "Go now, go! Come back after you completed your quest ..." },
+						"return_html",
+					),
+				);
+			} else {
+				socket.emit("quest", quest_request);
+				push_deferred("quest");
+				$("#merchant-item").html(
+					render_interaction(
+						{ auto: true, skin: npc.skin, message: "Well done, well done! A token for your service!" },
+						"return_html",
+					),
+				);
+			}
 		}
 	}
-	if(this.role=="announcer")
-	{
-		render_interaction({auto:true,skin:"lionsuit",message:"Daily Events? Yes. Soon. Hopefully ... Definitely one day."});
+
+	if(this.role=="cx") {
+		render_exchange_shrine("cx");
+	}
+	if(this.role=="petkeeper") {
+		render_pet_shrine();
+	}
+
+	if(this.role=="announcer") {
+		render_interaction({
+			auto: true,
+			skin: "lionsuit",
+			message: "Daily Events? Yes. Soon. Hopefully ... Definitely one day.",
+		});
 	}
 	if(npc.interaction)
 	{
@@ -3652,6 +3751,7 @@ function update_sprite(sprite)
 	{
 		hp_bar_logic(sprite);
 		if(border_mode) border_logic(sprite);
+		// TODO: show range?
 	}
 	if(sprite.type=="character" || sprite.type=="npc")
 	{
@@ -5744,7 +5844,12 @@ function create_map()
 		map.addChild(nsprite);
 		map_doors.push(nsprite);
 		map_entities.push(nsprite);
-		if(border_mode) border_logic(nsprite);
+		if(border_mode) {
+			border_logic(nsprite, 0x007fff);
+			var c=draw_circle(door[0],door[1],2.5,0x007fff);
+			map.addChild(c);
+		}
+		
 	}
 
 	machines=map_info.machines||[];
@@ -5770,7 +5875,11 @@ function create_map()
 		map.addChild(nsprite);
 		map_entities.push(nsprite);
 		// map_doors.push(nsprite);
-		if(border_mode) border_logic(nsprite);
+		if(border_mode) {
+			border_logic(nsprite, 0x00ff00);
+			var c=draw_circle(quirk[0],quirk[1],2.5,0x00ff00);
+			map.addChild(c);
+		}
 	}
 
 	if(log_flags.map) console.log("Map created: "+current_map);
@@ -5796,6 +5905,7 @@ function create_map()
 			var c=draw_circle(spawn[0],spawn[1],10,0xFD7188);
 			map.addChild(c);
 		});
+
 		(G.maps[current_map].monsters||[]).forEach(function(mdef){
 			if(mdef.boundary)
 			{
@@ -5813,10 +5923,12 @@ function create_map()
 				map.addChild(e);
 			});
 		});
+		
 		M.x_lines.forEach(function(line){
 			var l=draw_line(line[0],line[1],line[0],line[2],2);
 			map.addChild(l);
 		});
+
 		M.y_lines.forEach(function(line){
 			var l=draw_line(line[1],line[0],line[2],line[0],2);
 			map.addChild(l);

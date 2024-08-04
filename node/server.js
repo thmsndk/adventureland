@@ -401,6 +401,7 @@ function init_game() {
 						}
 					}
 				}
+
 				create_instance("jail");
 				console.log("Calculations took: " + mssince(start) + "ms");
 				shuffle(hiding_places);
@@ -2271,6 +2272,30 @@ function drop_something_pvp(player, target) {
 	}
 }
 
+function quest_kill_logic(player, monster) {
+	for (const key in player.s) {
+		const quest = player.s[key];
+		if (quest.t !== "quest_kill") {
+			continue;
+		}
+
+		if (quest.sn !== region + " " + server_name) {
+			// must be on the same server
+			continue;
+		}
+
+		// Decrease remaining count
+		if (quest.id == monster.type && quest.c) {
+			quest.c--;
+		}
+
+		// Mark quest as complete
+		if (quest.c <= 0) {
+			quest.d = true;
+		}
+	}
+}
+
 function monster_hunt_logic(player, monster) {
 	var target = monster;
 	if (!player.s.monsterhunt || player.s.monsterhunt.sn != region + " " + server_name) {
@@ -2379,6 +2404,7 @@ function issue_monster_awards(monster) {
 			var score = calculate_monster_score(current, monster, share);
 			current.p.stats.monsters[monster.type] = (current.p.stats.monsters[monster.type] || 0) + 1;
 			current.p.stats.monsters_diff[monster.type] = (current.p.stats.monsters_diff[monster.type] || 0) + (score - 1);
+			quest_kill_logic(current, monster, share);
 			monster_hunt_logic(current, monster, share);
 			if (current.type == "merchant") {
 				continue;
@@ -2419,6 +2445,7 @@ function issue_monster_award(monster) {
 		var score = calculate_monster_score(player, monster);
 		player.p.stats.monsters[monster.type] = (player.p.stats.monsters[monster.type] || 0) + 1;
 		player.p.stats.monsters_diff[monster.type] = (player.p.stats.monsters_diff[monster.type] || 0) + (score - 1);
+		quest_kill_logic(player, monster);
 		monster_hunt_logic(player, monster);
 		if (player.type == "merchant") {
 			return;
@@ -2444,6 +2471,7 @@ function issue_monster_award(monster) {
 			var score = calculate_monster_score(current, monster);
 			current.p.stats.monsters[monster.type] = (current.p.stats.monsters[monster.type] || 0) + 1;
 			current.p.stats.monsters_diff[monster.type] = (current.p.stats.monsters_diff[monster.type] || 0) + (score - 1);
+			quest_kill_logic(current, monster);
 			monster_hunt_logic(current, monster);
 			if (current.type == "merchant") {
 				return;
@@ -2807,7 +2835,10 @@ function commence_attack(attacker, target, atype, { projectile, chained, targets
 	}
 
 	if ((attacker.is_player && target.is_player && !is_in_pvp(target, true) && !info.positive) || target.npc) {
-		attacker.socket.emit("game_response", { response: "attack_failed", id: target.id });
+		if (attacker.socket) {
+			// if a monster tries to attack an npc, there is no socket to emit to.
+			attacker.socket.emit("game_response", { response: "attack_failed", id: target.id });
+		}
 		return { failed: true, reason: "no_pvp", place: atype, id: target.id };
 	}
 
@@ -4726,6 +4757,105 @@ function init_io() {
 			resend(player, "u+cid");
 			success_response({ started: true });
 		});
+
+		socket.on("quest", function (data) {
+			var player = players[socket.id];
+			if (!player) {
+				return;
+			}
+
+			const questName = `quest_${data.quest}`;
+			const npcKey = data.npc; // TODO: can they omit the npc?
+
+			if (!questName) {
+				return fail_response("quest_param_missing");
+			}
+
+			if (!npcKey) {
+				return fail_response("npc_param_missing");
+			}
+
+			// TODO: non hardcoded distance check to the npc questgiver
+			// if (simple_distance(G.maps.main.ref.monsterhunter, player, true) > B.sell_dist) {
+			// 	return fail_response("distance");
+			// }
+			// TODO: What is server.s ? seems like a list of monsters / spawns being hunted
+			// var hunted = [];
+			// for (var id in server.s) {
+			// 	if (server.s[id].type == "monsterhunt") {
+			// 		hunted.push(server.s[id].id);
+			// 	}
+			// }
+
+			// TODO: Validate classes that can do the quest
+			// if (player.type == "merchant") {
+			// 	return socket.emit("game_response", "monsterhunt_merchant");
+			// }
+
+			if (player.s[questName] && !player.s[questName].d) {
+				//already on the quest, and it is not completed
+				// TODO: We might want to give the questname in the response?
+				return fail_response("quest_in_progress");
+			} else if (player.s[questName] && player.s[questName].d) {
+				// quest is completed, award a token
+				// delete server.s[`${questName}_${player.s[questName].id}`]; // clear the tracked stats
+				delete player.s[questName];
+
+				// TODO:look up token; I think we need the npc we are interacting with, or a questname to look up rewards
+				add_item(player, G.npcs[npcKey].token, { log: true, q: 1 });
+
+				//Refresh players inventory
+				resend(player, "u+cid+reopen");
+				return success_response({ completed: true });
+			}
+
+			// TODO: Quest specific logic when accepting a quest, should probably be extracted out in seperate modules
+			switch (questName) {
+				case "quest_beekeeper":
+					{
+						// Planned beekeeper quests
+						// killing the queen
+						// killing X bees - This should be a high amount, because bees are freely available outside the dungeon and is mostly a gimmick to pay homeage to gnal, also might spawn more cutebees!
+						// killing X worker bees
+						// killing X drone bees
+
+						// Ideas for beekeeper quests
+						// Fishing / Mining
+
+						const quest_ms = 30 * 60 * 1000;
+						// TODO: considering this is from monsterhunts, the name/id was the name of the mob, perhaps we need to generate a unique id?
+						const quest_id = "bee_queen";
+						const count = 1;
+						// const quest_id = "bee";
+						// const count = 5;
+
+						// Give the player the quest
+						// TODO: What is dl? dl marks the monster for deleveling
+						player.s[questName] = {
+							sn: region + " " + server_name,
+							id: quest_id,
+							c: count,
+							tc: count,
+							ms: quest_ms,
+							d: false,
+							t: "quest_kill",
+						};
+
+						// keep track of the quest on the server, TODO: not sure why yet
+						// server.s[`${questName}_${quest_id}`] = {
+						// 	name: player.name,
+						// 	id: quest_id,
+						// 	ms: quest_ms,
+						// 	type: "monsterhunt", // TODO: can we give it an icon?
+						// };
+						player.hitchhikers.push(["game_response", "quest_started"]);
+						resend(player, "u+cid");
+						success_response({ started: true });
+					}
+					break;
+			}
+		});
+
 		socket.on("ccreport", function () {
 			socket.emit("ccreport", { calls: socket.calls, climit: limits.calls, total: socket.total_calls });
 		});
@@ -5373,6 +5503,7 @@ function init_io() {
 			}
 			success_response();
 		});
+
 		socket.on("town", function (data) {
 			var player = players[socket.id];
 			if (!player) {
@@ -6745,6 +6876,7 @@ function init_io() {
 				}
 				resolve.slot = slot;
 			} else if (def.type == "elixir") {
+				// TODO: Handle map specific & class specific extras adopt_extras(def, def[player.map]), needs to be recalculated when changing map
 				if (item.l) {
 					return fail_response("item_locked");
 				}
@@ -6791,16 +6923,26 @@ function init_io() {
 				new_monster(player.in, { type: def.spawn, stype: "trap", x: player.x, y: player.y, owner: player.name });
 				consume_one(player, data.num);
 			} else if (def.gives) {
+				// usually .type is pot when it has .gives and we are handling elixirs specifically
 				if (player.last.potion && mssince(player.last.potion) < 0) {
 					return fail_response("not_ready");
 				}
+
 				if (item.l) {
 					return fail_response("item_locked");
 				}
+
+				// Handle map specific & class specific extras
+				def = clone(def); // Make sure to work on a immutable object so we do not change the G.items definition
+				adopt_extras(def, def[player.type]);
+				adopt_extras(def, def[player.map]);
+
 				var timeout = 2000;
 				var timeout_ui = null;
 				var xp = false;
 				consume_one(player, data.num);
+				server_log(`${player.name} drank ${item.name} that gives ${JSON.stringify(def.gives)}`);
+				// TODO: The disappearing text is on top of each other if it gives both hp & mp
 				(def.gives || []).forEach(function (p) {
 					var amount = p[1];
 					if (player.s.poisoned) {
@@ -9535,7 +9677,15 @@ function init_io() {
 				data.y = parseFloat(data.y) || 0;
 				player.going_x = x;
 				player.going_y = y;
-				if (smap_data[player.map] != -1 && mode.enforce_smap) {
+
+				if (!smap_data[player.map]) {
+					// developing a new map, where i point to another map with key = 'test' without the map existing, seems to crash this
+					// TODO: This crashes while making a new map if smap_data[map] does not exist in the db
+					console.trace(`${map} smap_data[map] is not defined`);
+					return;
+				}
+
+				if (smap_data[player.map] && smap_data[player.map] != -1 && mode.enforce_smap) {
 					current = smap_data[player.map][rphash(data.x, data.y)];
 					going = smap_data[player.map][rphash(player.going_x, player.going_y)];
 					// server_log("current:"+current+" going:"+going+" real:"+smap_data[player.map][phash(player.x,player.y)]);
@@ -9953,6 +10103,12 @@ function init_io() {
 						}
 					}
 
+					if (is_sdk) {
+						player.verified = true;
+						delete player.s.notverified;
+						delete player.s.authfail;
+					}
+
 					if (player.guild) {
 						console.log(player.guild);
 						player.guild = player.guild.short;
@@ -10002,7 +10158,7 @@ function init_io() {
 						} // part of the new restriction system [02/05/19]
 					}
 
-					if (mode.drm_check) {
+					if (mode.drm_check && !is_sdk) {
 						if (result.character.drm && !player.auth_id) {
 							player.s.authfail = { ms: 900000 * 1000 };
 						} else if (player.s.authfail) {
@@ -11350,6 +11506,8 @@ function new_monster(instance, map_def, args) {
 		monster.owner = map_def.owner;
 	} else if (map_def.stype == "spawn") {
 		monster.spawn = true;
+		monster.spawn_stop_pursuit_despawn =
+			map_def.spawn_stop_pursuit_despawn !== undefined ? map_def.spawn_stop_pursuit_despawn : true;
 		monster.x = map_def.x;
 		monster.y = map_def.y;
 		monster.master = map_def.master;
@@ -11721,9 +11879,15 @@ function stop_pursuit(monster, args) {
 		}
 		reduce_targets(target, monster);
 	}
+
 	if (monster.spawn && !args.redirect) {
-		return remove_monster(monster, { method: "disappear" });
+		// TODO: handle cases where spawn_stop_pursuit_despawn is not a bool, e.g. args.cause is specified.
+		if (monster.spawn_stop_pursuit_despawn) {
+			server_log(`${monster.id} being removed due to monster.spawn && !args.redirect`);
+			return remove_monster(monster, { method: "disappear" });
+		}
 	}
+
 	if (is_sdk && args && args.cause) {
 		console.log("stop_pursuit: " + args.cause);
 	}
@@ -11922,27 +12086,121 @@ function update_instance(instance) {
 							kill_monster(attacker, monster);
 						}
 					}
+
+					if (name === "bee_pheromones_attack") {
+						// if monster has no target, find a new target
+						if (!monster.target) {
+							// Make them roam when they have no target
+							monster.map_def.roam = true;
+
+							for (const playerId in instance.players) {
+								const player = instance.players[playerId];
+
+								if (player.is_npc || player.rip) {
+									continue;
+								}
+
+								// TODO: This will potentially cause all left bee workers to acquire a target
+								// TODO: how do we prevent them swarming? causing terrified / petrified.
+								// var excess = max(0,max(player.targets_p - player.courage, max(player.targets_m - player.mcourage, player.targets_u - player.pcourage)),);
+								// TODO: perhaps we can p ut that into a smarter function to determine "excess" targets and if we can assign this target
+								if (distance(player, monster) < def.range /* TODO: don't hardcode */) {
+									// TODO: target_player will call increase_targets, we might be able to use that to detect if they are at their target limit and choose another player.
+									target_player(monster, player);
+									break;
+								}
+							}
+						}
+					}
+
+					if (name === "bee_pheromones_heal") {
+						// TODO: this condition needs an interval
+						// TODO: if we are healing, remove target?
+						// instance.monsters[monster.focus];
+						for (const mid in instance.monsters) {
+							const otherMonster = instance.monsters[mid];
+							if (otherMonster.type !== "bee_queen" /* TODO: configuration in condition */) {
+								continue;
+							}
+
+							monster.map_def.roam = true;
+
+							if (distance(monster, otherMonster) > def.range) {
+								monster.map_def.roam = false;
+								// TODO: can we make it circle around the queen as movement behaviour?
+								// This movement logic is taken from .focus
+								if (!monster.moving) {
+									//  What exactly is this all_smart mode for?
+									if (mode.all_smart) {
+										if (!monster.worker) {
+											monster.working = true;
+											workers[wlast++ % workers.length].postMessage({
+												type: "fast_astar",
+												in: monster.in,
+												id: monster.id,
+												map: monster.map,
+												sx: monster.x,
+												sy: monster.y,
+												tx: otherMonster.x,
+												ty: otherMonster.y,
+											});
+										}
+									} else {
+										monster.ogoing_x = monster.going_x;
+										monster.ogoing_y = monster.going_y;
+										monster.going_x = monster.x + (otherMonster.x - monster.x) / 2;
+										monster.going_y = monster.y + (otherMonster.y - monster.y) / 2;
+										if (mode.path_checks && !can_move(monster)) {
+											monster.going_x = monster.ogoing_x;
+											monster.going_y = monster.ogoing_y;
+										} else {
+											start_moving_element(monster);
+										}
+									}
+								}
+
+								break;
+							}
+
+							// heal queen
+							const healAmount = def.heal;
+							// if (monster.immune) {
+							// 	heal = 0;
+							// }
+							disappearing_text({}, otherMonster, "+" + healAmount, { color: "heal", xy: 1 }); // TODO: should be batched with events instead of sent imediately.
+							otherMonster.hp = min(otherMonster.max_hp, otherMonster.hp + healAmount);
+							// TODO: implement a ui event where the type is draw_line, this should be between two entities, perhaps with the ability to draw lines between specific points.
+							events.push(["ui", { type: "cx_sent", sender: monster.id, receiver: otherMonster.id }]);
+						}
+					}
+
 					monster.u = true;
 					monster.cid++;
 				}
 			}
+
 			if (monster.s[name].ms <= 0) {
-				if (monster.a[name] && monster.a[name].cooldown) {
-					monster.s[name].ms = monster.a[name].cooldown;
+				const abilityDefinition = monster.a[name];
+				// If monster ability has a cooldown, reapply it here, else remove it
+				if (abilityDefinition && abilityDefinition.cooldown) {
+					monster.s[name].ms = abilityDefinition.cooldown;
 				} else {
 					delete monster.s[name];
 				}
+
 				if (is_disabled(monster) && G.skills[name] && !G.skills[name].passive) {
 					continue;
 				}
+
 				if (name != "young") {
 					monster.u = true;
 					monster.cid++;
 					change = true;
 				}
+
 				if (name == "self_healing") {
 					var hp = monster.hp;
-					var heal = monster.a.self_healing.heal;
+					var heal = abilityDefinition.heal;
 					if (monster.s.poisoned) {
 						heal /= 2;
 					}
@@ -11951,13 +12209,16 @@ function update_instance(instance) {
 						events.push(["ui", { type: "mheal", id: id, heal: monster.hp - hp }]);
 					}
 				}
+
 				if (name == "healing") {
 					var target = monster;
+					// TODO: use the range of the ability to decide if the target is the focus target
+					// TODO: is the monster allowed to heal itself?
 					if (focus && distance(focus, monster) < 120) {
 						target = focus;
 					}
 					var hp = target.hp;
-					var heal = monster.a.healing.heal;
+					var heal = abilityDefinition.heal;
 					if (target.s.poisoned) {
 						heal /= 2;
 					}
@@ -11966,6 +12227,7 @@ function update_instance(instance) {
 						events.push(["ui", { type: "mheal", id: target.id, heal: target.hp - hp }]);
 					}
 				}
+
 				if (name == "mtangle") {
 					if (monster.target && get_player(monster.target)) {
 						var player = get_player(monster.target);
@@ -11973,6 +12235,7 @@ function update_instance(instance) {
 						resend(player, "u+cid");
 					}
 				}
+
 				if (name == "multi_burn") {
 					if (monster.cooperative) {
 						for (var name in monster.points || {}) {
@@ -11993,6 +12256,7 @@ function update_instance(instance) {
 					monster.u = true;
 					change = true;
 				}
+
 				if (name == "multi_freeze") {
 					for (var name in monster.points || {}) {
 						var player = get_player(name);
@@ -12004,6 +12268,7 @@ function update_instance(instance) {
 					monster.u = true;
 					change = true;
 				}
+
 				if (name == "degen") {
 					monster.hp -= 60;
 					monster.cid++;
@@ -12011,17 +12276,126 @@ function update_instance(instance) {
 					change = true;
 					if (monster.hp <= 0) {
 						monster.hp = 0;
+						server_log(`${monster.id} being removed due to health being lower than 0`);
 						remove_monster(monster);
 					}
 				}
+
 				if (name == "zap") {
 					for (var id in instances[monster.in].players) {
 						var player = instances[monster.in].players[id];
-						if (distance(player, monster) < monster.a[name].radius) {
+						if (distance(player, monster) < abilityDefinition.radius) {
 							commence_attack(monster, player, "zap");
 						}
 					}
 				}
+
+				if (name === "bee_pheromones_queen_signal") {
+					// find bee workers
+					// apply attack or heal condition
+					for (const mid in instance.monsters) {
+						const otherMonster = instance.monsters[mid];
+						// if (otherMonster.type !== "bee_queen" /* TODO: configuration in condition */) {
+						// 	continue;
+						// }
+						if (!otherMonster.spawn) {
+							continue;
+						}
+
+						// if monster does not have bee_pheromones_heal or bee_pheromones_attack and is spawned, they should get the condition added
+						if (!otherMonster.s.bee_pheromones_attack && !otherMonster.s.bee_pheromones_heal) {
+							if (Math.random() < 0.5) {
+								add_condition(otherMonster, "bee_pheromones_attack");
+							} else {
+								add_condition(otherMonster, "bee_pheromones_heal");
+							}
+						}
+
+						// TODO: change prefered conditions depending on remaining health and amount of spawned workers in the instance
+						// TODO: swap attackers to healers, or healers to attackers
+					}
+				}
+
+				if (name === "bee_sting") {
+					// TODO: prefer their target?
+					// TODO: Attack the closest player? or just the first player in proximity?
+					for (const playerId in instance.players) {
+						const player = instance.players[playerId];
+
+						if (player.is_npc || player.rip) {
+							continue;
+						}
+
+						if (distance(player, monster) < abilityDefinition.range) {
+							// TODO: forward ability definition to commence attack?
+							// server_log(
+							// 	`${instance.map} ${instance.name} ${monster.name} ${monster.is_player} bee_sting ${player.name} ${player.is_player}`,
+							// );
+							// xy_emit(monster, "chat_log", { owner: "Grinch", message: phrase, id: monster.id, color: "#418343" });
+							events.push([
+								"game_log",
+								{
+									owner: monster.type,
+									id: monster.id,
+									message: `stings ${player.name}`,
+									size: "large",
+									color: "#DB2900",
+								},
+							]);
+
+							// TODO: use cleave visual to visualize sting for now
+							events.push(["ui", { type: "cleave", name: player.name, ids: [player.id] }]);
+							// xy_emit(player, "ui", { type: "cleave", name: monster.id, ids: ids });
+							commence_attack(monster, player, "bee_sting");
+
+							// TODO: calculate chance of killing itself by sting. Should we rather just do X% dmg to the monster?
+							// TODO: calculate chance of self inflicting damage, higher chance the more armor player has?
+							// https://www.desmos.com/calculator/k38oacwu4k
+							// https://www.desmos.com/calculator/i8ngwbtkuo
+							const selfDamageChance = 0.35; // TODO: move to aura definition
+							const triggerSelfDamage = Math.random() < selfDamageChance;
+
+							if (triggerSelfDamage) {
+								const selfDamage = Math.floor(abilityDefinition.self_damage_percent * monster.max_hp);
+								monster.hp = monster.hp - selfDamage;
+
+								events.push([
+									"disappearing_text",
+									{ id: monster.id, message: `-${selfDamage} STING`, size: "large", color: "#DB2900" },
+								]);
+
+								events.push([
+									"game_log",
+									{
+										owner: monster.type,
+										id: monster.id,
+										message: `hurt itself for ${selfDamage}`,
+										size: "large",
+										color: "#DB2900",
+									},
+								]);
+
+								server_log(
+									`${instance.map} ${instance.name} ${monster.type} ${monster.id} bee_sting hurt itself for ${selfDamage}`,
+								);
+								// events.push(["ui", { type: "mheal", id: target.id, heal: selfDamage }]);
+
+								if (monster.hp <= 0) {
+									monster.hp = 0;
+									server_log(`${monster.id} being removed due to health being lower than 0`);
+									remove_monster(monster);
+								}
+							}
+
+							// TODO: give the target a bee sting condition
+							add_condition(player, "poisoned");
+							resend(player, "u+cid");
+							break;
+						}
+					}
+				}
+
+				// Handle monster ability aura
 				if (monster.a && monster.a[name] && monster.a[name].aura) {
 					for (var id in instances[monster.in].players) {
 						var player = instances[monster.in].players[id];
@@ -12031,6 +12405,7 @@ function update_instance(instance) {
 						}
 					}
 				}
+
 				if (name == "deepfreeze") {
 					var c = [];
 					for (var id in instances[monster.in].players) {
@@ -12044,6 +12419,7 @@ function update_instance(instance) {
 						commence_attack(monster, theone, "deepfreeze");
 					}
 				}
+
 				if (name == "anger") {
 					var c = [];
 					for (var id in instances[monster.in].players) {
@@ -12060,6 +12436,7 @@ function update_instance(instance) {
 						target_player(monster, theone);
 					}
 				}
+
 				if (name == "warpstomp") {
 					var dampened = false;
 					for (var id in instances[monster.in].monsters) {
@@ -12087,9 +12464,11 @@ function update_instance(instance) {
 						}
 					}
 				}
+
 				if (name == "mlight") {
 					xy_emit(monster, "light", { name: monster.id });
 				}
+
 				if (name == "stone") {
 					if (monster.target && get_player(monster.target)) {
 						var player = get_player(monster.target);
@@ -12097,6 +12476,7 @@ function update_instance(instance) {
 						resend(player, "u+cid");
 					}
 				}
+
 				if (name == "magiport") {
 					var r = false;
 					if (monster.map != ref.map) {
@@ -12121,6 +12501,7 @@ function update_instance(instance) {
 						continue;
 					}
 				}
+
 				if (name == "sleeping" && E.schedule.night && Math.random() < 0.9) {
 					monster.s.sleeping = { ms: 3000 + 5000 * Math.random() };
 					monster.u = true;
@@ -12128,27 +12509,19 @@ function update_instance(instance) {
 				}
 			}
 		}
+
 		if (monster.dead) {
 			continue;
 		}
-		if (G.monsters[monster.type].supporter && !monster.focus) {
-			for (var mid in instance.monsters) {
-				var m = instance.monsters[mid];
-				if (
-					!m.focus &&
-					m != monster &&
-					G.monsters[monster.type].humanoid == G.monsters[m.type].humanoid &&
-					distance(m, monster) < 300
-				) {
-					monster.focus = m.id;
-					change = true;
-					break;
-				}
-			}
+
+		if (update_instance_monster_supporter(monster, instance)) {
+			change = true;
 		}
+
 		if (change) {
 			calculate_monster_stats(monster);
 		}
+
 		if (
 			!monster.pet &&
 			!monster.trap &&
@@ -12162,41 +12535,16 @@ function update_instance(instance) {
 				set_ghash(aggressives, monster, 32);
 			}
 		}
-		if (monster.target && monster.spawns && get_player(monster.target) && !is_disabled(monster)) {
-			monster.spawns.forEach(function (spi) {
-				var interval = spi[0];
-				var name = spi[1];
-				if (!monster.last[name] || mssince(monster.last[name]) > interval) {
-					var pname = random_one(Object.keys(monster.points));
-					var player = get_player(pname);
-					if (!player || player.npc || distance(monster, player) > 400) {
-						return;
-					}
-					if (!is_same(player, get_player(monster.target), true)) {
-						return;
-					}
-					monster.last[name] = new Date();
-					var spot = safe_xy_nearby(player.map, player.x + Math.random() * 20 - 10, player.y + Math.random() * 20 - 10);
-					if (!spot) {
-						return;
-					}
-					new_monster(instance.name, {
-						type: name,
-						stype: "spawn",
-						x: spot.x,
-						y: spot.y,
-						target: player.name,
-						master: monster.id,
-					});
-				}
-			});
-		}
+
+		update_instance_monster_spawn_minions(monster, instance);
+
 		function attack_target_or_move() {
 			var player = players[name_to_id[monster.target]];
 			if (player && ssince(monster.last.attacked) > 20 && Math.random() > monster.rage * 0.99) {
 				stop_pursuit(monster, { force: true, cause: "bored" });
 				return;
 			}
+			// TODO: this should be configurable in the supporter configuration, e.g. minimum distance to focus target
 			if (focus && distance(focus, monster) > 40 && !monster.moving) {
 				if (mode.all_smart) {
 					if (!monster.worker) {
@@ -12276,6 +12624,18 @@ function update_instance(instance) {
 					}
 				}
 			} else if (monster.target) {
+				if (player && player.in !== monster.in) {
+					server_log(`${player.name} in another instance than monster ${player.in} != ${monster.in}`);
+				}
+
+				if (player && rip) {
+					server_log(`${player.name} is dead stopping pursuit`);
+				}
+
+				if (player && is_invis(player)) {
+					server_log(`${player.name} is invisible stopping pursuit`);
+				}
+
 				stop_pursuit(monster, { cause: "player_gone" });
 			}
 			if (monster.walk_once) {
@@ -12407,6 +12767,7 @@ function update_instance(instance) {
 						// new [01/03/19]
 						monster.m++;
 						setTimeout(new_monster_f(monster.oin, monster.map_def, { last_state: monster }), 500);
+						server_log(`${monster.id} being respawned due to monster.irregular == 3`);
 						remove_monster(monster, { nospawn: true, method: "disappear" });
 					} else if (monster.irregular == 2) {
 						server_log("Irregular2 move for " + monster.id);
@@ -12866,7 +13227,8 @@ function update_instance(instance) {
 			player.x += (player.vx * ms) / 1000.0;
 			player.y += (player.vy * ms) / 1000.0;
 			player.red_zone *= 0.99;
-			if (smap_data[player.map] != -1 && !player.npc && mode.red_zone && !player.s.dash) {
+			// TODO: smap_data[player.map] does not exist, then what?
+			if (smap_data[player.map] && smap_data[player.map] != -1 && !player.npc && mode.red_zone && !player.s.dash) {
 				var current = smap_data[player.map][phash(player)];
 				if (current === undefined) {
 					current = 8;
@@ -12963,6 +13325,202 @@ function update_instance(instance) {
 	}
 	for (var id in instance.observers) {
 		send_xy_updates(instance.observers[id], to_push);
+	}
+}
+
+/**
+ * Handles assigning .focus to monsters with .supporter
+ * @param {*} monster
+ * @param {*} instance
+ * @returns true if calculate stats / speed needs to be updated due to having .focus
+ */
+function update_instance_monster_supporter(monster, instance) {
+	const gMonster = G.monsters[monster.type];
+	const supporter = gMonster.supporter;
+	if (supporter && !monster.focus) {
+		for (const mid in instance.monsters) {
+			const otherMonster = instance.monsters[mid];
+			let validForSupport = false;
+			if (supporter === true) {
+				// Backwards combatability for the previous supporter config just being a bool for Elena
+				const isBothHumanoid = gMonster.humanoid == G.monsters[otherMonster.type].humanoid;
+				validForSupport = isBothHumanoid && distance(otherMonster, monster) < 300;
+			} else if (supporter instanceof Array) {
+				// An array of tuples [attribute|monsterType,range|False]
+				for (const [arg0, range] of supporter) {
+					const isArg0MonsterType = G.monsters[arg0];
+					const hasGAttribute = G.monsters[otherMonster.type][arg0];
+
+					if (isArg0MonsterType && arg0 !== otherMonster.type) {
+						continue;
+					}
+
+					if (!isArg0MonsterType && !hasGAttribute) {
+						continue;
+					}
+
+					const inRange = range > 0 ? distance(otherMonster, monster) < range : true;
+					if (!inRange) {
+						continue;
+					}
+
+					validForSupport = true;
+					break;
+				}
+			}
+
+			if (
+				!otherMonster.focus && // Another monster with focus is not valid
+				otherMonster != monster && // Monster can't focus itself.
+				validForSupport
+			) {
+				monster.focus = otherMonster.id;
+				return true;
+			}
+		}
+	}
+}
+
+/**
+ * Handle spawning minions from monster.spawns
+ * @param {*} monster the monster entity we are spawning minions for
+ * @param {*} instance the instance we are spawning minions in
+ */
+function update_instance_monster_spawn_minions(monster, instance) {
+	if (monster.target && monster.spawns && get_player(monster.target) && !is_disabled(monster)) {
+		monster.spawns.forEach(function (spi) {
+			const [interval, name, spawnOptions = {}] = spi;
+			let [minSpawnAmount = 1, maxSpawnAmount = 1] = spawnOptions.spawnAmount || [];
+
+			if (minSpawnAmount > maxSpawnAmount) {
+				maxSpawnAmount = minSpawnAmount;
+			}
+
+			const DEFAULT_RANGE = 400;
+
+			let range;
+			if ("spawnPoints" in spawnOptions) {
+				// not running in default mode range
+				// TODO: is there only one point? in that case we can assign range
+			} else if ("spawnAtBoss" in spawnOptions) {
+				if (spawnOptions.spawnAtBoss.range !== false) {
+					range = spawnOptions.spawnAtBoss.range || DEFAULT_RANGE;
+				}
+			} else if ("spawnAtPlayer" in spawnOptions) {
+				if (spawnOptions.spawnAtPlayer.range !== false) {
+					range = spawnOptions.spawnAtPlayer.range || DEFAULT_RANGE;
+				}
+			}
+
+			if (!monster.last[name] || mssince(monster.last[name]) > interval) {
+				// random number between min and max (included)
+				const spawnAmount = Math.floor(Math.random() * (maxSpawnAmount - minSpawnAmount + 1) + minSpawnAmount);
+
+				// TODO: We might also want the ability to offset the spawning of each bee in this current wave
+				// TODO: the ability to make each spawned mob target random players? currently
+				// if for example 5 are spawned, that player WILL get terrified / petrified. a feature one might want. but not in a beginner dungeon
+
+				const pname = random_one(Object.keys(monster.points));
+				const player = get_player(pname);
+				// TODO: don't spawn monsters at dead players?
+				// const player = random_one(
+				// 	Object.keys(monster.points)
+				// 		.map((playerName) => get_player(playerName))
+				// 		.filter((player) => !player.npc && !player.rip),
+				// );
+
+				// xy_emit(monster, "chat_log", { owner: "Grinch", message: phrase, id: monster.id, color: "#418343" });
+				// return xy_emit(target, "ui", { type: "poison_resist", id: target.id });
+				// xy_emit(entity, "disappearing_text", { message: text, x: x, y: y, id: entity.id, args: d_args, nv: 1 });
+				// function disappearing_text(socket, entity, text, args) args.s seems to be sound, could be interesting
+				// attacker.socket.emit("game_log", "You " + killed_message(target.type));
+				if (!player || player.npc) {
+					// console.log(`${instance.name}`, player, distance(monster, player));
+					return;
+				}
+
+				// Validate the range between the master monster and the player
+				if (range && distance(monster, player) > range) {
+					return;
+				}
+
+				if (!is_same(player, get_player(monster.target), true)) {
+					// Only spawn on players the monster is not targeting
+					return;
+				}
+
+				// Put the spawning on cooldown untill next interval
+				monster.last[name] = new Date();
+
+				// get a safe spot to spawn at
+				let spot = get_safe_spawn_spot(spawnOptions, player, monster);
+
+				if (!spot) {
+					// server_log(`${instance.name} no safe spot near ${player.name}`);
+					return;
+				}
+
+				server_log(`${instance.map} ${instance.name} Potential targets: ${JSON.stringify(monster.points)}`);
+				for (let index = 0; index < spawnAmount; index++) {
+					server_log(
+						`${instance.map} ${instance.name} spawning ${index}/${spawnAmount} ${name} at [${spot.x},${spot.y}] targeting ${player.name}`,
+					);
+					new_monster(instance.name, {
+						type: name,
+						// TODO: don't despawn theese mobs if the player is "gone" / dies and stop_pursuit is called, should be an option, as this is how the current behaviour is on spike
+						// server.js attack_target_or_move calls stop_pursuit, we could extend with some retarge behaviour or the likes
+						stype: "spawn",
+						spawn_stop_pursuit_despawn:
+							"stop_pursuit_despawn" in spawnOptions ? spawnOptions.stop_pursuit_despawn : undefined,
+						x: spot.x,
+						y: spot.y,
+						target: player.name,
+						master: monster.id,
+					});
+
+					// TODO: should  it be the same spawn zone?
+					// calculate a new spot so they are not smack ontop of each other
+					const newSpot = get_safe_spawn_spot(spawnOptions, player, monster);
+					if (newSpot) {
+						spot = newSpot;
+					}
+				}
+			}
+		});
+	}
+
+	function get_safe_spawn_spot(spawnOptions, player, monster) {
+		if ("spawnPoints" in spawnOptions) {
+			let range;
+			// TODO: Should spawns be spread out across all points, or all spawned at the same random boundary? or a new point each time?
+			const [boundary, spawnRange] = random_one(spawnOptions.spawnPoints);
+			if (spawnRange !== false) {
+				range = spawnRange || DEFAULT_RANGE;
+			}
+
+			// Validate the range between the master monster and the player
+			if (range && distance(monster, player) > range) {
+				return;
+			}
+
+			const pointInBoundary = random_point_in_boundary(boundary);
+			return pointInBoundary; // safe spot might return a point outside the map it seems, as the boundary is close to the map edge.
+			// return get_safe_spot_near_point(monster.map, pointInBoundary.x, pointInBoundary.y);
+		} else if ("spawnAtBoss" in spawnOptions) {
+			return get_safe_spot_near_point(monster.map, monster.x, monster.y);
+		} else {
+			return get_safe_spot_near_point(player.map, player.x, player.y);
+		}
+	}
+
+	function random_point_in_boundary(boundary) {
+		const x = boundary[0] + Math.random() * (boundary[2] - boundary[0]);
+		const y = boundary[1] + Math.random() * (boundary[3] - boundary[1]);
+		return { x, y };
+	}
+
+	function get_safe_spot_near_point(map, x, y) {
+		return safe_xy_nearby(map, x + Math.random() * 20 - 10, y + Math.random() * 20 - 10);
 	}
 }
 
@@ -13657,6 +14215,7 @@ setInterval(function () {
 					mssince(monster.last_level) > max((180000 * exp * mult) / accel, (monster.max_hp * mult * 30 * exp) / accel)
 				) {
 					if (monster.temp) {
+						server_log(`${monster.id} being removed because it was a temp monster`);
 						remove_monster(monster);
 					} else {
 						level_monster(monster);

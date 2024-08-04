@@ -597,6 +597,7 @@ maps={
 			{"id":"monsterhunter","position":[126,-413]},
 			{"id":"mcollector","position":[81,-283,1]},
 			#{"id":"newyear_tree","position":[64,-88]}, #xmas
+			{"id":"beekeeper","position":[612, 737.5],"boundary":[-200,-200,200,200]},
 		],
 		"monsters":[
 			#square
@@ -687,6 +688,11 @@ maps={
 			[312,-335,32,32,"mtunnel",0,16],
 			[967,-584,32,32,"mtunnel",1,17],
 			[1472,-434,32,32,"mtunnel",2,18],
+			# [x,y,w,h, destinationMapKey, destinationMapSpawnIndex, currentMapSpawnIndex, mode, key? - unused?]
+			# mode can be protected and a .gatekeeper mob needs to be killed before you can continue
+			# mode can be ulocked and the user needs to have the place unlocked
+			# "bee_dungeon_door": [442.5,661.5,487,682.5]
+			[465, 680, 60, 16, "bee_dungeon", 0, 19, "key", "beekey"], #13 log near mansion
 		],
 		"traps":[
 			{"type":"spikes","position":[-472,286]},
@@ -712,18 +718,22 @@ maps={
 			[294,-347,1], #16-mtunnel
 			[968,-577], #17-mtunnel
 			[1471,-424], #18-mtunnel
+			[465, 690], #19-log near mansion
 		],
 		"quirks":[
-			[-236,-189,24,24,"upgrade"],
-			[-179,-189,24,24,"compound"],
-			[350,424,30,24,"list_pvp"],
-			[-200,15,24,42,"log","A relic from an old era"],
-			[200,15,24,42,"log","A relic from an old era"],
-			[1689,-494,20,16,"note","The Dark Forest. A curious place."],
-			[681,624,20,16,"sign","The Mansion"],
-			[65,544,20,16,"sign","Welcome to The New Town!"],
-			[-150,154,20,16,"sign","Town Square"],
-			[-365,144,20,16,"sign","Tavern"],
+			[-236,-189,24,24,"upgrade"], #0
+			[-179,-189,24,24,"compound"], #1
+			[350,424,30,24,"list_pvp"], #2
+			[-200,15,24,42,"log","A relic from an old era"], #3
+			[200,15,24,42,"log","A relic from an old era"], #4
+			[1689,-494,20,16,"note","The Dark Forest. A curious place."], #5
+			[681,624,20,16,"sign","The Mansion"], #6
+			[65,544,20,16,"sign","Welcome to The New Town!"], #7
+			[-150,154,20,16,"sign","Town Square"], #8
+			[-365,144,20,16,"sign","Tavern"], #9
+			# TODO: sound & message type based on range?
+			# [465, 680, 60, 16, "log","You hear a strange buzzing sound."], #10 log near mansion
+			[485, 680, 16, 16, "info","bee_dungeon", 120], #10 log near mansion, show if in 50 range of quirk
 		],
 		"animatables":{
 			"the_door":{"x":888,"y":-672,"position":"door0"},
@@ -1655,6 +1665,76 @@ maps={
 		"drop_norm":5000,
 		"unlist":True,
 		"lux":0.4,
+	},
+	"bee_dungeon":{
+		"key": "thmsn_bee_dungeon",
+		# "no_bounds":True,
+		"instance":True,
+		"enter": {
+			# requirements to enter the dungeon
+			# TODO level, class, 
+			# "items": [["beekey", 1]], #requires 1 beekey to enter
+			
+			# [mapKey, locationType, locationIndex, range]
+			# "locations": [
+			# 	["main", "spawns", 19, 120], # log near mansion
+			# 	["main", "quirks", 10, 120], # log near mansion
+			# 	["main", "doors", 13, 120] # log near mansion
+			# ]
+		},
+		"name":"BEEginner Dungeon",
+		"npcs":[
+			{"id":"beekeeper","position":[1406, 416]},
+		],
+		"monsters":[
+			
+			{"type":"bee_queen","boundary":[224, -400, 320, -304],"count":1},
+			# fill the entire hive with worker bees by default, 
+			# make a rage zone around the queen, to simulate bees going to protect the qeen then the queen can't roam
+			# TODO: more zones? so rage can trigger more often?
+			{"type":"bee_worker","boundary":[32, -500, 550, -150],"rage":[160, -464, 384, -240], "count":20, "roam": True},
+			# entrance spawn
+			# 4 zones 10x8 tiles (16) in size for worker bees
+			# TODO: should the zones overlap?
+			# TODO: more spawn zones allows us to reduce the amount of mobs in each zone, and how many will aggro a player
+			# {"type":"bee_worker","boundary":[564, 369, 1245, 468],"rage":[564, 369, 1245, 468],"count":10, "roam": True},
+			{"type":"bee_worker","boundary":[1072, 368, 1152, 496],"rage":[1040, 352, 1184, 512],"count":3},
+			{"type":"bee_worker","boundary":[944, 368, 1024, 496],"rage":[912, 352, 1056, 512],"count":3},
+			{"type":"bee_worker","boundary":[816, 368, 896, 496],"rage":[784, 352, 928, 512],"count":3},
+			{"type":"bee_worker","boundary":[688, 368, 768, 496],"rage":[656, 352, 800, 512],"count":3},
+			{"type":"bee_worker","boundary":[560, 368, 640, 496],"rage":[528, 352, 672, 512],"count":3},
+			{"type":"bee_drone","boundary":[1248, 368, 1280, 496],"count":2},
+			# entrance guard
+			# we need multiple spawn / rage zones, so only a certain set of bees will attack
+			# 5 spawn/rage zones with 3 bees on guard (not roaming)
+			{"type":"bee_worker","boundary":[176, -45, 368, -13], "rage":[176, -45, 368, -13],"count":3},
+			{"type":"bee_worker","boundary":[176, 3, 368, 35], "rage":[176, 3, 368, 35],"count":3},
+			{"type":"bee_worker","boundary":[176, 51, 368, 83], "rage":[176, 51, 368, 83],"count":3},
+			{"type":"bee_worker","boundary":[176, 96, 368, 131], "rage":[176, 96, 368, 131],"count":3},
+			{"type":"bee_worker","boundary":[176, 144, 368, 179], "rage":[176, 144, 368, 179],"count":3},
+			
+		],
+		"spawns":[
+			# spawn points need to be 12px away from lines, -y is upwards
+			[1406, 416], # player_spawn
+		],
+		"on_death":["main",19], # log near mansion
+		"on_exit":["main",19], # log near mansion
+		"doors":[
+			[1406, 416, 10, 10, "main", 19, 0], # log near mansion
+		],
+		# "article": "dungeon-crypt", # Unsure if this works
+		# we end up calling open_guide that calls load_article
+		"quirks":[
+			# [-192,-1309,48,64,"log","Is this a gateway?"],
+			[1406, 416,0,0,"info","bee_dungeon"], # TODO: define range? can we make the rendering in render_server dynamic, so we don't have to code something there to show this quirk?
+		],
+		# TODO a info quirk at the entrance that tells about the instance
+		# TODO: animatable objects at the spawn locations that spawning can trigger (Make bee engravings glow up X seconds before spawning?, perhaps glow the amount that will spawn? this will only be a visual though, should the player get this info via code as well?)
+		# "animatables":{
+		# 	"the_door":{"x":888,"y":-672,"position":"door0"},
+		# },
+		
 	},
 
 }

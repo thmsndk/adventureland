@@ -537,6 +537,14 @@ conditions={
 		"duration":1800000,
 		"persistent":True,
 	},
+	# TODO: should be named quest, and used as a general purpose, the quest should also be able to override the skin
+	"quest_beekeeper":{
+		"skin":"quest_monsterhunt",
+		"name":"Bee On The Hunt",
+		"ui":True,
+		"duration":1800000,
+		"persistent":True,
+	},
 	"marked":{
 		"skin":"skill_huntersmark",
 		"name":"Marked",
@@ -607,6 +615,40 @@ conditions={
 		"name":"Sleeping",
 		"duration_min":3000,
 		"duration":8000,
+	},
+	"beekeeper_aura":{
+		"skin":"placeholder",
+		"gold":1,
+		# "xp":1,
+		"name":"Beekeeper Aura",
+		"attr0":"gold", # We can only give one attribute as an aura currently
+		# "attr1":"xp",
+		"buff":True,
+		"ui":True,
+		"aura":True,
+		"duration":30*1000,
+	},
+	"bee_pheromones_attack":{
+		"skin":"placeholder",
+		"name":"Pheromone: Attack",
+		"interval":5000, # Handle targeting every 5 seconds
+		# "heal":200,
+		"range": 100, # The minimum range for the bee to attack target
+		"duration":10*1000, 
+		"ui":True,
+		"buff":True,
+		"explanation": "A spawned minion without a target will aggro you if you get too close"
+	},
+	"bee_pheromones_heal":{
+		"skin":"placeholder",
+		"name":"Pheromone: Heal",
+		"interval":3000, # Heal every 3 seconds
+		"heal":350,
+		"range": 100, # The minimum range for the bee to heal the queen
+		"duration":10*1000, 
+		"ui":True,
+		"buff":True,
+		"explanation": "Will aid & tend to the queen, healing the queen."
 	},
 }
 

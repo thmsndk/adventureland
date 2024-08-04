@@ -2068,7 +2068,24 @@ function event_loop() {
 			spawn_special_monster("goldenbat");
 		}
 
-		if (events.cutebee && stats.kills.bee > edges.next_cutebee) {
+		// cutebee has a list of spawn_contributors where kills on them contributes to spawning cutebee
+		let cutebeeKillScore = 0;
+		for (const monsterKey in G.monsters.cutebee.spawn_contributors) {
+			// const gMonster = G.monsters[monsterKey];
+			const multiplier = G.monsters.cutebee.spawn_contributors[monsterKey];
+			const kills = stats.kills[monsterKey];
+			if (multiplier && kills > 0) {
+				const score = stats.kills[monsterKey] * multiplier;
+				cutebeeKillScore += score;
+				// server_log(`cutebee ${monsterKey} has ${kills} kills and a score of ${score}`);
+			}
+		}
+
+		if (cutebeeKillScore > 0 && Math.round(cutebeeKillScore) % 1000 === 0) {
+			server_log(`next cutebee ${cutebeeKillScore} > ${edges.next_cutebee}`);
+		}
+
+		if (events.cutebee && cutebeeKillScore > edges.next_cutebee) {
 			edges.next_cutebee += parseInt(events.cutebee * Math.random());
 			spawn_special_monster("cutebee");
 		}
@@ -3956,6 +3973,14 @@ function is_xy_safe(map, x, y) {
 	if (smap_data[map] == -1) {
 		return true;
 	}
+
+	if (!smap_data[map]) {
+		// developing a new map, where i point to another map with key = 'test' without the map existing, seems to crash this
+		// TODO: This crashes while making a new map if smap_data[map] does not exist in the db
+		console.trace(`${map} smap_data[map] is not defined`);
+		return true;
+	}
+
 	// x=parseInt(x)-(parseInt(x)%smap_step);
 	// y=parseInt(y)-(parseInt(y)%smap_step);
 	[
@@ -4047,20 +4072,36 @@ var smap_edge = 60; // for smap_step 24, the edge was 40 - also check out access
 var hiding_places = [];
 function server_bfs(map) {
 	if ((precomputed && precomputed.version == G.version) || (precomputed && precomputed.smap_data)) {
-		smap_data[map] = precomputed.smap_data[map];
-		amap_data[map] = precomputed.amap_data[map];
-		return;
+		if (!precomputed.smap_data[map]) {
+			console.trace(`${map} precomputed.smap_data[map] is not defined`);
+		}
+
+		if (!precomputed.amap_data[map]) {
+			console.trace(`${map} precomputed.amap_data[map] is not defined`);
+		}
+
+		if (precomputed.smap_data[map] && precomputed.amap_data[map]) {
+			console.log(`${map} is precomputed`);
+			smap_data[map] = precomputed.smap_data[map];
+			amap_data[map] = precomputed.amap_data[map];
+			return;
+		}
 	}
+
 	if (G.maps[map].no_bounds) {
+		console.log(`${map} is no_bounds`);
 		smap_data[map] = -1;
 		amap_data[map] = {};
 		return;
 	}
+
 	if (is_sdk && variables.fast_sdk && !(map == "level1" || map == "arena")) {
+		console.log(`${map} is not level1 or arena, so we do something?`);
 		smap_data[map] = -1;
 		amap_data[map] = {};
 		return;
 	}
+
 	server_bfs2(map);
 	smap_data[map] = {};
 	var queue = [];
@@ -4480,7 +4521,10 @@ function fast_astar(args) {
 		].forEach(function (m) {
 			var cx = amap_round(sx + m[0] * step);
 			var cy = amap_round(sy + m[1] * step);
-			if (amap_data[map][cx + "|" + cy]) {
+			if (!amap_data[map]) {
+				// TODO: amap_data[map] can be undefined, but why?
+				console.trace(`${map} amap_data[map] is not defined`);
+			} else if (amap_data[map][cx + "|" + cy]) {
 				hpush(cx, cy, "start", m[2], point_distance(sx, sy, cx, cy));
 			}
 		});
@@ -4519,7 +4563,10 @@ function fast_astar(args) {
 		].forEach(function (m) {
 			var cx = current.x + m[0];
 			var cy = current.y + m[1];
-			if (amap_data[map][cx + "|" + cy] && !visited[cx + "|" + cy]) {
+			if (!amap_data[map]) {
+				// TODO: amap_data[map] can be undefined
+				console.trace(`${map} amap_data[map] is not defined`);
+			} else if (amap_data[map][cx + "|" + cy] && !visited[cx + "|" + cy]) {
 				hpush(cx, cy, current.x + "|" + current.y, m[2], current.bad + m[3] + ((current.dir != m[2] && 0.5) || 0));
 			}
 		});
@@ -4594,7 +4641,10 @@ function fast_abfs(monster, tx, ty) {
 		].forEach(function (m) {
 			var cx = amap_round(sx + m[0] * step);
 			var cy = amap_round(sy + m[1] * step);
-			if (amap_data[map][cx + "|" + cy]) {
+			if (!amap_data[map]) {
+				// TODO: amap_data[map] can be undefined
+				console.trace(`${map} amap_data[map] is not defined`);
+			} else if (amap_data[map][cx + "|" + cy]) {
 				hpush(cx, cy, "start", m[2], point_distance(sx, sy, cx, cy));
 			}
 		});
@@ -4632,7 +4682,10 @@ function fast_abfs(monster, tx, ty) {
 		].forEach(function (m) {
 			var cx = current.x + m[0];
 			var cy = current.y + m[1];
-			if (amap_data[map][cx + "|" + cy] && !visited[cx + "|" + cy]) {
+			if (!amap_data[map]) {
+				// TODO: amap_data[map] can be undefined
+				console.trace(`${map} amap_data[map] is not defined`);
+			} else if (amap_data[map][cx + "|" + cy] && !visited[cx + "|" + cy]) {
 				hpush(cx, cy, current.x + "|" + current.y, m[2], current.bad + m[3] + ((current.dir != m[2] && 0.5) || 0));
 			}
 		});
