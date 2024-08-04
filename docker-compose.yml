@@ -42,6 +42,9 @@ services:
     volumes:
       # you will need to initialize the config file before docker can start, it will fail to mount if they don't exist
       - ./config/variables.js:/adventureland/node/variables.js
+    labels:
+      # let traefik listen to this port as well and not only 80/433
+      - traefik.port=8022
 
   # us1:
   #   image: game_server_image
