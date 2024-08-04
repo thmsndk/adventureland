@@ -380,13 +380,7 @@ function init_game() {
 					create_instance("d_b1");
 					create_instance("d_a1");
 					create_instance("d_a2");
-					// server_bfs("crypt");
-					// server_bfs("winter_instance");
-					// server_bfs("tomb");
-					// server_bfs("dungeon0");
-					// server_bfs("cgallery");
 
-					// TODO: precompute seems to be messed up? so we hardcode a bfs call on server create?
 					for (const name in G.maps) {
 						const gMap = G.maps[name];
 						if (gMap.ignore) {
