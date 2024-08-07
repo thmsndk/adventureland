@@ -735,6 +735,8 @@ maps={
 		],
 		"outside":True,
 		"invasion" :{
+			# [MIN_MS, MAX_MS, CHANCE]
+			# "frequency": [3600000, 21600000, 0.4], # 2-6 hours
 			# TODO: what is the target? there could be multiple targets?
 			"town": [0,0],
 			# TODO: what types of invasions are enabled?
