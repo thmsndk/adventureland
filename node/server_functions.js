@@ -2493,16 +2493,8 @@ function groupObjectsIntoBins(obj, numBins) {
 }
 
 function event_loop_invasion(c) {
-	// TODO: Invasion event
 	// TODO: signups like goobrawl / abtesting?
-	// event enable / triggers
 	// monsters at a specific level?
-	// N time since last invasion event on map
-	// timers can be used to store timing data that broadcast_e should not broacast
-	// TODO: loop maps with a town dynamicly
-	// const INVASION_COOLDOWN = 120; // 2 minutes
-	const INVASION_COOLDOWN = 30;
-
 	// fort data could be stored on the fort map instance
 
 	for (const mapName in G.maps) {
@@ -2525,9 +2517,21 @@ function event_loop_invasion(c) {
 		const invasionMapKey = `invasion_${mapName}`;
 		const next_event = timers[invasionMapKey];
 
+		const HOUR_MS = 3600000; // 60 * 60 * 1000;
+		// 6 * 3600000 = 21600000
+		const [MIN_INVASION_COOLDOWN_MS = 2 * HOUR_MS, MAX_INVASION_COOLDOWN_MS = 6 * HOUR_MS, INVASION_CHANCE = 0.4] =
+			gMap.invasion.frequency || [];
+		// DEBUG
+		// [0, 30, 0.4];
+
+		const NEXT_INVASION_COOLDOWN_MS =
+			Math.random() * (MAX_INVASION_COOLDOWN_MS - MIN_INVASION_COOLDOWN_MS) + MIN_INVASION_COOLDOWN_MS;
+		const NEXT_INVASION_COOLDOWN_S = NEXT_INVASION_COOLDOWN_MS / 1000;
+
 		if (!next_event) {
 			// Initialize cooldown after restart
-			timers[invasionMapKey] = future_s(INVASION_COOLDOWN);
+			timers[invasionMapKey] = future_s(NEXT_INVASION_COOLDOWN_S);
+			console.log(`${invasionMapKey} restart cooldown: ${msToTime2(-mssince(timers[invasionMapKey]))}`);
 		}
 		/**
 		 * @type {{ map: string, stage: number, mtype: string}}
@@ -2535,7 +2539,8 @@ function event_loop_invasion(c) {
 		let event = E[invasionMapKey];
 		if (!E[invasionMapKey] && c > next_event) {
 			// start new event, make sure next event starts in the future
-			timers[invasionMapKey] = future_s(INVASION_COOLDOWN); // TODO: random cooldown in a range
+			timers[invasionMapKey] = future_s(NEXT_INVASION_COOLDOWN_S); // TODO: random cooldown in a range
+			console.log(`${invasionMapKey} next event cooldown: ${msToTime2(-mssince(timers[invasionMapKey]))}`);
 
 			// TODO: spawning crabx might mess with the crabxx event,
 			// some monsters should probably be filtered out, spawning crabxx seems like a bad idea
@@ -2547,9 +2552,11 @@ function event_loop_invasion(c) {
 			// TODO: roll for success
 			// TODO: each 5 levels increases chance to spawn?
 			// TODO: chance to start invasion
-			if (Math.random() < 0.4) {
-				timers[invasionMapKey] = future_s(INVASION_COOLDOWN) * (Math.random() * 5);
-				console.log(`${mapName} spawn will be delayed`);
+			if (Math.random() > INVASION_CHANCE) {
+				// Delay the next invasion check
+				timers[invasionMapKey] = future_s(Math.random() * (MIN_INVASION_COOLDOWN_MS / 1000));
+				console.log(`${mapName} spawn will be delayed ${msToTime2(-mssince(timers[invasionMapKey]))}`);
+
 				continue;
 			}
 
@@ -2604,12 +2611,10 @@ function event_loop_invasion(c) {
 			// TODO: monsters should attack and kill an invasion npc?
 			// TODO: tally up score on remaining monsters in case nothing was killed.
 
-			// TODO: cooldown for next event
-			// timers[invasionMapKey] = future_s(INVASION_COOLDOWN); // TODO: random cooldown in a range
-
 			delete E[invasionMapKey];
 
-			timers[invasionMapKey] = future_s(INVASION_COOLDOWN); // TODO: random cooldown in a range
+			timers[invasionMapKey] = future_s(NEXT_INVASION_COOLDOWN_S);
+			console.log(`${invasionMapKey} failure event cooldown: ${msToTime2(-mssince(timers[invasionMapKey]))}`);
 
 			broadcast_e();
 
@@ -2626,8 +2631,7 @@ function event_loop_invasion(c) {
 			// SUCCESS: All invasion monsters killed.
 			delete E[invasionMapKey];
 
-			// TODO: cooldown for next event
-			timers[invasionMapKey] = future_s(INVASION_COOLDOWN); // TODO: random cooldown in a range
+			timers[invasionMapKey] = future_s(NEXT_INVASION_COOLDOWN_S);
 
 			broadcast_e();
 
@@ -2768,6 +2772,7 @@ function event_loop_invasion(c) {
 			instance.invasion.monster_count++;
 			instance.invasion.monsters.push(m);
 
+			// TODO: this also spams discord, might need to broadcast it differently
 			// TODO: map specific announcements?
 			broadcast("server_message", {
 				message: `${G.monsters[event.mtype].name} Are strengthening in numbers`,
