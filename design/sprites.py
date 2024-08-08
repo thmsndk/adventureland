@@ -1123,6 +1123,13 @@ imagesets={
 		"file":"/images/tiles/items/custom.png?v=9",
 		"load":True,
 	},
+	"community":{
+		"size":20,
+		"rows":9,
+		"columns":7,
+		"file":"/images/tiles/items/community.png",
+		"load":True,
+	},
 	"pack_20_bee_items":{
 		"size":20,
 		"rows":21,
