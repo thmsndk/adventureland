@@ -2517,6 +2517,7 @@ function event_loop_invasion(c) {
 		const invasionMapKey = `invasion_${mapName}`;
 		const next_event = timers[invasionMapKey];
 
+		const INVASION_END_TIME_S = 10 * 60; // 10 minutes
 		const HOUR_MS = 3600000; // 60 * 60 * 1000;
 		// 6 * 3600000 = 21600000
 		const [MIN_INVASION_COOLDOWN_MS = 2 * HOUR_MS, MAX_INVASION_COOLDOWN_MS = 6 * HOUR_MS, INVASION_CHANCE = 0.4] =
@@ -2711,7 +2712,8 @@ function event_loop_invasion(c) {
 				if (!event.end && distanceToTargetPoint < 250) {
 					// Invaders has reached the town, start failure cooldown
 					// moving monsters from a far away spawn takes time to reach, the failure time should first start once an invader gets in range of town
-					event.end = future_s(INVASION_COOLDOWN * 4); // TODO: random cooldown in a range
+					// TODO: configurable length of invasion
+					event.end = future_s(INVASION_END_TIME_S); // TODO: random cooldown in a range
 
 					// Make invasion monsters aggressive, causing them to attack and target players
 					monster.aggro = 1;
