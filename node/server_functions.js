@@ -2540,10 +2540,9 @@ function event_loop_invasion(c) {
 		let event = E[invasionMapKey];
 		if (!E[invasionMapKey] && c > next_event) {
 			// start new event, make sure next event starts in the future
-			timers[invasionMapKey] = future_s(NEXT_INVASION_COOLDOWN_S); // TODO: random cooldown in a range
+			timers[invasionMapKey] = future_s(NEXT_INVASION_COOLDOWN_S);
 			console.log(`${invasionMapKey} next event cooldown: ${msToTime2(-mssince(timers[invasionMapKey]))}`);
 
-			// TODO: spawning crabx might mess with the crabxx event,
 			// some monsters should probably be filtered out, spawning crabxx seems like a bad idea
 			const exclude = gMap.invasion.exclude;
 			const potentialInvaders = Object.values(gMap.monsters).filter((x) => !exclude || !exclude.includes(x.type));
@@ -2609,6 +2608,12 @@ function event_loop_invasion(c) {
 
 		if (event.end && c > event.end) {
 			// FAILURE: Time has run out
+
+			// remove remaining alive invasion monsters
+			for (const monster of aliveInvasionMonsters) {
+				remove_monster(monster, { method: "disappear" });
+			}
+
 			// TODO: monsters should attack and kill an invasion npc?
 			// TODO: tally up score on remaining monsters in case nothing was killed.
 
@@ -2620,9 +2625,10 @@ function event_loop_invasion(c) {
 			broadcast_e();
 
 			// TODO: decrease difficulty
-			// TODO: remove remaining alive invasion monsters?
-			// debuff players not participating at all
-			broadcast("server_message", {
+			// TODO: debuff players not participating at all
+			// TODO: participation buff
+
+			broadcast("notice", {
 				message: `Scout: ${G.monsters[event.mtype].name} has won, we have failed!`,
 				color: "#e14b4b",
 			});
@@ -2785,6 +2791,11 @@ function event_loop_invasion(c) {
 }
 
 // TODO: move this to an invasion event specific file.
+/**
+ * adds coop points to the instance
+ * @param {*} monster
+ * @returns
+ */
 function invasion_remove_monster(monster) {
 	if (!monster.invasion) {
 		return;
