@@ -10956,6 +10956,11 @@ function level_monster(monster, args) {
 	monster.luckx += 0.25 * mult;
 }
 
+/**
+ *
+ * @param {*} target
+ * @param {{method:string, nospawn:boolean, silent:boolean}} args
+ */
 function remove_monster(target, args) {
 	if (!args) {
 		args = {};
