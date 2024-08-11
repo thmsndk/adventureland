@@ -2611,7 +2611,7 @@ function event_loop_invasion(c) {
 
 			// remove remaining alive invasion monsters
 			for (const monster of aliveInvasionMonsters) {
-				remove_monster(monster, { method: "disappear" });
+				remove_monster(monster, { nospawn: true, method: "disappear" });
 			}
 
 			// TODO: monsters should attack and kill an invasion npc?
