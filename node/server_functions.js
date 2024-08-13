@@ -2626,7 +2626,24 @@ function event_loop_invasion(c) {
 
 			// TODO: decrease difficulty
 			// TODO: debuff players not participating at all
-			// TODO: participation buff
+			// TODO: group into bins and change strenght of buff based on participation?
+
+			// participation buff
+			for (const playerName in instance.invasion.points) {
+				const player = get_entity(playerName);
+				if (!player) {
+					continue;
+				}
+
+				// POC of applying a random buff
+				// TODO: fetch existing buff and merge if successfull?
+				// TODO: buff depending on monster we are definding against
+				const stat = random_one(Object.keys(stat_to_attr));
+				add_condition(player, "invasion_failure", {
+					ms: NEXT_INVASION_COOLDOWN_MS,
+					[stat]: 1, // TODO: determine stat strength
+				});
+			}
 
 			broadcast("notice", {
 				message: `Scout: ${G.monsters[event.mtype].name} has won, we have failed!`,
@@ -2641,6 +2658,23 @@ function event_loop_invasion(c) {
 			timers[invasionMapKey] = future_s(NEXT_INVASION_COOLDOWN_S);
 
 			broadcast_e();
+
+			// participation buff
+			for (const playerName in instance.invasion.points) {
+				const player = get_entity(playerName);
+				if (!player) {
+					continue;
+				}
+
+				// POC of applying a random buff
+				// TODO: fetch existing buff and merge if successfull?
+				// TODO: buff depending on monster we are definding against
+				const stat = random_one(Object.keys(stat_to_attr));
+				add_condition(player, "invasion_failure", {
+					ms: NEXT_INVASION_COOLDOWN_MS,
+					[stat]: 5, // TODO: determine stat strength
+				});
+			}
 
 			// TODO: increase difficulty
 			// TODO: Issue rewards based on participation points, like cooperative
@@ -3107,6 +3141,14 @@ function add_condition(target, condition, args) {
 	if (C.f) {
 		response.from = C.f;
 	}
+
+	// applies stats from args to new C condition that apply_stats will use
+	for (var stat in args) {
+		if (stat_to_attr[stat]) {
+			C[stat] = args[stat];
+		}
+	}
+
 	target.cid++;
 	target.u = true;
 	if (target.socket) {
