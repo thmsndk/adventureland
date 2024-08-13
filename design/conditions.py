@@ -608,6 +608,24 @@ conditions={
 		"duration_min":3000,
 		"duration":8000,
 	},
+ 	"invasion_success":{
+		"skin":"condition_positive",
+		"name":"Invasion Success",
+		"explanation":"Protected a town during an invasion",
+		"buff":True,
+  		"persistent":True,
+    	"ui":True,
+    
+	},
+ 	"invasion_failure":{
+		"skin":"condition_bad",
+		"name":"Invasion Failure",
+		"explanation":"Failed to protecting a town during an invasion",
+		"debuff":True,
+  		"persistent":True,
+    	"ui":True,
+    
+	},
 }
 
 if 0:
