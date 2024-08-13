@@ -2516,14 +2516,14 @@ function event_loop_invasion(c) {
 
 		const invasionMapKey = `invasion_${mapName}`;
 		const next_event = timers[invasionMapKey];
-
-		const INVASION_END_TIME_S = 10 * 60; // 10 minutes
+		const INVASION_END_TIME_S = 60; // 1 minutes
+		// const INVASION_END_TIME_S = 10 * 60; // 10 minutes
 		const HOUR_MS = 3600000; // 60 * 60 * 1000;
 		// 6 * 3600000 = 21600000
 		const [MIN_INVASION_COOLDOWN_MS = 2 * HOUR_MS, MAX_INVASION_COOLDOWN_MS = 6 * HOUR_MS, INVASION_CHANCE = 0.4] =
-			gMap.invasion.frequency || [];
-		// DEBUG
-		// [0, 30, 0.4];
+			// gMap.invasion.frequency || [];
+			// DEBUG
+			[0, 5 * 60 * 1000, 0.4];
 
 		const NEXT_INVASION_COOLDOWN_MS =
 			Math.random() * (MAX_INVASION_COOLDOWN_MS - MIN_INVASION_COOLDOWN_MS) + MIN_INVASION_COOLDOWN_MS;
@@ -2546,23 +2546,36 @@ function event_loop_invasion(c) {
 			// some monsters should probably be filtered out, spawning crabxx seems like a bad idea
 			const exclude = gMap.invasion.exclude;
 			const potentialInvaders = Object.values(gMap.monsters).filter((x) => !exclude || !exclude.includes(x.type));
+			// const potentialInvaders = Object.values(gMap.monsters).filter((x) => x.type === "scorpion");
+
+			// if (potentialInvaders.length === 0) {
+			// 	console.log(`${invasionMapKey} has no potential invaders, skipping`);
+			// 	continue;
+			// }
+
+			// start new event, make sure next event starts in the future
+			timers[invasionMapKey] = future_s(NEXT_INVASION_COOLDOWN_S);
+			console.log(`${invasionMapKey} next event cooldown: ${msToTime2(-mssince(timers[invasionMapKey]))}`);
 
 			// TODO: check/add extra for additional monsters, like moles
 			// TODO: do we pick a random monster? or should we prefer high level spawns?
 			// TODO: roll for success
 			// TODO: each 5 levels increases chance to spawn?
 			// TODO: chance to start invasion
-			if (Math.random() > INVASION_CHANCE) {
-				// Delay the next invasion check
-				timers[invasionMapKey] = future_s(Math.random() * (MIN_INVASION_COOLDOWN_MS / 1000));
-				console.log(`${mapName} spawn will be delayed ${msToTime2(-mssince(timers[invasionMapKey]))}`);
+			// if (Math.random() < INVASION_CHANCE) {
+			// 	// Delay the next invasion check
+			// 	timers[invasionMapKey] = future_s(Math.random() * (MIN_INVASION_COOLDOWN_MS / 1000));
+			// 	console.log(`${mapName} spawn will be delayed ${msToTime2(-mssince(timers[invasionMapKey]))}`);
 
-				continue;
-			}
+			// 	continue;
+			// }
 
+			console.log(potentialInvaders);
 			const monster_map_def = clone(random_one(potentialInvaders));
-			monster_map_def.grow = false;
 			console.log(monster_map_def);
+
+			monster_map_def.grow = false;
+			monster_map_def.roam = false; // attempt to prevent phoenix from roaming
 
 			// E is broadcasted to the players
 			E[invasionMapKey] = event = {
@@ -2609,7 +2622,7 @@ function event_loop_invasion(c) {
 		if (event.end && c > event.end) {
 			// FAILURE: Time has run out
 
-			// remove remaining alive invasion monsters
+			// remove remaining alive invasion monsters and also count up coop points
 			for (const monster of aliveInvasionMonsters) {
 				remove_monster(monster, { nospawn: true, method: "disappear" });
 			}
@@ -2751,14 +2764,17 @@ function event_loop_invasion(c) {
 				// TODO: configurable range in G
 				if (!event.end && distanceToTargetPoint < 250) {
 					// Invaders has reached the town, start failure cooldown
+					console.log(`${mapName} ${event.mtype} has reached the town, start failure cooldown`);
 					// moving monsters from a far away spawn takes time to reach, the failure time should first start once an invader gets in range of town
 					// TODO: configurable length of invasion
-					event.end = future_s(INVASION_END_TIME_S); // TODO: random cooldown in a range
+					event.end = future_s(INVASION_END_TIME_S);
+					console.log(`${invasionMapKey} end: ${msToTime2(-mssince(event.end))}`);
 
 					// Make invasion monsters aggressive, causing them to attack and target players
 					monster.aggro = 1;
 					monster.rage = 1;
 					monster.last_aggro = new Date();
+					// TODO: monsters should not be sleeping
 
 					// give them a boundary inside town they can move around in once they reach town
 					// This defines a 100x100 boundary around targetPoint
@@ -2780,7 +2796,8 @@ function event_loop_invasion(c) {
 
 				// TODO: Can we optimize how often we pathfind? assuming it's expensive
 				if (mode.all_smart) {
-					if (!monster.worker && !monster.working) {
+					if (!monster.worker && !monster.moving) {
+						// Move towards target / town
 						monster.working = true;
 						workers[wlast++ % workers.length].postMessage({
 							type: "fast_astar",
