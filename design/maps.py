@@ -145,7 +145,10 @@ maps={
 		"enter": {
 			# requirements to enter the dungeon
 			# TODO level, class, 
-			"items": [["cryptkey", 1]], #requires 1 cryptkey to enter
+   			#requires 1 cryptkey to enter
+   			"items": {
+				"cryptkey": 1
+			},
 			
 			# [mapKey, locationType, locationIndex, range]
 			"locations": [
@@ -1175,7 +1178,10 @@ maps={
 		"enter": {
 			# requirements to enter the dungeon
 			# TODO level, class, 
-			"items": [["frozenkey", 1]], #requires 1 frozenkey to enter
+   			"items": {
+          		#requires 1 frozenkey to enter
+				"frozenkey": 1
+			},
 			
 			# [mapKey, locationType, locationIndex, range]
 			"locations": [
