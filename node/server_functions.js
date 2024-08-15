@@ -4843,6 +4843,9 @@ function fast_astar(args) {
 	var best = 999999999999;
 	var theone = null;
 	var good = false;
+	const MAX_HEAP_LENGTH = 1200;
+	const MAX_TOTAL_LENGTH = 50000; // increased max total (was 4000) to allow scorpion,bigbird,spider to pathfind from their spawn to town.
+
 	function hpush(cx, cy, fr, dir, bad) {
 		// if(visited[cx+"|"+cy]) return;
 		var value = point_distance(cx, cy, tx, ty);
@@ -4913,8 +4916,8 @@ function fast_astar(args) {
 		});
 	}
 	while (heap.array.length) {
-		if (heap.array.length > 1200 || total > 4000) {
-			server_log(["heap", "fast_astar"]);
+		if (heap.array.length > MAX_HEAP_LENGTH || total > MAX_TOTAL_LENGTH) {
+			server_log(["heap", "fast_astar", "bad", heap.array.length, total]);
 			if (theone) {
 				var result = finalise(theone);
 				result.push("bad");
