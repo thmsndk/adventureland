@@ -2521,9 +2521,7 @@ function event_loop_invasion(c) {
 		const HOUR_MS = 3600000; // 60 * 60 * 1000;
 		// 6 * 3600000 = 21600000
 		const [MIN_INVASION_COOLDOWN_MS = 2 * HOUR_MS, MAX_INVASION_COOLDOWN_MS = 6 * HOUR_MS, INVASION_CHANCE = 0.4] =
-			// gMap.invasion.frequency || [];
-			// DEBUG
-			[0, 5 * 60 * 1000, 0.4];
+			gMap.invasion.frequency || [];
 
 		const NEXT_INVASION_COOLDOWN_MS =
 			Math.random() * (MAX_INVASION_COOLDOWN_MS - MIN_INVASION_COOLDOWN_MS) + MIN_INVASION_COOLDOWN_MS;
@@ -2539,19 +2537,9 @@ function event_loop_invasion(c) {
 		 */
 		let event = E[invasionMapKey];
 		if (!E[invasionMapKey] && c > next_event) {
-			// start new event, make sure next event starts in the future
-			timers[invasionMapKey] = future_s(NEXT_INVASION_COOLDOWN_S);
-			console.log(`${invasionMapKey} next event cooldown: ${msToTime2(-mssince(timers[invasionMapKey]))}`);
-
 			// some monsters should probably be filtered out, spawning crabxx seems like a bad idea
 			const exclude = gMap.invasion.exclude;
 			const potentialInvaders = Object.values(gMap.monsters).filter((x) => !exclude || !exclude.includes(x.type));
-			// const potentialInvaders = Object.values(gMap.monsters).filter((x) => x.type === "scorpion");
-
-			// if (potentialInvaders.length === 0) {
-			// 	console.log(`${invasionMapKey} has no potential invaders, skipping`);
-			// 	continue;
-			// }
 
 			// start new event, make sure next event starts in the future
 			timers[invasionMapKey] = future_s(NEXT_INVASION_COOLDOWN_S);
@@ -2628,7 +2616,6 @@ function event_loop_invasion(c) {
 			}
 
 			// TODO: monsters should attack and kill an invasion npc?
-			// TODO: tally up score on remaining monsters in case nothing was killed.
 
 			delete E[invasionMapKey];
 
@@ -4830,6 +4817,7 @@ function random_place(map) {
 	return { x: parseInt(xy[0]), y: parseInt(xy[1]), map: map, in: map };
 }
 
+// TODO: track fast_astar statistics for later comparisons
 function fast_astar(args) {
 	var map = args.map;
 	var sx = args.sx;
