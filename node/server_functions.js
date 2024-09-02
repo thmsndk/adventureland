@@ -2625,23 +2625,20 @@ function event_loop_invasion(c) {
 			broadcast_e();
 
 			// TODO: decrease difficulty
-			// TODO: debuff players not participating at all
 			// TODO: group into bins and change strenght of buff based on participation?
 
-			// participation buff
+			// participation debuff
 			for (const playerName in instance.invasion.points) {
 				const player = get_entity(playerName);
 				if (!player) {
 					continue;
 				}
 
-				// POC of applying a random buff
-				// TODO: fetch existing buff and merge if successfull?
-				// TODO: buff depending on monster we are definding against
-				const stat = random_one(Object.keys(stat_to_attr));
+				// TODO: figure out if invasion failure should have any negative consequence?
+				// const stat = random_one(Object.keys(stat_to_attr));
 				add_condition(player, "invasion_failure", {
 					ms: NEXT_INVASION_COOLDOWN_MS,
-					[stat]: 1, // TODO: determine stat strength
+					// [stat]: 0.5, // TODO: determine stat strength
 				});
 			}
 
@@ -2668,11 +2665,13 @@ function event_loop_invasion(c) {
 
 				// POC of applying a random buff
 				// TODO: fetch existing buff and merge if successfull?
-				// TODO: buff depending on monster we are definding against
-				const stat = random_one(Object.keys(stat_to_attr));
-				add_condition(player, "invasion_failure", {
-					ms: NEXT_INVASION_COOLDOWN_MS,
-					[stat]: 5, // TODO: determine stat strength
+				// TODO: buff depending on monster we are definding against, could be based on achievements?
+				// TODO: length of buff should be a little longer than next invasion, so it can be stacked? will need a max strength though
+				const stat = random_one(["xp", "gold", "luck"]); // TODO: configurable on map?
+				const condition = `invasion_success_${stat}`;
+				const existingConditionDuration = player.s[condition] ? player.s[condition].ms : 0;
+				add_condition(player, condition, {
+					ms: NEXT_INVASION_COOLDOWN_MS + existingConditionDuration,
 				});
 			}
 
