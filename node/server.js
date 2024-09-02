@@ -11936,6 +11936,7 @@ function update_instance(instance) {
 			}
 			if (focus && distance(focus, monster) > 40 && !monster.moving) {
 				if (mode.all_smart) {
+					// TODO: .worker is never true as it is not assigned, so this will trigger as soon as the monster stops moving and is more than 40 away from the focus
 					if (!monster.worker) {
 						monster.working = true;
 						workers[wlast++ % workers.length].postMessage({
@@ -11982,6 +11983,7 @@ function update_instance(instance) {
 				) {
 					// console.log(monster.height);
 					if (mode.all_smart) {
+						// TODO: .worker is never true as it is not assigned, so this will trigger as soon as the monster stops moving and is more than 12 away from the focus
 						if (!monster.worker) {
 							monster.working = true;
 							workers[wlast++ % workers.length].postMessage({

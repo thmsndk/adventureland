@@ -2777,14 +2777,12 @@ function event_loop_invasion(c) {
 					continue;
 				}
 
-				// TODO: scorpions never seem to move towards point?
-				// it' seems to log heap fast_astar?
-
 				// TODO: Can we optimize how often we pathfind? assuming it's expensive
 				if (mode.all_smart) {
-					if (!monster.worker && !monster.moving) {
+					// .worker is never true as it is not assigned
+					if (!monster.working) {
 						// Move towards target / town
-						monster.working = true;
+						monster.working = true; // will be reset in worker.on("message"
 						workers[wlast++ % workers.length].postMessage({
 							type: "fast_astar",
 							in: monster.in,
