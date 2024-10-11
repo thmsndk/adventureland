@@ -2520,7 +2520,8 @@ function event_loop_invasion(c) {
 		// const INVASION_END_TIME_S = 10 * 60; // 10 minutes
 		const HOUR_MS = 3600000; // 60 * 60 * 1000;
 		// 6 * 3600000 = 21600000
-		const [MIN_INVASION_COOLDOWN_MS = 2 * HOUR_MS, MAX_INVASION_COOLDOWN_MS = 6 * HOUR_MS, INVASION_CHANCE = 0.4] =
+		// Default an invasion every 2..6 hours
+		const [MIN_INVASION_COOLDOWN_MS = 2 * HOUR_MS, MAX_INVASION_COOLDOWN_MS = 6 * HOUR_MS, INVASION_CHANCE = 0.75] =
 			gMap.invasion.frequency || [];
 
 		const NEXT_INVASION_COOLDOWN_MS =
