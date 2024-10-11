@@ -1698,6 +1698,20 @@ maps={
 					[-88, 376]
 				]
 			},
+			{
+				"type":"wasteland",
+				"damage": 20,
+				"damage_increment": 2,
+				"damage_max": 100,
+				"intensity": 2,  # A Zone multiplier 
+				"duration": 240000, # higher tier zone with longer duration
+				"polygon":[
+					[1016, -96],
+					[1624, -96],
+					[1624, 704],
+					[1016, 704]
+				]
+			},
 		],
 		# define where we spawn if we die on the map
 		"on_death":["wasteland",0],

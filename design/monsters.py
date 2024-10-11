@@ -1245,7 +1245,7 @@ monsters={
 
 	#Wasteland
 	"goo8":{"name":"Toxic Goo","speed":6,"charge":12,"hp":100,"xp":100,"attack":5,"damage_type":"physical","respawn":1,"gold":20,"range":15,"frequency":0.4,"aggro":0,"aa":1,},
-	"sssnake":{"name":"Mutated Snake","speed":6,"charge":12,"hp":100,"xp":100,"attack":5,"damage_type":"physical","respawn":1,"gold":20,"range":15,"frequency":0.4,"aggro":0,"aa":1,},
+	"sssnake":{"name":"Mutated Snake","speed":18,"charge":48,"hp":4000000,"xp":4600000,"attack":1800,"damage_type":"physical","respawn":6,"gold":1,"range":32,"frequency":1.5,"aggro":0.2,"resistance":200,"armor":400},
 	"bghoul":{"name":"Brown Ghoul","speed":6,"charge":12,"hp":100,"xp":100,"attack":5,"damage_type":"physical","respawn":1,"gold":20,"range":15,"frequency":0.4,"aggro":0,"aa":1,},
 	"gghoul":{"name":"Green Ghoul","speed":6,"charge":12,"hp":100,"xp":100,"attack":5,"damage_type":"physical","respawn":1,"gold":20,"range":15,"frequency":0.4,"aggro":0,"aa":1,},
 	"stonewar":{"name":"Warrior Statue","speed":6,"charge":12,"hp":100,"xp":100,"attack":5,"damage_type":"physical","respawn":1,"gold":20,"range":15,"frequency":0.4,"aggro":0,"aa":1,},
@@ -1304,6 +1304,8 @@ monsters={
 			"degen":{"amount":20,"cooldown":200},
 		},
 	}
+
+	
 
 }
 
