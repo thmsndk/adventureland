@@ -123,6 +123,17 @@
 				flex: 0.6;
 			}
 
+			#rolls-summery {
+				display: flex;
+				flex-direction: row;
+				justify-content: space-evenly;
+				/* align-items: flex-start; */
+				flex-basis: 100%;
+				/* flex: 0.5; */
+				/* width: 100%; */
+				flex-wrap: wrap;
+			}
+
 			#rolls {
 				display: flex;
 				flex-direction: row;
@@ -164,6 +175,7 @@
 		</style>
 		<script>
 			const table = G.drops.{{table}};//G.drops.invasion_accessoriesbox_tier0;
+			const ROLL_COUNT = 100;
 
 			function hide_row(element) {
 				console.log("parent", this, $(element).closest("tr"));
@@ -293,10 +305,26 @@
 				html += "</table>";
 				$("#items").append(html);
 
-				html = "<div id=\"rolls\">"
-				// table of rolls ?
-				for (let index = 0; index < 100; index++) {
+
+				// collect rolls and summerize them and render that
+				const rollsByItem = {};
+				const rolls = []
+				for (let index = 0; index < ROLL_COUNT; index++) {
 					const [roll, itemKey] = exchange(table)
+
+					if (!rollsByItem[itemKey]) {
+						rollsByItem[itemKey] = []
+					}
+
+					rollsByItem[itemKey].push(roll);
+					rolls.push([roll, itemKey])
+				}
+
+				html = "<div id=\"rolls-summery\">"
+
+				for (const itemKey in rollsByItem) {
+					const rolls = rollsByItem[itemKey]
+
 					const gItem = G.items[itemKey];
 
 					let actual = { name: itemKey };
@@ -307,12 +335,12 @@
 					html += `<span style="display:inline-block; vertical-align:middle">${icon}</span>`;
 					html += "</div>";
 					html += '<div style="display:flex; flex-direction: column">';
-					html += ` <span>${gItem.type} ${gItem.wtype ?? ""}</span>`;
-					html += ` <span>${itemKey}</span>`;
+						html += ` <span>${rolls.length} x ${itemKey}</span>`;
+						html += ` <span>${gItem.type} ${gItem.wtype ?? ""}</span>`;
 					if (gItem.tier) {
 						html += ` <span>Tier: ${gItem.tier}</span>`;
 					}
-					html += ` <span>${roll}</span>`;
+					// html += ` <span>${roll}</span>`;
 					// html += ` <a onclick="hide_row(this);">Hide</a>`;
 					html += "</div>";
 
@@ -321,7 +349,40 @@
 				}
 				html += "</div>";
 				$("#rolls-column").append(html);
+
+				html = "<div id=\"rolls\">"
+				for (const [roll, itemKey] of rolls) {
+
+					html+= renderRolledItem(itemKey, roll)
+				}
+				html += "</div>";
+				$("#rolls-column").append(html);
 			});
+
+			function renderRolledItem(itemKey, roll){
+				const gItem = G.items[itemKey];
+
+				let html= ""
+				let actual = { name: itemKey };
+				let icon = item_container({ size: 20, skin: gItem.skin, onclick: `render_item_info('${itemKey}')` }, actual);
+
+				html += '<div style="display:flex; flex-direction: row">';
+				html += '<div style="display:flex; flex-direction: column">';
+				html += `<span style="display:inline-block; vertical-align:middle">${icon}</span>`;
+				html += "</div>";
+				html += '<div style="display:flex; flex-direction: column">';
+				html += ` <span>${gItem.type} ${gItem.wtype ?? ""}</span>`;
+				html += ` <span>${itemKey}</span>`;
+				if (gItem.tier) {
+					html += ` <span>Tier: ${gItem.tier}</span>`;
+				}
+				html += ` <span>${roll}</span>`;
+				// html += ` <a onclick="hide_row(this);">Hide</a>`;
+				html += "</div>";
+
+				html += "</div>";
+				return html
+			}
 		</script>
 		<style>
 			.buyitem {
