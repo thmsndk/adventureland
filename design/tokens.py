@@ -34,11 +34,15 @@ tokens={
 		"cxjar-xgravestone2":4,
 	},
 	"invasiontoken": {
-		"armorbox":10,
-		"troll":28,
-		"weaponbox":10,
+		"armorbox":1000,
+		"troll":2800,
+		"weaponbox":1000,
 		# lglitch / glitch?
 		"invasion_scrollbox_tier0": 100,
-		"invasion_accessoriesbox_tier0": 100.
+		"invasion_scrollbox_tier1": 250,
+		"invasion_scrollbox_tier2": 500,
+		"invasion_accessoriesbox_tier0": 100,
+		"invasion_accessoriesbox_tier1": 250,
+		"invasion_accessoriesbox_tier2": 500,
 	}
 }

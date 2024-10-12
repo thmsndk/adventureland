@@ -1289,21 +1289,45 @@ base_stat = ["str","int","dex"]
 for stat in base_stat:
 	for itype in ["ring","earring","amulet"]:
 		drops["invasion_accessoriesbox_tier0"].append([1,stat + itype])
-		drops["invasion_accessoriesbox_tier1"].append([1,stat + itype])
-		drops["invasion_accessoriesbox_tier2"].append([1,stat + itype])
+		drops["invasion_accessoriesbox_tier1"].append([0.9,stat + itype])
+		drops["invasion_accessoriesbox_tier2"].append([0.4,stat + itype])
+	
+	# Base Stat orbs (orbofstr)
+	drops["invasion_accessoriesbox_tier2"].append([0.5,"orbof" + stat])
+	
+ 	# T2 stat amulets
+	drops["invasion_accessoriesbox_tier1"].append([0.5,"t2" + stat + "amulet"])
+	drops["invasion_accessoriesbox_tier2"].append([0.6,"t2" + stat + "amulet"])
 
 for name in ["vitring", "vitearring", "hpamulet", "ringsj", 
 	"orbg", "test_orb","warmscarf"]:
 	drops["invasion_accessoriesbox_tier0"].append([1,name])
-	drops["invasion_accessoriesbox_tier1"].append([1,name])
-	drops["invasion_accessoriesbox_tier2"].append([1,name])
+	drops["invasion_accessoriesbox_tier1"].append([0.6,name])
+	drops["invasion_accessoriesbox_tier2"].append([0.5,name])
 
 drops["invasion_accessoriesbox_tier0"].append([0.5,"skullamulet"])
 drops["invasion_accessoriesbox_tier1"].append([0.5,"skullamulet"])
-drops["invasion_accessoriesbox_tier2"].append([0.5,"skullamulet"])
+drops["invasion_accessoriesbox_tier2"].append([0.3,"skullamulet"])
+
+# t2 => ctristone, cdarktristone, molesteeth, mbelt, ftrinket, tigerstone, solitaire? 
+
+drops["invasion_accessoriesbox_tier2"].append([0.001,"armorring"])
+drops["invasion_accessoriesbox_tier2"].append([0.001,"resistancering"])
+drops["invasion_accessoriesbox_tier2"].append([0.0001,"ringofluck"])
+drops["invasion_accessoriesbox_tier2"].append([0.0001,"suckerpunch"])
+drops["invasion_accessoriesbox_tier2"].append([0.000001,"mpxbelt"])
+drops["invasion_accessoriesbox_tier2"].append([0.000001,"sanguine"])
+drops["invasion_accessoriesbox_tier2"].append([0.000001,"amuletofm"])
+drops["invasion_accessoriesbox_tier2"].append([0.000001,"bfangamulet"])
+drops["invasion_accessoriesbox_tier2"].append([0.000001,"sbelt"])
+drops["invasion_accessoriesbox_tier2"].append([0.000001,"orbofsc"])
+drops["invasion_accessoriesbox_tier2"].append([0.000001,"rabbitsfoot"])
+drops["invasion_accessoriesbox_tier2"].append([0.000001,"mearring"])
+
+
 
 drops["invasion_accessoriesbox_tier0"].append([0.001,"invasion_accessoriesbox_tier1"])
-drops["invasion_accessoriesbox_tier0"].append([0.00001,"invasion_accessoriesbox_tier2"])
+# drops["invasion_accessoriesbox_tier0"].append([0.00001,"invasion_accessoriesbox_tier2"])
 drops["invasion_accessoriesbox_tier1"].append([0.001,"invasion_accessoriesbox_tier2"])
 
 # Fillers, potions, upgrade scrolls, gem0 x N? offering?
@@ -1316,9 +1340,14 @@ for name in items:
 		if item["type"] == "pscroll":
 			# make some stats harder to roll
 			if item["stat"] in ["gold","luck", "lifesteal","manasteal","mp_cost"]:
-				drops["invasion_scrollbox_tier0"].append([0.1,name])
+				drops["invasion_scrollbox_tier0"].append([0.1, name])
+				drops["invasion_scrollbox_tier1"].append([0.1, name])
+				drops["invasion_scrollbox_tier2"].append([0.1, name])
+          
 			else:
-				drops["invasion_scrollbox_tier0"].append([0.25,name])
+				drops["invasion_scrollbox_tier0"].append([0.25, name])
+				drops["invasion_scrollbox_tier1"].append([0.25, name])
+				drops["invasion_scrollbox_tier2"].append([0.25, name])
 				
 		# Upgrade / Compound scrolls
 		elif item["type"] == "uscroll" or item["type"] == "cscroll":
@@ -1327,7 +1356,7 @@ for name in items:
 				drops["invasion_scrollbox_tier0"].append([10.0 / item["grade"], name])
 			else:
 				drops["invasion_scrollbox_tier0"].append([10.0, name])
-		
+
 		# if item["type"] in ["ring","earring", "amulet"]:
 		# 	# TODO: tier modifier?
 		# 	if grade_chance > 0:
@@ -1353,6 +1382,8 @@ for name in items:
 		#		drops["invasion_accessoriesbox_tier0"].append([minChance, name])
 
 invasion_boxes = ["invasion_scrollbox_tier0",
+			"invasion_scrollbox_tier1",
+			"invasion_scrollbox_tier2",
 			"invasion_accessoriesbox_tier0",
 			"invasion_accessoriesbox_tier1",
 			"invasion_accessoriesbox_tier2"
