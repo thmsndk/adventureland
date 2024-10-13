@@ -167,7 +167,7 @@
 		</style>
 		<script>
 			const table = G.drops.{{table}};//G.drops.invasion_accessoriesbox_tier0;
-			const ROLL_COUNT = 100;
+			const ROLL_COUNT = {{exchanges}};
 
 			function hide_row(element) {
 				console.log("parent", this, $(element).closest("tr"));
@@ -299,7 +299,7 @@
 
 
 				// collect rolls and summerize them and render that
-				const rollsByItem = {};
+				let rollsByItem = {};
 				const rolls = []
 				for (let index = 0; index < ROLL_COUNT; index++) {
 					const [roll, itemKey] = exchange(table)
@@ -311,6 +311,14 @@
 					rollsByItem[itemKey].push(roll);
 					rolls.push([roll, itemKey])
 				}
+
+				// Sort by the first roll (index 0) of each item in ascending order
+				const sortedRollsByItem = Object.entries(rollsByItem).sort((a, b) => {
+					return b[1][0] - a[1][0];
+				});
+
+				// If you want to convert it back to an object:
+				rollsByItem = Object.fromEntries(sortedRollsByItem);
 
 				html = `<h1>Summery for ${ROLL_COUNT} exchanges</h1>`
 				html += "<div id=\"rolls-summery\">"

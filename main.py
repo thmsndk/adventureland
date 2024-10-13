@@ -281,7 +281,10 @@ def serve_maps(order=""):
 @app.route('/drops/exchange')
 def serve_drops_exchange():
 	domain=gdi(request)
-	table=gdmul(request,"table")
+	table,exchanges=gdmul(request,"table","exchanges")
+ 
+	if not exchanges:
+		exchanges = 100
  
 	def drop_table_to_html(m):
 		return """
@@ -345,7 +348,7 @@ def serve_drops_exchange():
         
 		return html
 
-	return whtml(request,"utility/htmls/drops/exchange.html",domain=domain,table=table)
+	return whtml(request,"utility/htmls/drops/exchange.html",domain=domain,table=table,exchanges=exchanges)
 
 @app.route('/privacy')
 def serve_privacy():
