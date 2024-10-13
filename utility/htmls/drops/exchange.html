@@ -215,6 +215,7 @@
 				html += `<th>item</th>`;
 				html += `<th>amount</th>`;
 				html += `<th>"chance"</th>`;
+				html += `<th>expected rolls</th>`;
 				html += `<th>current</th>`;
 				html += `<th><= Math.random roll</th>`;
 
@@ -272,6 +273,10 @@
 					html += `</td>`;
 					html += `<td>${amount ?? 1}</td>`;
 					const probability = chance / total;
+
+					// In probability, the expected number of trials (rolls) to get a success is the reciprocal of the probability.
+					const expected_rolls = 1 / probability
+
 					// html += `<td title="${probability}">
 					// 			<div style="width:100%; position:relative;">
 					// 				<div style="height:20px; background-color:blue; width:${probability * 100}%;"></div>
@@ -281,6 +286,7 @@
 					html += `<td title="${probability}">
 								${chance} (${probability})
 							</td>`;
+					html += `<td title="${expected_rolls.toFixed(2).toLocaleString()}">${abbreviateNumber(expected_rolls.toFixed(2))}</td>`;
 					html += `<td>${current}</td>`;
 					html += `<td> ${normalize(current, 0, total)}</td>`;
 
@@ -383,6 +389,36 @@
 
 				html += "</div>";
 				return html
+			}
+
+			const SI_SYMBOL = ["", "k", "M", "G", "T", "P", "E"];
+
+			function abbreviateNumber(number) {
+			if (!number) {
+				return number;
+			}
+
+			// what tier? (determines SI symbol)
+			const tier = (Math.log10(Math.abs(number)) / 3) | 0;
+
+			// if zero, we don't need a suffix
+			if (tier === 0) return number;
+
+			// get suffix and determine scale
+			const suffix = SI_SYMBOL[tier];
+			const scale = 10 ** (tier * 3);
+
+			// scale the number
+			const scaled = number / scale;
+
+			// format number and add suffix
+			//   return scaled.toFixed(1) + suffix;
+			return (
+				scaled.toLocaleString(undefined, {
+				minimumFractionDigits: 1,
+				maximumFractionDigits: 1,
+				}) + suffix
+			);
 			}
 		</script>
 		<style>
