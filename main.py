@@ -6,6 +6,11 @@ from crons import *
 from tests import *
 from tasks import *
 
+try:
+	from drops import drops
+except:
+	from design.drops import drops
+
 @ndb.toplevel
 @app.route('/comm')
 def serve_comm():
@@ -277,6 +282,69 @@ def serve_maps(order=""):
 def serve_drops_exchange():
 	domain=gdi(request)
 	table=gdmul(request,"table")
+ 
+	def drop_table_to_html(m):
+		return """
+		<div class='drop-card'>
+			<a href='%s?table=%s' target='_blank' class='drop-link'>%s</a>
+		</div>
+		""" % (url, m, m)
+
+	if not table:
+		# Use request.url_root to get the full base URL including the port
+		url = "%sdrops/exchange" % request.url_root
+
+		html = """
+		<style>
+			html {
+				background-color: #f5f5f5;
+				font-family: Arial, sans-serif;
+			}
+			.container {
+				max-width: 800px;
+				margin: 50px auto;
+				padding: 20px;
+				background-color: #fff;
+				border-radius: 10px;
+				box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+			}
+			.drop-card {
+				margin-bottom: 15px;
+				padding: 15px;
+				background-color: #007bff;
+				border-radius: 5px;
+				box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+				transition: transform 0.2s, box-shadow 0.2s;
+			}
+			.drop-card:hover {
+				transform: translateY(-3px);
+				box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+			}
+			.drop-link {
+				color: #fff;
+				font-weight: bold;
+				text-decoration: none;
+				font-size: 18px;
+			}
+			.drop-link:hover {
+				text-decoration: underline;
+			}
+		</style>
+		<div class='container'>
+		"""
+
+		html += "<div>"
+
+		# Sort the drop keys by name (alphabetically)
+		sorted_drop_keys = sorted(drops.keys())
+  
+		for drop_key in sorted_drop_keys:
+			html += drop_table_to_html(drop_key)
+
+		html += "</div>"
+        
+		return html
+
 	return whtml(request,"utility/htmls/drops/exchange.html",domain=domain,table=table)
 
 @app.route('/privacy')
