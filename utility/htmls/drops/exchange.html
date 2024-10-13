@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script
+			src="/js/jquery/jquery-{{domain.jquery_version}}.min.js"
+			{%if
+			domain.electron%}
+			onload="if(typeof require!=='undefined') window.$=window.jQuery=module.exports;"
+			{%endif%}
+		></script>
+		<script src="/js/common_functions.js?v={{domain.v}}"></script>
+		<script src="/js/functions.js?v={{domain.v}}"></script>
+		<script src="/js/html.js?v={{domain.v}}"></script>
+		<script src="/data.js?v={{domain.v}}"></script>
+		<link href="/css/index.css?v={{domain.v}}" rel="stylesheet" type="text/css" />
+		<link href="/css/common.css?v={{domain.v}}" rel="stylesheet" type="text/css" />
+		<style>
+			html,
+			body {
+				/* background: black;
+				font-family: "Courier New"; */
+				overflow: auto;
+			}
+			/* https://codepen.io/cesarrrguez/pen/MWegWYa */
+			:root {
+				--primary-color: white;
+				--secondary-color: rgb(61, 68, 73);
+				--highlight-color: #3282b8;
+
+				--dt-status-available-color: greenyellow;
+				--dt-status-away-color: lightsalmon;
+				--dt-status-offline-color: lightgray;
+
+				--dt-padding: 12px;
+				--dt-padding-s: 6px;
+				--dt-padding-xs: 2px;
+
+				--dt-border-radius: 3px;
+
+				--dt-background-color-container: #2a3338;
+				--dt-border-color: var(--secondary-color);
+				--dt-bg-color: var(--highlight-color);
+				--dt-text-color: var(--primary-color);
+				--dt-bg-active-button: var(--highlight-color);
+				--dt-text-color-button: var(--primary-color);
+				--dt-text-color-active-button: var(--primary-color);
+				--dt-hover-cell-color: var(--highlight-color);
+				--dt-even-row-color: var(--secondary-color);
+				--dt-focus-color: var(--highlight-color);
+				--dt-input-background-color: var(--secondary-color);
+				--dt-input-color: var(--primary-color);
+			}
+
+			.datatable-container,
+			body {
+				font-family: sans-serif;
+				background-color: var(--dt-background-color-container);
+				border-radius: var(--dt-border-radius);
+				color: var(--dt-text-color);
+				/* max-width: 1140px;
+				min-width: 950px; */
+				margin: 0 auto;
+				font-size: 12px;
+			}
+
+			table.datatable {
+				border-collapse: collapse;
+				width: 100%;
+			}
+
+			table.datatable,
+			table.datatable th,
+			table.datatable td {
+				padding: var(--dt-padding-s) var(--dt-padding-s);
+				padding-top: 0px;
+				padding-bottom: 0px;
+			}
+
+			table.datatable th {
+				font-weight: bolder;
+				text-align: left;
+				border-bottom: solid 1px var(--dt-border-color);
+			}
+
+			table.datatable td {
+				border-bottom: solid 1px var(--dt-border-color);
+			}
+
+			table.datatable tbody tr:nth-child(even) {
+				background-color: var(--dt-even-row-color);
+			}
+
+			table.datatable tbody tr:hover {
+				background-color: var(--dt-hover-cell-color);
+			}
+
+			/* table.sticky-header th {
+				position: sticky;
+				top: 0;
+				left: 0;
+				background-color: var(--dt-background-color-container);
+				z-index: 10;
+			} */
+
+			#container {
+				display: flex;
+				flex-direction: row;
+				flex-wrap: wrap;
+				width: 99%;
+			}
+
+			#items {
+				display: flex;
+				flex-direction: column;
+				flex-basis: 100%;
+				flex: 0.4;
+			}
+
+			#rolls-column {
+				display: flex;
+				flex-direction: column;
+				flex-basis: 100%;
+				flex: 0.6;
+			}
+
+			#rolls-summery {
+				display: grid;
+				grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+				gap: 10px;
+				margin: var(--dt-padding-s) var(--dt-padding-s);
+			}
+
+			#rolls {
+				display: grid;
+				grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+				gap: 10px;
+			}
+
+			#rolls > * {
+				height: auto; /* Reduce height by letting content dictate */
+				padding: var(--dt-padding-xs); /* Decrease padding to reduce overall height */
+				background-color: var(--secondary-color);
+				margin: var(--dt-padding-s) var(--dt-padding-s);
+			}
+
+			/* tr td:nth-child(1),
+			tr td:nth-child(2) {
+				position: sticky;
+				left: 0;
+				z-index: 9;
+			}
+
+			tr th:nth-child(2),
+			tr td:nth-child(2) {
+				left: 95px;
+			} */
+
+			/* table tr:nth-child(odd) {
+				background: grey;
+			} */
+
+			/* table tr:hover {
+				background: silver;
+				cursor: pointer;
+				color: black;
+			} */
+		</style>
+		<script>
+			const table = G.drops.{{table}};//G.drops.invasion_accessoriesbox_tier0;
+			const ROLL_COUNT = 100;
+
+			function hide_row(element) {
+				console.log("parent", this, $(element).closest("tr"));
+				$(element).closest("tr").hide();
+				return false;
+			}
+
+			function exchange(table){
+				const total = table.reduce((sum,drop) => sum += drop[0],0)
+
+				const roll = Math.random();
+				const result = roll * total;
+				// console.log(total, roll, result)
+
+				let current = 0;
+				for (const [chance, itemKey, amount] of table) {
+
+					current += chance;
+					if (result <= current) {
+						return [roll, itemKey]
+					}
+				}
+			}
+
+			document.addEventListener("DOMContentLoaded", function (event) {
+				// loop a drop table and render each "treshhold" item
+				// table.forEach(function (drop) {
+				// 	total += drop[0];
+				// });
+				// result = Math.random() * total;
+				// table.forEach(function (drop) {
+				// 	if (done) {
+				// 		return;
+				// 	}
+				// 	current += drop[0];
+				// 	if (result <= current) {
+				// 		done = true;
+
+				// TODO: simulating exchange could just be a loop as well, so we want two columns, the loot table, and the loot simulation
+
+				let html = "";
+				// Draw item table
+				html += "<table  class='datatable sticky-header'>";
+				html += "<tr>";
+				html += `<th>item</th>`;
+				html += `<th>amount</th>`;
+				html += `<th>"chance"</th>`;
+				html += `<th>current</th>`;
+				html += `<th><= Math.random roll</th>`;
+
+				html += "</tr>";
+
+
+				let total = 0;
+				for (const [chance, itemKey, amount] of table) {
+					total += chance;
+				}
+
+				const normalize = (val, minVal, maxVal) => {
+					return (val - minVal) / (maxVal - minVal);
+				};
+
+				let current = 0;
+				for (const [chance, itemKey, amount] of table) {
+					if (itemKey.startsWith("cosmo")) {
+						// chance is reduced if we have it?
+						// if (player.p.acx[drop[2]]) {
+						// 	drop[0] /= 10 ** player.p.acx[drop[2]];
+						// }
+						// continue;
+					}
+					const gItem = G.items[itemKey];
+
+					current += chance;
+
+					const styles = "vertical-align: top; margin-right: 10px";
+
+					// const grade = calculate_item_grade(gItem, actual);
+
+					let name = gItem.name;
+
+					// Render item icon like in inventory
+					let actual = { name: itemKey };
+					let icon = item_container({ size: 20, skin: gItem.skin, onclick: `render_item_info('${itemKey}')` }, actual);
+
+					html += "<tr>";
+					html += `<td title='${name}'>`;
+					html += '<div style="display:flex; flex-direction: row">';
+					html += '<div style="display:flex; flex-direction: column">';
+					html += `<span style="display:inline-block; vertical-align:middle">${icon}</span>`;
+					html += "</div>";
+					html += '<div style="display:flex; flex-direction: column">';
+					html += ` <span>${gItem.type} ${gItem.wtype ?? ""}</span>`;
+					html += ` <span>${itemKey}</span>`;
+					if (gItem.tier) {
+						html += ` <span>Tier: ${gItem.tier}</span>`;
+					}
+					// html += ` <a onclick="hide_row(this);">Hide</a>`;
+					html += "</div>";
+
+					html += "</div>";
+					html += `</td>`;
+					html += `<td>${amount ?? 1}</td>`;
+					const probability = chance / total;
+					// html += `<td title="${probability}">
+					// 			<div style="width:100%; position:relative;">
+					// 				<div style="height:20px; background-color:blue; width:${probability * 100}%;"></div>
+					// 				<div style="position:absolute; top:0;">${chance}</div>
+					// 			</div>
+					// 		</td>`;
+					html += `<td title="${probability}">
+								${chance} (${probability})
+							</td>`;
+					html += `<td>${current}</td>`;
+					html += `<td> ${normalize(current, 0, total)}</td>`;
+
+					html += "</tr>";
+					html += "<tr>";
+					html += `<td colspan="5" title="${probability}" style="padding:0px;">
+							<div style="width:100%; position:relative;">
+								<div style="height:5px; background-color:blue; width:${probability * 100}%;"></div>
+								<div style="position:absolute; top:0;"></div>
+							</div>
+						</td>`;
+					html += "</tr>";
+				}
+				html += "</table>";
+				$("#items").append(html);
+
+
+				// collect rolls and summerize them and render that
+				const rollsByItem = {};
+				const rolls = []
+				for (let index = 0; index < ROLL_COUNT; index++) {
+					const [roll, itemKey] = exchange(table)
+
+					if (!rollsByItem[itemKey]) {
+						rollsByItem[itemKey] = []
+					}
+
+					rollsByItem[itemKey].push(roll);
+					rolls.push([roll, itemKey])
+				}
+
+				html = `<h1>Summery for ${ROLL_COUNT} exchanges</h1>`
+				html += "<div id=\"rolls-summery\">"
+
+				for (const itemKey in rollsByItem) {
+					const rolls = rollsByItem[itemKey]
+
+					const gItem = G.items[itemKey];
+
+					let actual = { name: itemKey };
+					let icon = item_container({ size: 20, skin: gItem.skin, onclick: `render_item_info('${itemKey}')` }, actual);
+					html += '<div style="display:flex; flex-direction: row">';
+					html += '<div style="display:flex; flex-direction: column">';
+					html += `<span style="display:inline-block; vertical-align:middle">${icon}</span>`;
+					html += "</div>";
+					html += '<div style="display:flex; flex-direction: column">';
+						html += ` <span>${rolls.length} x ${itemKey}</span>`;
+						html += ` <span>${gItem.type} ${gItem.wtype ?? ""}</span>`;
+					// if (gItem.tier) {
+					// 	html += ` <span>Tier: ${gItem.tier}</span>`;
+					// }
+					// html += ` <span>${roll}</span>`;
+					// html += ` <a onclick="hide_row(this);">Hide</a>`;
+					html += "</div>";
+
+					html += "</div>";
+
+				}
+				html += "</div>";
+				$("#rolls-column").append(html);
+
+				html = "<h1>Rolls</h1>"
+				html += "<div id=\"rolls\">"
+				for (const [roll, itemKey] of rolls) {
+
+					html+= renderRolledItem(itemKey, roll)
+				}
+				html += "</div>";
+				$("#rolls-column").append(html);
+			});
+
+			function renderRolledItem(itemKey, roll){
+				const gItem = G.items[itemKey];
+
+				let html= ""
+				let actual = { name: itemKey };
+				let icon = item_container({ size: 20, skin: gItem.skin, onclick: `render_item_info('${itemKey}')` }, actual);
+
+				html += '<div style="display:flex; flex-direction: row">';
+				html += '<div style="display:flex; flex-direction: column">';
+				html += `<span style="display:inline-block; vertical-align:middle">${icon}</span>`;
+				html += "</div>";
+				html += '<div style="display:flex; flex-direction: column">';
+				html += ` <span>${gItem.type} ${gItem.wtype ?? ""}</span>`;
+				html += ` <span>${itemKey}</span>`;
+				if (gItem.tier) {
+					html += ` <span>Tier: ${gItem.tier}</span>`;
+				}
+				html += ` <span>${roll}</span>`;
+				// html += ` <a onclick="hide_row(this);">Hide</a>`;
+				html += "</div>";
+
+				html += "</div>";
+				return html
+			}
+		</script>
+		<style>
+			.buyitem {
+				display: inline-block;
+				margin: 6px;
+				vertical-align: top;
+			}
+		</style>
+	</head>
+	<body>
+		<!-- <h1>{{table}}</h1> -->
+		<div id="container">
+			<div id="items"></div>
+			<div id="rolls-column"></div>
+		</div>
+	</body>
+</html>

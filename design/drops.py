@@ -1034,6 +1034,21 @@ drops={
 		[1,"pvptoken"],
 		[0.5,"empty"],
 	],
+	"town_invasion":[
+		[1,"invasiontoken"],
+		[1,"invasiontoken",2],
+		[1,"invasiontoken",3],
+		[0.5,"invasiontoken",4],
+		[0.25,"invasiontoken",5],
+		[0.125,"invasiontoken",6],
+		[0.0675,"invasiontoken",20],
+		# TODO: invasion gear box?
+		# [0.0025,"fury"],
+	],
+	"town_invasion_defeat":[
+		[1,"invasiontoken"],
+		[0.5,"empty"],
+	],
 	"weaponofthedead":[
 		[0.85,"bowofthedead"],
 		[0.35,"swordofthedead"],
@@ -1326,6 +1341,135 @@ drops["cosmo3"].append([1.0/12,"cx","hat309"])
 drops["cosmo3"].append([1.0/12,"cx","hat400"])
 drops["cosmo3"].append([1.0/12,"cx","hat405"])
 
+# invasion boxes
+drops["invasion_scrollbox_tier0"] = []
+drops["invasion_scrollbox_tier1"] = []
+drops["invasion_scrollbox_tier2"] = []
+# computer parts, network card?
+# materials box? type == "material"
+# keys? dungeons, bkey,ukey,dkey?
+# type == "elixir"
+# type == "shoes"
+# type == "pants"
+# type == "orb"
+# type == "cape"
+# type == "helmet", chest, gloves, 
+drops["invasion_accessoriesbox_tier0"] = []
+drops["invasion_accessoriesbox_tier1"] = []
+drops["invasion_accessoriesbox_tier2"] = []
+# ring, earring, amulet
+
+# Base Stat Earrings
+# Base Stat Rings
+# Base Stat Amulets
+base_stat = ["str","int","dex"]
+for stat in base_stat:
+	for itype in ["ring","earring","amulet"]:
+		drops["invasion_accessoriesbox_tier0"].append([1,stat + itype])
+		drops["invasion_accessoriesbox_tier1"].append([0.9,stat + itype])
+		drops["invasion_accessoriesbox_tier2"].append([0.4,stat + itype])
+	
+	# Base Stat orbs (orbofstr)
+	drops["invasion_accessoriesbox_tier2"].append([0.5,"orbof" + stat])
+	
+ 	# T2 stat amulets
+	drops["invasion_accessoriesbox_tier1"].append([0.5,"t2" + stat + "amulet"])
+	drops["invasion_accessoriesbox_tier2"].append([0.6,"t2" + stat + "amulet"])
+
+for name in ["vitring", "vitearring", "hpamulet", "ringsj", 
+	"orbg", "test_orb","warmscarf"]:
+	drops["invasion_accessoriesbox_tier0"].append([1,name])
+	drops["invasion_accessoriesbox_tier1"].append([0.6,name])
+	drops["invasion_accessoriesbox_tier2"].append([0.5,name])
+
+drops["invasion_accessoriesbox_tier0"].append([0.5,"skullamulet"])
+drops["invasion_accessoriesbox_tier1"].append([0.5,"skullamulet"])
+drops["invasion_accessoriesbox_tier2"].append([0.3,"skullamulet"])
+
+# t2 => ctristone, cdarktristone, molesteeth, mbelt, ftrinket, tigerstone, solitaire? 
+
+drops["invasion_accessoriesbox_tier2"].append([0.001,"armorring"])
+drops["invasion_accessoriesbox_tier2"].append([0.001,"resistancering"])
+drops["invasion_accessoriesbox_tier2"].append([0.0001,"ringofluck"])
+drops["invasion_accessoriesbox_tier2"].append([0.0001,"suckerpunch"])
+drops["invasion_accessoriesbox_tier2"].append([0.000001,"mpxbelt"])
+drops["invasion_accessoriesbox_tier2"].append([0.000001,"sanguine"])
+drops["invasion_accessoriesbox_tier2"].append([0.000001,"amuletofm"])
+drops["invasion_accessoriesbox_tier2"].append([0.000001,"bfangamulet"])
+drops["invasion_accessoriesbox_tier2"].append([0.000001,"sbelt"])
+drops["invasion_accessoriesbox_tier2"].append([0.000001,"orbofsc"])
+drops["invasion_accessoriesbox_tier2"].append([0.000001,"rabbitsfoot"])
+drops["invasion_accessoriesbox_tier2"].append([0.000001,"mearring"])
+
+
+
+drops["invasion_accessoriesbox_tier0"].append([0.001,"invasion_accessoriesbox_tier1"])
+# drops["invasion_accessoriesbox_tier0"].append([0.00001,"invasion_accessoriesbox_tier2"])
+drops["invasion_accessoriesbox_tier1"].append([0.001,"invasion_accessoriesbox_tier2"])
+
+# Fillers, potions, upgrade scrolls, gem0 x N? offering?
+
+for name in items:
+	item = items[name]
+	if not items[name].get("ignore") and not items[name].get("exclusive"):
+		
+		# Property Scrolls (str,luck..)
+		if item["type"] == "pscroll":
+			# make some stats harder to roll
+			if item["stat"] in ["gold","luck", "lifesteal","manasteal","mp_cost"]:
+				drops["invasion_scrollbox_tier0"].append([0.1, name])
+				drops["invasion_scrollbox_tier1"].append([0.1, name])
+				drops["invasion_scrollbox_tier2"].append([0.1, name])
+          
+			else:
+				drops["invasion_scrollbox_tier0"].append([0.25, name])
+				drops["invasion_scrollbox_tier1"].append([0.25, name])
+				drops["invasion_scrollbox_tier2"].append([0.25, name])
+				
+		# Upgrade / Compound scrolls
+		elif item["type"] == "uscroll" or item["type"] == "cscroll":
+			# TODO: amount of scrolls given?
+			if item["grade"] > 0:
+				drops["invasion_scrollbox_tier0"].append([10.0 / item["grade"], name])
+			else:
+				drops["invasion_scrollbox_tier0"].append([10.0, name])
+
+		# if item["type"] in ["ring","earring", "amulet"]:
+		# 	# TODO: tier modifier?
+		# 	if grade_chance > 0:
+		# 		# jewellery has no tier... try to find existing drop chances and use that as maximum?
+		# 		minChance = grade_chance
+		# 		for table_name in drops.keys():
+		# 			table = drops[table_name]
+		# 			if table_name == "monsters":
+		# 				for monsterKey in table:
+		# 					monster_table = drops["monsters"][monsterKey]
+		# 					for drop in monster_table:
+		# 						if drop[1] == name and minChance > drop[0]:
+		# 							# print(table_name)
+		# 							# print(drop)
+		# 							minChance = drop[0]
+		# 			else:
+		# 				for drop in table:
+		# 					if drop[1] == name and minChance > drop[0]:
+		# 						# print(table_name)
+		# 						# print(drop)
+		# 						minChance = drop[0]
+
+		#		drops["invasion_accessoriesbox_tier0"].append([minChance, name])
+
+invasion_boxes = ["invasion_scrollbox_tier0",
+			"invasion_scrollbox_tier1",
+			"invasion_scrollbox_tier2",
+			"invasion_accessoriesbox_tier0",
+			"invasion_accessoriesbox_tier1",
+			"invasion_accessoriesbox_tier2"
+			]
+# sort invasion boxes highest to lowest value
+for key in invasion_boxes:
+	drops[key].sort()
+	drops[key].reverse()
+
 for key in drops.keys():
 	if key.find(",")!=-1:
 		t=drops[key]
@@ -1335,15 +1479,22 @@ for key in drops.keys():
 		drops[key]=t
 
 for name in items:
+	item = items[name]
 	if not items[name].get("ignore") and not items[name].get("exclusive"):
+		grade_chance = 0
 		if items[name].get("grades") and (items[name].get("upgrade") and items[name]["grades"][2]<8 or items[name].get("compound") and items[name]["grades"][2]<3):
+			grade_chance = 0.1
 			drops["glitch"].append([0.1,name])
 		elif items[name].get("grades") and items[name]["grades"][2]==0:
+			grade_chance = 0.1
 			drops["glitch"].append([0.1,name])
 		elif items[name].get("grades") and items[name]["grades"][1]==0:
+			grade_chance = 0.25
 			drops["glitch"].append([0.25,name])
 		else:
+			grade_chance = 1
 			drops["glitch"].append([1,name])
+		
 
 for name in items:
 	if "g" not in items[name]:

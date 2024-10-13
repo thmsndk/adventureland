@@ -2147,6 +2147,7 @@ function event_loop() {
 				change = true;
 			}
 		});
+
 		for (var name in instances) {
 			for (var id in instances[name].monsters) {
 				var monster = instances[name].monsters[id];
@@ -2457,6 +2458,8 @@ function event_loop() {
 			instance_emit(id, "map_info", instance.info);
 		}
 
+		event_loop_invasion(c);
+
 		for (var e in E) {
 			if ((E[e] && E[e].target) || Object.keys(E.duels || {}).length) {
 				change = true;
@@ -2468,6 +2471,407 @@ function event_loop() {
 		}
 	} catch (e) {
 		log_trace("Critical-event_loop: ", e);
+	}
+}
+
+function groupObjectsIntoBins(obj, numBins) {
+	// Extract values and keys from the object
+	const entries = Object.entries(obj);
+	const values = entries.map(([key, value]) => value);
+
+	// Determine the range of the values
+	const min = Math.min(...values);
+	const max = Math.max(...values);
+
+	// Calculate the bin width
+	const binWidth = (max - min) / numBins;
+
+	// Initialize bins
+	const bins = Array.from({ length: numBins }, () => ({}));
+
+	// Function to determine which bin a value belongs to
+	function getBinIndex(value) {
+		if (value === max) {
+			// Handle edge case for max value
+			return numBins - 1;
+		}
+
+		return Math.floor((value - min) / binWidth);
+	}
+
+	// Distribute objects into bins
+	entries.forEach(([key, value]) => {
+		const binIndex = getBinIndex(value);
+
+		bins[binIndex][key] = value;
+	});
+
+	return bins;
+}
+
+function event_loop_invasion(c) {
+	// TODO: signups like goobrawl / abtesting?
+	// monsters at a specific level?
+	// fort data could be stored on the fort map instance
+
+	for (const mapName in G.maps) {
+		const gMap = G.maps[mapName];
+		if (!gMap.invasion) {
+			// skip map if it is not invasion enabled
+			continue;
+		}
+
+		const instance = instances[mapName];
+
+		if (!instance) {
+			continue;
+		}
+
+		if (!instance.invasion) {
+			instance.invasion = { monsters: [] };
+		}
+
+		const invasionMapKey = `invasion_${mapName}`;
+		const next_event = timers[invasionMapKey];
+		const INVASION_END_TIME_S = 60; // 1 minutes
+		// const INVASION_END_TIME_S = 10 * 60; // 10 minutes
+		const HOUR_MS = 3600000; // 60 * 60 * 1000;
+		// 6 * 3600000 = 21600000
+		// Default an invasion every 2..6 hours
+		const [MIN_INVASION_COOLDOWN_MS = 2 * HOUR_MS, MAX_INVASION_COOLDOWN_MS = 6 * HOUR_MS, INVASION_CHANCE = 0.75] =
+			gMap.invasion.frequency || [];
+
+		const NEXT_INVASION_COOLDOWN_MS =
+			Math.random() * (MAX_INVASION_COOLDOWN_MS - MIN_INVASION_COOLDOWN_MS) + MIN_INVASION_COOLDOWN_MS;
+		const NEXT_INVASION_COOLDOWN_S = NEXT_INVASION_COOLDOWN_MS / 1000;
+
+		if (!next_event) {
+			// Initialize cooldown after restart
+			timers[invasionMapKey] = future_s(NEXT_INVASION_COOLDOWN_S);
+			console.log(`${invasionMapKey} restart cooldown: ${msToTime2(-mssince(timers[invasionMapKey]))}`);
+		}
+		/**
+		 * @type {{ map: string, stage: number, mtype: string}}
+		 */
+		let event = E[invasionMapKey];
+		if (!E[invasionMapKey] && c > next_event) {
+			// some monsters should probably be filtered out, spawning crabxx seems like a bad idea
+			const exclude = gMap.invasion.exclude;
+			const potentialInvaders = Object.values(gMap.monsters).filter((x) => !exclude || !exclude.includes(x.type));
+
+			// start new event, make sure next event starts in the future
+			timers[invasionMapKey] = future_s(NEXT_INVASION_COOLDOWN_S);
+			console.log(`${invasionMapKey} next event cooldown: ${msToTime2(-mssince(timers[invasionMapKey]))}`);
+
+			// TODO: check/add extra for additional monsters, like moles
+			// TODO: do we pick a random monster? or should we prefer high level spawns?
+			// TODO: roll for success
+			// TODO: each 5 levels increases chance to spawn?
+			// TODO: chance to start invasion
+			if (Math.random() > INVASION_CHANCE) {
+				// Delay the next invasion check
+				timers[invasionMapKey] = future_s(Math.random() * (MIN_INVASION_COOLDOWN_MS / 1000));
+				console.log(`${mapName} spawn will be delayed ${msToTime2(-mssince(timers[invasionMapKey]))}`);
+
+				continue;
+			}
+
+			console.log(potentialInvaders);
+			const monster_map_def = clone(random_one(potentialInvaders));
+			console.log(monster_map_def);
+
+			monster_map_def.grow = false;
+			monster_map_def.roam = false; // attempt to prevent phoenix from roaming
+
+			// E is broadcasted to the players
+			E[invasionMapKey] = event = {
+				etype: "invasion",
+				map: mapName,
+				// portal coordinate?
+				stage: 0,
+				mtype: monster_map_def.type,
+				// TODO: hide mtype initially?
+			};
+
+			instance.invasion.monster_map_def = monster_map_def;
+			instance.invasion.stages = [
+				{
+					// Stage 0
+					// TODO: multipier should be configurable
+					spawnAmount: instance.invasion.monster_map_def.count * 10,
+				},
+			];
+
+			instance.invasion.points = {};
+
+			// reset monsters
+			instance.invasion.monster_count = 0;
+			// TODO: what to do with existing monsters?
+			instance.invasion.monsters = [];
+
+			broadcast("server_message", {
+				message: `Scout: ${G.monsters[event.mtype].name} seems to be up to something!`,
+				color: "#4BB6E1",
+			});
+
+			broadcast_e();
+		}
+
+		// Bail out, no active event.
+		if (!event) {
+			continue;
+		}
+
+		const aliveInvasionMonsters = instance.invasion.monsters.filter((m) => !m.rip && !m.dead);
+		event.c = aliveInvasionMonsters.length;
+
+		if (event.end && c > event.end) {
+			// FAILURE: Time has run out
+
+			// remove remaining alive invasion monsters and also count up coop points
+			for (const monster of aliveInvasionMonsters) {
+				remove_monster(monster, { nospawn: true, method: "disappear" });
+			}
+
+			// TODO: monsters should attack and kill an invasion npc?
+
+			delete E[invasionMapKey];
+
+			timers[invasionMapKey] = future_s(NEXT_INVASION_COOLDOWN_S);
+			console.log(`${invasionMapKey} failure event cooldown: ${msToTime2(-mssince(timers[invasionMapKey]))}`);
+
+			broadcast_e();
+
+			// TODO: decrease difficulty
+			// TODO: group into bins and change strenght of buff based on participation?
+
+			// participation debuff
+			for (const playerName in instance.invasion.points) {
+				const player = get_entity(playerName);
+				if (!player) {
+					continue;
+				}
+
+				// TODO: figure out if invasion failure should have any negative consequence?
+				// const stat = random_one(Object.keys(stat_to_attr));
+				add_condition(player, "invasion_failure", {
+					ms: NEXT_INVASION_COOLDOWN_MS,
+					// [stat]: 0.5, // TODO: determine stat strength
+				});
+			}
+
+			broadcast("notice", {
+				message: `Scout: ${G.monsters[event.mtype].name} has won, we have failed!`,
+				color: "#e14b4b",
+			});
+		}
+
+		if (event.stage > 0 && event.c === 0) {
+			// SUCCESS: All invasion monsters killed.
+			delete E[invasionMapKey];
+
+			timers[invasionMapKey] = future_s(NEXT_INVASION_COOLDOWN_S);
+
+			broadcast_e();
+
+			// participation buff
+			for (const playerName in instance.invasion.points) {
+				const player = get_entity(playerName);
+				if (!player) {
+					continue;
+				}
+
+				// POC of applying a random buff
+				// TODO: fetch existing buff and merge if successfull?
+				// TODO: buff depending on monster we are definding against, could be based on achievements?
+				// TODO: length of buff should be a little longer than next invasion, so it can be stacked? will need a max strength though
+				const stat = random_one(["xp", "gold", "luck"]); // TODO: configurable on map?
+				const condition = `invasion_success_${stat}`;
+				const existingConditionDuration = player.s[condition] ? player.s[condition].ms : 0;
+				add_condition(player, condition, {
+					ms: NEXT_INVASION_COOLDOWN_MS + existingConditionDuration,
+				});
+			}
+
+			// TODO: increase difficulty
+			// TODO: Issue rewards based on participation points, like cooperative
+			// server.js complete_attack adds coop points to a monster +1
+			// server.js add_coop_points adds N coop points
+			// 	being the target of the monster and taking dmg gives tank points
+			//  healing adds coop points
+			//  if monster has a master, if it stops pursuit (no redirect) you get the hp or max 300 points to the master
+			//  if you are the burner, burn dmg gives you points
+			// console.log("success", instance.invasion.points);
+			const numBins = 5;
+			const bins = groupObjectsIntoBins(instance.invasion.points, numBins);
+
+			console.log("success", bins);
+			// TODO: trim empty bins so the exchange multiplier is lowered if not enough players participate?
+			for (let index = 0; index < bins.length; index++) {
+				const participants = bins[index];
+
+				for (const playerName in participants) {
+					// TODO: Should the player still be on the map?
+					// TODO: inventory size?
+					// TODO: mail if offline?
+					const player = get_entity(playerName);
+					// Participants are guarenteed at least 1 token
+					add_item(player, "invasiontoken");
+
+					// The tier acts as a multiplier for how many exchanges we do.
+					for (let exchangeIndex = 0; exchangeIndex < index; exchangeIndex++) {
+						exchange(player, "town_invasion");
+					}
+
+					// Refresh player inventory on client
+					resend(player, "u+cid");
+				}
+			}
+			broadcast("server_message", {
+				message: `Scout: ${G.monsters[event.mtype].name} invasion is over, we won huzzah!`,
+				color: "#4be170",
+			});
+
+			continue;
+		}
+
+		// TODO: if you where farming here you might be overwhelmed, make event visible and wait N before starting spawning.
+		const { spawnAmount } = instance.invasion.stages[event.stage] || {};
+
+		if (event.stage === 0 && instance.invasion.monster_count === spawnAmount) {
+			// TODO: set a timer for next stage activation and push it to E so players knows it
+			event.stage = 1;
+
+			// TODO: custom messages, chickens have gone mad and are running rampant!
+			broadcast("server_message", {
+				message: `Scout: ${G.monsters[event.mtype].name} are starting to move towards town!`,
+				color: "#4BB6E1",
+			});
+		}
+
+		// move towards town
+		if (event.stage > 0) {
+			const targetPoint =
+				gMap.invasion && gMap.invasion.town
+					? { x: gMap.invasion.town[0], y: gMap.invasion.town[1] }
+					: { x: gMap.spawns[0][0], y: gMap.spawns[0][1] };
+			// not sure if a target is required
+
+			// TODO: monsters should attempt to kill the scout
+			// TODO: scout should respawn every ~24 hours
+			// TODO: if the scout is not allive, event provides less information
+
+			// TODO: monster movement should be extracted out to a function
+			for (const monster of aliveInvasionMonsters) {
+				const distanceToTargetPoint = distance(targetPoint, monster);
+
+				// TODO: configurable range in G
+				if (!event.end && distanceToTargetPoint < 250) {
+					// Invaders has reached the town, start failure cooldown
+					console.log(`${mapName} ${event.mtype} has reached the town, start failure cooldown`);
+					// moving monsters from a far away spawn takes time to reach, the failure time should first start once an invader gets in range of town
+					// TODO: configurable length of invasion
+					event.end = future_s(INVASION_END_TIME_S);
+					console.log(`${invasionMapKey} end: ${msToTime2(-mssince(event.end))}`);
+
+					// Make invasion monsters aggressive, causing them to attack and target players
+					monster.aggro = 1;
+					monster.rage = 1;
+					monster.last_aggro = new Date();
+					// TODO: monsters should not be sleeping
+
+					// give them a boundary inside town they can move around in once they reach town
+					// This defines a 100x100 boundary around targetPoint
+					monster.map_def.boundary = [
+						targetPoint.x - 100,
+						targetPoint.y - 100,
+						targetPoint.x + 100,
+						targetPoint.y + 100,
+					];
+				}
+
+				if (distanceToTargetPoint < 250) {
+					// in town, no need to force move, assuming the boundary works
+					continue;
+				}
+
+				// TODO: Can we optimize how often we pathfind? assuming it's expensive
+				if (mode.all_smart) {
+					// .worker is never true as it is not assigned
+					if (!monster.working) {
+						// Move towards target / town
+						monster.working = true; // will be reset in worker.on("message"
+						workers[wlast++ % workers.length].postMessage({
+							type: "fast_astar",
+							in: monster.in,
+							id: monster.id,
+							map: monster.map,
+							sx: monster.x,
+							sy: monster.y,
+							tx: targetPoint.x,
+							ty: targetPoint.y,
+						});
+					}
+				}
+			}
+		}
+
+		// TODO: moles from tunnel, need to specify dynamic map def
+		// spawn monsters
+		// console.log(instance.invasion.monster_count, spawmAmount);
+		if (spawnAmount && instance.invasion.monster_count < spawnAmount) {
+			// monster_map_def.type = event.mtype;
+			const m = new_monster(mapName, instance.invasion.monster_map_def);
+			m.invasion = true;
+			m.cooperative = true;
+			// m.skin = random_one(["goo0", "goo1", "goo2", "goo3", "goo4", "goo5", "goo6"]);
+			// m.drops=[[0.5,"funtoken"]];
+			// what is u and cid, and why is it important
+			m.u = true;
+			m.cid++;
+
+			instance.invasion.monster_count++;
+			instance.invasion.monsters.push(m);
+
+			// TODO: this also spams discord, might need to broadcast it differently
+			// TODO: map specific announcements?
+			broadcast("server_message", {
+				message: `${G.monsters[event.mtype].name} Are strengthening in numbers`,
+				color: "#4BB6E1",
+			});
+		}
+	}
+}
+
+// TODO: move this to an invasion event specific file.
+/**
+ * adds coop points to the instance
+ * @param {*} monster
+ * @returns
+ */
+function invasion_remove_monster(monster) {
+	if (!monster.invasion) {
+		return;
+	}
+
+	const instance = instances[monster.map];
+	const invasion = instance.invasion;
+
+	if (!invasion) {
+		return;
+	}
+
+	if (!invasion.points) {
+		invasion.points = {};
+	}
+
+	// forward contribution points to invasion event
+	for (var name in monster.points) {
+		if (!invasion.points[name]) {
+			invasion.points[name] = 0;
+		}
+		const points = max(0, monster.points[name]);
+		invasion.points[name] += points;
 	}
 }
 
@@ -2756,6 +3160,14 @@ function add_condition(target, condition, args) {
 	if (C.f) {
 		response.from = C.f;
 	}
+
+	// applies stats from args to new C condition that apply_stats will use
+	for (var stat in args) {
+		if (stat_to_attr[stat]) {
+			C[stat] = args[stat];
+		}
+	}
+
 	target.cid++;
 	target.u = true;
 	if (target.socket) {
@@ -4444,6 +4856,7 @@ function random_place(map) {
 	return { x: parseInt(xy[0]), y: parseInt(xy[1]), map: map, in: map };
 }
 
+// TODO: track fast_astar statistics for later comparisons
 function fast_astar(args) {
 	var map = args.map;
 	var sx = args.sx;
@@ -4457,6 +4870,9 @@ function fast_astar(args) {
 	var best = 999999999999;
 	var theone = null;
 	var good = false;
+	const MAX_HEAP_LENGTH = 1200;
+	const MAX_TOTAL_LENGTH = 50000; // increased max total (was 4000) to allow scorpion,bigbird,spider to pathfind from their spawn to town.
+
 	function hpush(cx, cy, fr, dir, bad) {
 		// if(visited[cx+"|"+cy]) return;
 		var value = point_distance(cx, cy, tx, ty);
@@ -4530,8 +4946,8 @@ function fast_astar(args) {
 		});
 	}
 	while (heap.array.length) {
-		if (heap.array.length > 1200 || total > 4000) {
-			server_log(["heap", "fast_astar"]);
+		if (heap.array.length > MAX_HEAP_LENGTH || total > MAX_TOTAL_LENGTH) {
+			server_log(["heap", "fast_astar", "bad", heap.array.length, total]);
 			if (theone) {
 				var result = finalise(theone);
 				result.push("bad");

@@ -3513,6 +3513,7 @@ function npc_right_click(event){
 	if(this.role=="cx") {
 		render_exchange_shrine("cx");
 	}
+	
 	if(this.role=="petkeeper") {
 		render_pet_shrine();
 	}

@@ -2388,6 +2388,10 @@ function calculate_monster_score(player, monster, share) {
 	return score;
 }
 
+/**
+ * Issues rewards for a cooperative monster
+ * @param {*} monster
+ */
 function issue_monster_awards(monster) {
 	var total = 0.1;
 	for (var name in monster.points) {
@@ -11407,6 +11411,11 @@ function level_monster(monster, args) {
 	monster.luckx += 0.25 * mult;
 }
 
+/**
+ *
+ * @param {*} target
+ * @param {{method:string, nospawn:boolean, silent:boolean}} args
+ */
 function remove_monster(target, args) {
 	if (!args) {
 		args = {};
@@ -11462,6 +11471,9 @@ function remove_monster(target, args) {
 		target.map_def.live--;
 		monster_c[target.type]--;
 	}
+
+	// TODO: decouple this by raising an event that invasion can listen for instead
+	invasion_remove_monster(target);
 }
 
 function new_monster(instance, map_def, args) {
@@ -12587,6 +12599,7 @@ function update_instance(instance) {
 			// TODO: this should be configurable in the supporter configuration, e.g. minimum distance to focus target
 			if (focus && distance(focus, monster) > 40 && !monster.moving) {
 				if (mode.all_smart) {
+					// TODO: .worker is never true as it is not assigned, so this will trigger as soon as the monster stops moving and is more than 40 away from the focus
 					if (!monster.worker) {
 						monster.working = true;
 						workers[wlast++ % workers.length].postMessage({
@@ -12633,6 +12646,7 @@ function update_instance(instance) {
 				) {
 					// console.log(monster.height);
 					if (mode.all_smart) {
+						// TODO: .worker is never true as it is not assigned, so this will trigger as soon as the monster stops moving and is more than 12 away from the focus
 						if (!monster.worker) {
 							monster.working = true;
 							workers[wlast++ % workers.length].postMessage({

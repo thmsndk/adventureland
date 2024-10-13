@@ -637,6 +637,14 @@ sprites={
 			[None,"newupgrade",None,None,]
 		]
 	},
+	"invasion_scout":{
+		"file":"/images/tiles/npcs/invasion_scout_bush_move.png",
+		"rows":1,
+		"columns":1,
+		"matrix":[
+			["invasion_scout"],
+		]
+	},
 	"elementals":{
 		"file":"/images/tiles/monsters/elemental.png",
 		"rows":2,

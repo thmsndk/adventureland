@@ -40,4 +40,16 @@ tokens={
 		"bee_honey": 1
         # TODO: define the quantity you get?
 	}
+	"invasiontoken": {
+		"armorbox":1000,
+		"troll":2800,
+		"weaponbox":1000,
+		# lglitch / glitch?
+		"invasion_scrollbox_tier0": 100,
+		"invasion_scrollbox_tier1": 250,
+		"invasion_scrollbox_tier2": 500,
+		"invasion_accessoriesbox_tier0": 100,
+		"invasion_accessoriesbox_tier1": 250,
+		"invasion_accessoriesbox_tier2": 500,
+	}
 }

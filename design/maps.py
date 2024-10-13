@@ -601,6 +601,7 @@ maps={
 			{"id":"mcollector","position":[81,-283,1]},
 			#{"id":"newyear_tree","position":[64,-88]}, #xmas
 			{"id":"beekeeper","position":[612, 737.5],"boundary":[-200,-200,200,200]},
+			{"id":"invasion_scout","position":[0,0],"boundary":[-100,-100,100,100]},
 		],
 		"monsters":[
 			#square
@@ -757,6 +758,41 @@ maps={
 			}
 		],
 		"outside":True,
+		"invasion" :{
+			# [MIN_MS, MAX_MS, CHANCE]
+			# "frequency": [3600000, 21600000, 0.4], # 2-6 hours
+			# TODO: what is the target? there could be multiple targets?
+			"town": [0,0],
+			# TODO: what types of invasions are enabled?
+			# TODO: any specific monsters on the map that should not be part of an invasion?
+			# disable fairies
+			"exclude":[
+				"crabxx",
+				"puppy1",
+				"puppy2",
+				"puppy3",
+				"puppy4",
+				"kitty1",
+				"kitty2",
+				"kitty3",
+				"kitty4",
+    			# Targets has no attack, so we ignore them for now, although having them "revolt" is kinda funny
+				"target",
+				"target_a500",
+				"target_a750",
+				"target_r500",
+				"target_r750",
+				"target_ar900",
+				"target_ar500red",
+			],
+			# TODO: combined invasion of different mobs?
+			# TODO: failure conditions?
+			# TODO: "nearby" monster invasions, moles for example emergin from tunnels
+			# "extra": [
+			# 	# moles emerge from tunnel
+			# 	["tunnel","mole", [535,1677]]
+			# ]
+		}
 	},
 	"mansion":{
 		"key":"jayson_Mansion",
@@ -1281,6 +1317,9 @@ maps={
 		#"irregular":True,
 		"drop_norm":1000,
 		"outside":True,
+		"invasion" :{
+			"town": [0,0],
+		}
 	},
 	"shellsisland":{
 		"key":"jayson_shells_island01",

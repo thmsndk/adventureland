@@ -321,7 +321,7 @@ conditions={
 	},
 	"invincible":{
 		"name":"Invincible",
-		"skin":"condition_positive",
+		"skin":"condition_good",
 		"explanation":"When you spawn in a PVP area. This prevents you from receiving damage or marked as engaged in PVP. If you get attacked, disconnect before this runs out - or fight!",
 		"duration":6000,
 		"persistent":True,
@@ -556,19 +556,19 @@ conditions={
 	},
 	"charging":{
 		"name":"Charging",
-		"skin":"condition_positive",
+		"skin":"condition_good",
 		"speed":30,
 		"duration":3200,
 	},
 	"dash":{
 		"name":"Dashing",
-		"skin":"condition_positive",
+		"skin":"condition_good",
 		"set_speed":500,
 		"persistent":True,
 	},
 	"blink":{
 		"name":"Blinking",
-		"skin":"condition_positive",
+		"skin":"condition_good",
 		"explanation":"Blink in progress",
 	},
 	"block":{
@@ -580,7 +580,7 @@ conditions={
 	},
 	"town":{
 		"name":"Town",
-		"skin":"condition_positive",
+		"skin":"condition_good",
 		"explanation":"Town in progress",
 		"channel":True,
 		"can_move":True,
@@ -649,6 +649,47 @@ conditions={
 		"ui":True,
 		"buff":True,
 		"explanation": "Will aid & tend to the queen, healing the queen."
+	},
+ 	
+  	"invasion_success_xp":{
+		"skin":"condition_good",
+		"name":"Invasion Success",
+		"explanation":"Protected a town during an invasion!",
+		"buff":True,
+  		"persistent":True,
+    	"ui":True,
+		"xp": 1,
+	},
+  
+  	"invasion_success_gold":{
+		"skin":"condition_good",
+		"name":"Invasion Success",
+		"explanation":"Protected a town during an invasion!",
+		"buff":True,
+  		"persistent":True,
+    	"ui":True,
+		"gold": 1
+    
+	},
+   
+  	"invasion_success_luck":{
+		"skin":"condition_good",
+		"name":"Invasion Success",
+		"explanation":"Protected a town during an invasion!",
+		"buff":True,
+  		"persistent":True,
+    	"ui":True,
+		"luck": 1,
+    
+	},
+   
+ 	"invasion_failure":{
+		"skin":"condition_bad",
+		"name":"Invasion Failure",
+		"explanation":"Failed to protecting a town during an invasion",
+		"debuff":True,
+  		"persistent":True,
+    	"ui":True,
 	},
 }
 

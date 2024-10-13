@@ -83,6 +83,16 @@ npcs={
 		"says":"Hi!",
 		"color":"#B4FAA0",
 	},
+	"invasion_scout":{
+		# "role":"monstertokens",
+		"token":"invasiontoken",
+		"name":"????",
+		"skin":"invasion_scout",
+		"type":"fullstatic", # seems to do something with animations
+		"moving":True, # causes movement inside boundary
+		"says":"Hi!",
+		"color":"#B4FAA0",
+	},
 	"mcollector":{
 		"role":"mcollector",
 		"quest":"mcollector",

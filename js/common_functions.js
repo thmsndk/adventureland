@@ -2088,6 +2088,41 @@ function ssince(t,ref) { return mssince(t,ref)/1000.0; }
 function msince(t,ref) { return mssince(t,ref)/60000.0; }
 function hsince(t,ref) { return mssince(t,ref)/3600000.0; }
 
+// https://stackoverflow.com/a/32180863/28145
+/**
+ * Renders ms as a string "1 day, 1 hour, 1 minute, 1 second"
+ * @param ms
+ * @returns
+ */
+function msToTime(ms) {
+	const seconds = ms / 1000;
+	const minutes = ms / (1000 * 60);
+	const hours = ms / (1000 * 60 * 60);
+	const days = ms / (1000 * 60 * 60 * 24);
+	// TODO: could render the "rest" as welll e.g. "1 day, 1 hour, 1 minute, 1 second"
+	if (seconds < 60) return `${seconds.toFixed(1)} s`;
+	if (minutes < 60) return `${minutes.toFixed(1)} m`;
+	if (hours < 24) return `${hours.toFixed(1)} H`;
+	return `${days.toFixed(1)} D`;
+}
+/**
+ *
+ * @param duration Renders duration as a string HH:MM:SS:MS
+ * @returns
+ */
+function msToTime2(duration) {
+	const milliseconds = Math.floor((duration % 1000) / 100);
+	const seconds = Math.floor((duration / 1000) % 60);
+	const minutes = Math.floor((duration / (1000 * 60)) % 60);
+	const hours = Math.floor((duration / (1000 * 60 * 60)) % 24);
+
+	const hoursString = hours < 10 ? `0${hours.toString()}` : hours.toString();
+	const minutesString = minutes < 10 ? `0${minutes.toString()}` : minutes.toString();
+	const secondsString = seconds < 10 ? `0${seconds.toString()}` : seconds.toString();
+
+	return `${hoursString}:${minutesString}:${secondsString}.${milliseconds.toString()}`;
+}
+
 function sleep(ms)
 {
 	return new Promise(resolve=>setTimeout(resolve,ms));
