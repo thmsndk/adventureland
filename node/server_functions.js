@@ -2520,8 +2520,8 @@ function event_loop_invasion(c) {
 		// const INVASION_END_TIME_S = 10 * 60; // 10 minutes
 		const HOUR_MS = 3600000; // 60 * 60 * 1000;
 		// 6 * 3600000 = 21600000
-		// Default an invasion every 2..6 hours
-		const [MIN_INVASION_COOLDOWN_MS = 2 * HOUR_MS, MAX_INVASION_COOLDOWN_MS = 6 * HOUR_MS, INVASION_CHANCE = 0.75] =
+		// Default an invasion every 1..2 hours
+		const [MIN_INVASION_COOLDOWN_MS = 1 * HOUR_MS, MAX_INVASION_COOLDOWN_MS = 2 * HOUR_MS, INVASION_CHANCE = 0.75] =
 			gMap.invasion.frequency || [];
 
 		const NEXT_INVASION_COOLDOWN_MS =
@@ -2537,6 +2537,19 @@ function event_loop_invasion(c) {
 		 * @type {{ map: string, stage: number, mtype: string}}
 		 */
 		let event = E[invasionMapKey];
+
+		// TODO: DEBUG visualize time for next event
+		if (!E[invasionMapKey] && c < next_event) {
+			E[invasionMapKey] = {
+				etype: "invasion",
+				map: mapName,
+				// portal coordinate?
+				// stage: 0,
+				// mtype: monster_map_def.type,
+				next_event,
+			};
+		}
+
 		if (!E[invasionMapKey] && c > next_event) {
 			// some monsters should probably be filtered out, spawning crabxx seems like a bad idea
 			const exclude = gMap.invasion.exclude;
@@ -2601,7 +2614,7 @@ function event_loop_invasion(c) {
 		}
 
 		// Bail out, no active event.
-		if (!event) {
+		if (!event || event.stage === undefined) {
 			continue;
 		}
 

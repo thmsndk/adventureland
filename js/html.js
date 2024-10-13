@@ -296,6 +296,9 @@ function render_server()
 			// const onClick = `onclick='pcs(event); open_guide(\"event-${type}\",\"/docs/ref/event-${type}\")'`;
 			const onClick = ``;
 			html += ` <div class='gamebutton' style='width: 150px; padding: 6px 8px 6px 8px; font-size: 24px; line-height: 18px' ${onClick}>`;
+
+			const stage = event.stage ? "<div style='color:${lcolor}; margin-top: 1px'>STAGE ${event.stage}</div>" : "";
+
 			html += 
 			`<div style="display:flex; flex-direction:row">
 				<div>
@@ -303,13 +306,20 @@ function render_server()
 				</div>
 				<div style="display:flex; flex-direction:column; flex-grow:1">
 					<div style='color:${lcolor}; margin-top: 1px'>${event.map}</div>
-					<div style='color:${lcolor}; margin-top: 1px'>STAGE ${event.stage}</div>
+					${stage}
 					<div style='color:${lcolor}; margin-top: 1px'>${event.c? `${event.c} LEFT` : ''}</div>
 				</div>
-			</div>`,
-			// TODO: time untill invasion
-			// TODO: render better time when less than a mminute left
-			html += `<div style='color:${scolor}; margin-top: 1px'>${parseInt(round(-msince(new Date(event.end))))}M</div>`;
+			</div>`;
+			if (event.next_event) {
+				// debug visualization of time untill next event
+				html += `<div style='color:${scolor}; margin-top: 1px'>NEXT: ${parseInt(round(-msince(new Date(event.next_event))))}M</div>`;	
+			}
+
+			if (event.end) {
+				// TODO: render better time when less than a mminute left
+				html += `<div style='color:${scolor}; margin-top: 1px'>${parseInt(round(-msince(new Date(event.end))))}M</div>`;
+			}
+
 			html += `<div style='color:${lcolor}; margin-top: 1px'>${lphrase}</div>`;
 			html += "</div>";
 			content=true;
