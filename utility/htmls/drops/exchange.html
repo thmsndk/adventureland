@@ -106,7 +106,7 @@
 				display: flex;
 				flex-direction: row;
 				flex-wrap: wrap;
-				width: 100%;
+				width: 99%;
 			}
 
 			#items {
@@ -124,29 +124,21 @@
 			}
 
 			#rolls-summery {
-				display: flex;
-				flex-direction: row;
-				justify-content: space-evenly;
-				/* align-items: flex-start; */
-				flex-basis: 100%;
-				/* flex: 0.5; */
-				/* width: 100%; */
-				flex-wrap: wrap;
+				display: grid;
+				grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+				gap: 10px;
+				margin: var(--dt-padding-s) var(--dt-padding-s);
 			}
 
 			#rolls {
-				display: flex;
-				flex-direction: row;
-				justify-content: space-evenly;
-				/* align-items: flex-start; */
-				flex-basis: 100%;
-				/* flex: 0.5; */
-				/* width: 100%; */
-				flex-wrap: wrap;
+				display: grid;
+				grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+				gap: 10px;
 			}
 
 			#rolls > * {
-				flex: 0 0 170px;
+				height: auto; /* Reduce height by letting content dictate */
+				padding: var(--dt-padding-xs); /* Decrease padding to reduce overall height */
 				background-color: var(--secondary-color);
 				margin: var(--dt-padding-s) var(--dt-padding-s);
 			}
@@ -320,7 +312,8 @@
 					rolls.push([roll, itemKey])
 				}
 
-				html = "<div id=\"rolls-summery\">"
+				html = `<h1>Summery for ${ROLL_COUNT} exchanges</h1>`
+				html += "<div id=\"rolls-summery\">"
 
 				for (const itemKey in rollsByItem) {
 					const rolls = rollsByItem[itemKey]
@@ -329,7 +322,6 @@
 
 					let actual = { name: itemKey };
 					let icon = item_container({ size: 20, skin: gItem.skin, onclick: `render_item_info('${itemKey}')` }, actual);
-
 					html += '<div style="display:flex; flex-direction: row">';
 					html += '<div style="display:flex; flex-direction: column">';
 					html += `<span style="display:inline-block; vertical-align:middle">${icon}</span>`;
@@ -337,9 +329,9 @@
 					html += '<div style="display:flex; flex-direction: column">';
 						html += ` <span>${rolls.length} x ${itemKey}</span>`;
 						html += ` <span>${gItem.type} ${gItem.wtype ?? ""}</span>`;
-					if (gItem.tier) {
-						html += ` <span>Tier: ${gItem.tier}</span>`;
-					}
+					// if (gItem.tier) {
+					// 	html += ` <span>Tier: ${gItem.tier}</span>`;
+					// }
 					// html += ` <span>${roll}</span>`;
 					// html += ` <a onclick="hide_row(this);">Hide</a>`;
 					html += "</div>";
@@ -350,7 +342,8 @@
 				html += "</div>";
 				$("#rolls-column").append(html);
 
-				html = "<div id=\"rolls\">"
+				html = "<h1>Rolls</h1>"
+				html += "<div id=\"rolls\">"
 				for (const [roll, itemKey] of rolls) {
 
 					html+= renderRolledItem(itemKey, roll)
@@ -393,6 +386,7 @@
 		</style>
 	</head>
 	<body>
+		<!-- <h1>{{table}}</h1> -->
 		<div id="container">
 			<div id="items"></div>
 			<div id="rolls-column"></div>
