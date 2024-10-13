@@ -2816,12 +2816,12 @@ function event_loop_invasion(c) {
 			instance.invasion.monster_count++;
 			instance.invasion.monsters.push(m);
 
-			// TODO: this also spams discord, might need to broadcast it differently
+			// TODO: this also spams discord, might need to broadcast it differently, if at all
 			// TODO: map specific announcements?
-			broadcast("server_message", {
-				message: `${G.monsters[event.mtype].name} Are strengthening in numbers`,
-				color: "#4BB6E1",
-			});
+			// broadcast("server_message", {
+			// 	message: `${G.monsters[event.mtype].name} Are strengthening in numbers`,
+			// 	color: "#4BB6E1",
+			// });
 		}
 	}
 }
