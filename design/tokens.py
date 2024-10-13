@@ -39,7 +39,7 @@ tokens={
 		# TODO: cosmetics? for tokens
 		"bee_honey": 1
         # TODO: define the quantity you get?
-	}
+	},
 	"invasiontoken": {
 		"armorbox":1000,
 		"troll":2800,
