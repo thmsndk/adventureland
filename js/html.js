@@ -297,7 +297,7 @@ function render_server()
 			const onClick = ``;
 			html += ` <div class='gamebutton' style='width: 150px; padding: 6px 8px 6px 8px; font-size: 24px; line-height: 18px' ${onClick}>`;
 
-			const stage = event.stage ? "<div style='color:${lcolor}; margin-top: 1px'>STAGE ${event.stage}</div>" : "";
+			const stage = event.stage ? `<div style='color:${lcolor}; margin-top: 1px'>STAGE ${event.stage}</div>` : "";
 
 			html += 
 			`<div style="display:flex; flex-direction:row">
