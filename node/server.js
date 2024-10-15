@@ -11653,14 +11653,18 @@ function update_instance(instance) {
 				}
 			}
 			if (monster.s[name].ms <= 0) {
-				if (monster.a[name] && monster.a[name].cooldown) {
-					monster.s[name].ms = monster.a[name].cooldown;
+				const ability = monster.a[name];
+
+				if (ability && ability.cooldown) {
+					monster.s[name].ms = ability.cooldown;
 				} else {
 					delete monster.s[name];
 				}
+
 				if (is_disabled(monster) && G.skills[name] && !G.skills[name].passive) {
 					continue;
 				}
+
 				if (name != "young") {
 					monster.u = true;
 					monster.cid++;
@@ -11719,7 +11723,8 @@ function update_instance(instance) {
 					monster.u = true;
 					change = true;
 				}
-				if (name == "cone_attack") {
+
+				if (ability && ability.polygon) {
 					// if (is_in_front(monster, player) && can_attack(monster, player)) {
 					console.log("monster angle", monster.angle);
 					// TODO: halt / freeze the monster so it does not move
@@ -11728,16 +11733,22 @@ function update_instance(instance) {
 
 					// TODO: be able to offset the polygon start point by N lenght from the monster
 					// Frontal Cone, using the monsters own angle
-					const cone = generatePolygon(monster, 200, monster.angle /* south */);
+					const polygonPoints = generatePolygon(monster, {
+						angle: monster.angle,
+						shape: ability.polygon.shape,
+						radius: ability.polygon.radius || ability.radius,
+						angleRange: ability.polygon.angleRange,
+						angleOffset: ability.polygon.angleOffset,
+					});
 					// TODO: should the polygon handle collisions as "line of sight" so it can't effect them
 
 					// is_point_inside expects an array of tubles [[x1,y1],[x2,y2]]
-					const polygon = cone.map((p) => [p.x, p.y]);
+					const polygon = polygonPoints.map((p) => [p.x, p.y]);
 
 					// broadcast polygon to client to visualize where to GTFO from
 					// TODO: are theese events limited to the instance?
 					// xy_emit(player, "ui", { type: "polygon", name: monster.id, points: cone });
-					events.push(["ui", { type: "polygon", name: monster.id, points: cone }]);
+					events.push(["ui", { type: "polygon", name: monster.id, points: polygonPoints }]);
 					// TODO: make the monster stand still
 					// TODO: commence attack after a timeout so players can move away
 					for (const id in instances[monster.in].players) {
@@ -11751,14 +11762,18 @@ function update_instance(instance) {
 							// TODO: this calculation seems kinda off when lookin at the client and the server decision
 							if (is_point_inside([player.x, player.y], polygon)) {
 								console.log(`${player.name} is inside the polygon!`);
-								const knockbackPoints = knockback(player, monster, 250);
-								// TODO: We can also supply an effect to transport?
-								transport_player_to(player, monster.map, knockbackPoints[knockbackPoints.length - 1]);
-								resend(player, "u+cid");
+								if (ability.knockback) {
+									const knockbackPoints = knockback(player, monster, 250);
+									// TODO: We can also supply an effect to transport?
+									transport_player_to(player, monster.map, knockbackPoints[knockbackPoints.length - 1]);
+									resend(player, "u+cid");
+								}
+
+								// TODO: ability damage? / conditions / other?
 
 								monster.moving = true;
 							} else {
-								console.log(`${player.name} NOT is inside the polygon!`);
+								console.log(`${player.name} NOT inside the polygon!`);
 							}
 						}, 1000);
 						// if (distance(player, monster) < 480) {

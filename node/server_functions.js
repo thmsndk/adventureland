@@ -5367,3 +5367,194 @@ function achievement_logic_burn_last_hit(player) {
 		console.log("#A: " + e);
 	}
 }
+
+function generatePolygon(entity, options) {
+	const {
+		radius = 50,
+		angle,
+		angleOffset = 0,
+		shape = "triangle",
+		offsetX = 0,
+		offsetY = 0,
+		width,
+		height,
+		topWidth,
+		bottomWidth,
+	} = options;
+
+	if (angle === undefined) {
+		throw new Error("Angle is a required field");
+	}
+
+	const points = [];
+	const ex = entity.x + offsetX;
+	const ey = entity.y + offsetY;
+
+	switch (shape.toLowerCase()) {
+		case "triangle": {
+			points.push({ x: ex, y: ey });
+
+			// Left edge of the cone
+			const leftAngleRad = ((angle - 45) * Math.PI) / 180;
+			points.push({
+				x: ex + radius * Math.cos(leftAngleRad),
+				y: ey + radius * Math.sin(leftAngleRad),
+			});
+
+			// Right edge of the cone
+			const rightAngleRad = ((angle + 45) * Math.PI) / 180;
+			points.push({
+				x: ex + radius * Math.cos(rightAngleRad),
+				y: ey + radius * Math.sin(rightAngleRad),
+			});
+
+			// close the loop
+			points.push({ x: ex, y: ey });
+			break;
+		}
+
+		case "arrowhead": {
+			// Make the arrowhead point towards the angle direction (blue line)
+			points.push({ x: ex, y: ey });
+			for (let i = 0; i < 3; i++) {
+				const theta = angle + i * 120 - 90; // Adjust by -90 degrees to make the tip face the angle
+				const thetaRad = (theta * Math.PI) / 180;
+				points.push({
+					x: ex + radius * Math.cos(thetaRad),
+					y: ey + radius * Math.sin(thetaRad),
+				});
+			}
+			points.push({ x: ex, y: ey });
+			break;
+		}
+
+		case "square": {
+			for (let i = 0; i < 4; i++) {
+				const theta = angle + i * 90 - 45; // Adjust by -45 degrees to align an edge with the angle
+				const thetaRad = (theta * Math.PI) / 180;
+				points.push({
+					x: ex + radius * Math.cos(thetaRad),
+					y: ey + radius * Math.sin(thetaRad),
+				});
+			}
+			points.push(points[0]); // close the loop
+			break;
+		}
+
+		case "rectangle": {
+			const rectWidth = width || radius;
+			const rectHeight = height || radius / 2;
+			const halfWidth = rectWidth / 2;
+			const halfHeight = rectHeight / 2;
+
+			const rectPoints = [
+				{ x: halfWidth, y: halfHeight },
+				{ x: -halfWidth, y: halfHeight },
+				{ x: -halfWidth, y: -halfHeight },
+				{ x: halfWidth, y: -halfHeight },
+			];
+
+			rectPoints.forEach((point) => {
+				const rotatedX = ex + point.x * Math.cos((angle * Math.PI) / 180) - point.y * Math.sin((angle * Math.PI) / 180);
+				const rotatedY = ey + point.x * Math.sin((angle * Math.PI) / 180) + point.y * Math.cos((angle * Math.PI) / 180);
+				points.push({ x: rotatedX, y: rotatedY });
+			});
+			points.push(points[0]); // close the loop
+			break;
+		}
+		case "pentagon": {
+			for (let i = 0; i < 5; i++) {
+				const theta = angle + i * 72; // 360 / 5 = 72
+				const thetaRad = (theta * Math.PI) / 180;
+				points.push({
+					x: ex + radius * Math.cos(thetaRad),
+					y: ey + radius * Math.sin(thetaRad),
+				});
+			}
+			points.push(points[0]); // close the loop
+			break;
+		}
+		case "hexagon": {
+			for (let i = 0; i < 6; i++) {
+				const theta = angle + i * 60; // 360 / 6 = 60
+				const thetaRad = (theta * Math.PI) / 180;
+				points.push({
+					x: ex + radius * Math.cos(thetaRad),
+					y: ey + radius * Math.sin(thetaRad),
+				});
+			}
+			points.push(points[0]); // close the loop
+			break;
+		}
+
+		case "trapezoid": {
+			const trapTopWidth = topWidth || radius;
+			const trapBottomWidth = bottomWidth || radius * 1.5;
+			const trapHeight = height || radius / 2;
+
+			const trapPoints = [
+				{ x: -trapTopWidth / 2, y: trapHeight / 2 },
+				{ x: trapTopWidth / 2, y: trapHeight / 2 },
+				{ x: trapBottomWidth / 2, y: -trapHeight / 2 },
+				{ x: -trapBottomWidth / 2, y: -trapHeight / 2 },
+			];
+
+			trapPoints.forEach((point) => {
+				const rotatedX = ex + point.x * Math.cos((angle * Math.PI) / 180) - point.y * Math.sin((angle * Math.PI) / 180);
+				const rotatedY = ey + point.x * Math.sin((angle * Math.PI) / 180) + point.y * Math.cos((angle * Math.PI) / 180);
+				points.push({ x: rotatedX, y: rotatedY });
+			});
+			points.push(points[0]); // close the loop
+			break;
+		}
+		case "circle": {
+			for (let i = 0; i < 360; i++) {
+				const thetaRad = ((angle + i) * Math.PI) / 180;
+				points.push({
+					x: ex + radius * Math.cos(thetaRad),
+					y: ey + radius * Math.sin(thetaRad),
+				});
+			}
+			points.push(points[0]); // close the loop
+			break;
+		}
+		case "semicircle": {
+			// Adjust to rotate by 90 degrees to point the curve south
+			const adjustedAngle = angle - 90;
+			for (let i = 0; i <= 180; i++) {
+				const thetaRad = ((adjustedAngle + i) * Math.PI) / 180;
+				points.push({
+					x: ex + radius * Math.cos(thetaRad),
+					y: ey + radius * Math.sin(thetaRad),
+				});
+			}
+			points.push(points[0]); // close the loop
+			break;
+		}
+		case "sector": {
+			const startAngle = angleOffset + angle - options.angleRange / 2; // Start of the sector
+			const endAngle = angleOffset + angle + options.angleRange / 2; // End of the sector
+
+			// Add the center point
+			points.push({ x: ex, y: ey });
+
+			// Generate points along the arc of the sector
+			for (let i = startAngle; i <= endAngle; i++) {
+				const thetaRad = (i * Math.PI) / 180;
+				points.push({
+					x: ex + radius * Math.cos(thetaRad),
+					y: ey + radius * Math.sin(thetaRad),
+				});
+			}
+
+			// Close the shape by adding the center point again
+			points.push({ x: ex, y: ey });
+			break;
+		}
+
+		default:
+			throw new Error("Unsupported shape");
+	}
+
+	return points;
+}

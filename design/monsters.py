@@ -1250,7 +1250,22 @@ monsters={
 	"gghoul":{"name":"Green Ghoul","speed":6,"charge":12,"hp":100,"xp":100,"attack":5,"damage_type":"physical","respawn":1,"gold":20,"range":15,"frequency":0.4,"aggro":0,"aa":1,},
 	"stonewar":{"name":"Warrior Statue","speed":6,"charge":12,"hp":100,"xp":100,"attack":5,"damage_type":"physical","respawn":1,"gold":20,"range":15,"frequency":0.4,"aggro":0,"aa":1,},
 	"gargoyle":{"name":"Gargoyle","speed":6,"charge":12,"hp":100,"xp":100,"attack":5,"damage_type":"physical","respawn":1,"gold":20,"range":15,"frequency":0.4,"aggro":0,"aa":1,},
-	"gwyvern":{"name":"Wyvern","speed":6,"charge":12,"hp":100,"xp":100,"attack":5,"damage_type":"physical","respawn":1,"gold":20,"range":15,"frequency":0.4,"aggro":0,"aa":1,},
+	"gwyvern":{"name":"Wyvern","speed":6,"charge":12,"hp":4000000,"xp":100,"attack":5,"damage_type":"physical","respawn":1,"gold":20,"range":15,"frequency":0.4,"aggro":0,"aa":1,
+		"abilities":{
+      		# TODO: Frontal Cleave
+        	# Frontal Cleave - 90-degree spread in the forward direction
+			"frontal_cleave":{
+       			"polygon": {"shape": "sector", "angleRange": 90}, 
+				"cooldown":10000,"radius":175
+       		},
+   			# Wing Knockback - 270-degree spread around the back and sides
+			"wing_flap":{
+       			"polygon": {"shape": "sector", "angleRange": 270, "angleOffset": 180}, 
+				"knockback": True,
+				"cooldown":5000,"radius":175
+       		},
+      		# Kinda weird it calls it on repeat on cooldown
+		}},
 
 	#humanoids
 	"d_wiz":{"name":"Dark Wizard","skin":"shadow","speed":12,"charge":90,"hp":100000,"xp":10000,"attack":5200,"damage_type":"magical","respawn":6000,"gold":20,"range":240,"frequency":2,"aggro":1,

@@ -1,0 +1,275 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Polygon Generator</title>
+		<style>
+			#canvas {
+				border: 1px solid black;
+			}
+		</style>
+	</head>
+	<body>
+		<canvas id="canvas" width="800" height="600"></canvas>
+		<script>
+			function generatePolygon(entity, options) {
+				const {
+					radius = 50,
+					angle,
+					angleOffset = 0,
+					shape = "triangle",
+					offsetX = 0,
+					offsetY = 0,
+					width,
+					height,
+					topWidth,
+					bottomWidth,
+				} = options;
+
+				if (angle === undefined) {
+					throw new Error("Angle is a required field");
+				}
+
+				const points = [];
+				const ex = entity.x + offsetX;
+				const ey = entity.y + offsetY;
+
+				switch (shape.toLowerCase()) {
+					case "triangle": {
+						points.push({ x: ex, y: ey });
+
+						// Left edge of the cone
+						const leftAngleRad = ((angle - 45) * Math.PI) / 180;
+						points.push({
+							x: ex + radius * Math.cos(leftAngleRad),
+							y: ey + radius * Math.sin(leftAngleRad),
+						});
+
+						// Right edge of the cone
+						const rightAngleRad = ((angle + 45) * Math.PI) / 180;
+						points.push({
+							x: ex + radius * Math.cos(rightAngleRad),
+							y: ey + radius * Math.sin(rightAngleRad),
+						});
+
+						// close the loop
+						points.push({ x: ex, y: ey });
+						break;
+					}
+
+					case "arrowhead": {
+						// Make the arrowhead point towards the angle direction (blue line)
+						points.push({ x: ex, y: ey });
+						for (let i = 0; i < 3; i++) {
+							const theta = angle + i * 120 - 90; // Adjust by -90 degrees to make the tip face the angle
+							const thetaRad = (theta * Math.PI) / 180;
+							points.push({
+								x: ex + radius * Math.cos(thetaRad),
+								y: ey + radius * Math.sin(thetaRad),
+							});
+						}
+						points.push({ x: ex, y: ey });
+						break;
+					}
+
+					case "square": {
+						for (let i = 0; i < 4; i++) {
+							const theta = angle + i * 90 - 45; // Adjust by -45 degrees to align an edge with the angle
+							const thetaRad = (theta * Math.PI) / 180;
+							points.push({
+								x: ex + radius * Math.cos(thetaRad),
+								y: ey + radius * Math.sin(thetaRad),
+							});
+						}
+						points.push(points[0]); // close the loop
+						break;
+					}
+
+					case "rectangle": {
+						const rectWidth = width || radius;
+						const rectHeight = height || radius / 2;
+						const halfWidth = rectWidth / 2;
+						const halfHeight = rectHeight / 2;
+
+						const rectPoints = [
+							{ x: halfWidth, y: halfHeight },
+							{ x: -halfWidth, y: halfHeight },
+							{ x: -halfWidth, y: -halfHeight },
+							{ x: halfWidth, y: -halfHeight },
+						];
+
+						rectPoints.forEach((point) => {
+							const rotatedX =
+								ex + point.x * Math.cos((angle * Math.PI) / 180) - point.y * Math.sin((angle * Math.PI) / 180);
+							const rotatedY =
+								ey + point.x * Math.sin((angle * Math.PI) / 180) + point.y * Math.cos((angle * Math.PI) / 180);
+							points.push({ x: rotatedX, y: rotatedY });
+						});
+						points.push(points[0]); // close the loop
+						break;
+					}
+					case "pentagon": {
+						for (let i = 0; i < 5; i++) {
+							const theta = angle + i * 72; // 360 / 5 = 72
+							const thetaRad = (theta * Math.PI) / 180;
+							points.push({
+								x: ex + radius * Math.cos(thetaRad),
+								y: ey + radius * Math.sin(thetaRad),
+							});
+						}
+						points.push(points[0]); // close the loop
+						break;
+					}
+					case "hexagon": {
+						for (let i = 0; i < 6; i++) {
+							const theta = angle + i * 60; // 360 / 6 = 60
+							const thetaRad = (theta * Math.PI) / 180;
+							points.push({
+								x: ex + radius * Math.cos(thetaRad),
+								y: ey + radius * Math.sin(thetaRad),
+							});
+						}
+						points.push(points[0]); // close the loop
+						break;
+					}
+
+					case "trapezoid": {
+						const trapTopWidth = topWidth || radius;
+						const trapBottomWidth = bottomWidth || radius * 1.5;
+						const trapHeight = height || radius / 2;
+
+						const trapPoints = [
+							{ x: -trapTopWidth / 2, y: trapHeight / 2 },
+							{ x: trapTopWidth / 2, y: trapHeight / 2 },
+							{ x: trapBottomWidth / 2, y: -trapHeight / 2 },
+							{ x: -trapBottomWidth / 2, y: -trapHeight / 2 },
+						];
+
+						trapPoints.forEach((point) => {
+							const rotatedX =
+								ex + point.x * Math.cos((angle * Math.PI) / 180) - point.y * Math.sin((angle * Math.PI) / 180);
+							const rotatedY =
+								ey + point.x * Math.sin((angle * Math.PI) / 180) + point.y * Math.cos((angle * Math.PI) / 180);
+							points.push({ x: rotatedX, y: rotatedY });
+						});
+						points.push(points[0]); // close the loop
+						break;
+					}
+					case "circle": {
+						for (let i = 0; i < 360; i++) {
+							const thetaRad = ((angle + i) * Math.PI) / 180;
+							points.push({
+								x: ex + radius * Math.cos(thetaRad),
+								y: ey + radius * Math.sin(thetaRad),
+							});
+						}
+						points.push(points[0]); // close the loop
+						break;
+					}
+					case "semicircle": {
+						// Adjust to rotate by 90 degrees to point the curve south
+						const adjustedAngle = angle - 90;
+						for (let i = 0; i <= 180; i++) {
+							const thetaRad = ((adjustedAngle + i) * Math.PI) / 180;
+							points.push({
+								x: ex + radius * Math.cos(thetaRad),
+								y: ey + radius * Math.sin(thetaRad),
+							});
+						}
+						points.push(points[0]); // close the loop
+						break;
+					}
+					case "sector": {
+						const startAngle = angleOffset + angle - options.angleRange / 2; // Start of the sector
+						const endAngle = angleOffset + angle + options.angleRange / 2; // End of the sector
+
+						// Add the center point
+						points.push({ x: ex, y: ey });
+
+						// Generate points along the arc of the sector
+						for (let i = startAngle; i <= endAngle; i++) {
+							const thetaRad = (i * Math.PI) / 180;
+							points.push({
+								x: ex + radius * Math.cos(thetaRad),
+								y: ey + radius * Math.sin(thetaRad),
+							});
+						}
+
+						// Close the shape by adding the center point again
+						points.push({ x: ex, y: ey });
+						break;
+					}
+
+					default:
+						throw new Error("Unsupported shape");
+				}
+
+				return points;
+			}
+
+			function drawShape(ctx, shape, x, y, options) {
+				const entity = { x, y };
+				const points = generatePolygon(entity, options);
+
+				ctx.beginPath();
+				ctx.moveTo(points[0].x, points[0].y);
+
+				for (let i = 1; i < points.length; i++) {
+					ctx.lineTo(points[i].x, points[i].y);
+				}
+
+				ctx.closePath();
+				ctx.stroke();
+
+				// Draw the angle line
+				const angleRad = (options.angle * Math.PI) / 180;
+				const endX = x + (options.radius ?? 75) * Math.cos(angleRad);
+				const endY = y + (options.radius ?? 75) * Math.sin(angleRad);
+				ctx.beginPath();
+				ctx.moveTo(x, y);
+				ctx.strokeStyle = "blue";
+				ctx.lineTo(endX, endY);
+				console.log(x, y, endX, endY, angleRad, options.radius);
+
+				ctx.stroke();
+				ctx.strokeStyle = "black"; // Reset the stroke style
+
+				// Get the bottom-most point in the shape for positioning the text
+				const bottomY = Math.max(...points.map((p) => p.y));
+
+				// Draw the text below the shape
+				ctx.font = "16px Arial";
+				ctx.fillStyle = "black";
+				ctx.textAlign = "center";
+				ctx.fillText(options.label ?? shape, x, bottomY + 20); // Adjust the +20 to control how far below the shape the text appears
+			}
+
+			window.onload = function () {
+				const canvas = document.getElementById("canvas");
+				const ctx = canvas.getContext("2d");
+
+				// the direction of a "monster"
+				const angle = -90;
+
+				const shapes = [
+					{ shape: "triangle", x: 100, y: 100 },
+					{ shape: "arrowhead", x: 250, y: 100 },
+					{ shape: "square", x: 400, y: 100 },
+					{ shape: "rectangle", x: 550, y: 100, width: 80, height: 40 },
+					{ shape: "pentagon", x: 700, y: 100 },
+					{ shape: "hexagon", x: 900, y: 100 },
+					{ shape: "trapezoid", x: 100, y: 300, topWidth: 60, bottomWidth: 100, height: 50 },
+					{ shape: "circle", x: 250, y: 300 },
+					{ shape: "semicircle", x: 400, y: 300 },
+					// Frontal Cleave - 90-degree spread in the forward direction
+					{ label: "Frontal Cleave", shape: "sector", x: 550, y: 300, angleRange: 90 },
+					// Wing Knockback - 270-degree spread around the back and sides
+					{ label: "Wing Knockback", shape: "sector", x: 700, y: 300, angleRange: 270, angleOffset: 180 },
+				];
+
+				shapes.forEach(({ shape, x, y, ...options }) => {
+					drawShape(ctx, shape, x, y, { ...options, angle, shape });
+				});
+			};
+		</script>
+	</body>
+</html>
