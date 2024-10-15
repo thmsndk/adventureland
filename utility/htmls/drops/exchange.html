@@ -94,13 +94,13 @@
 				background-color: var(--dt-hover-cell-color);
 			}
 
-			/* table.sticky-header th {
+			table.sticky-header th {
 				position: sticky;
 				top: 0;
 				left: 0;
 				background-color: var(--dt-background-color-container);
 				z-index: 10;
-			} */
+			}
 
 			#container {
 				display: flex;
@@ -166,7 +166,8 @@
 			} */
 		</style>
 		<script>
-			const table = G.drops.{{table}};//G.drops.invasion_accessoriesbox_tier0;
+			const tableKey = "{{table}}";
+			const table = G.drops[tableKey];//G.drops.invasion_accessoriesbox_tier0;
 			const ROLL_COUNT = {{exchanges}};
 
 			function hide_row(element) {
@@ -215,6 +216,7 @@
 				html += `<th>item</th>`;
 				html += `<th>amount</th>`;
 				html += `<th>"chance"</th>`;
+				html += `<th>expected rolls</th>`;
 				html += `<th>current</th>`;
 				html += `<th><= Math.random roll</th>`;
 
@@ -272,6 +274,10 @@
 					html += `</td>`;
 					html += `<td>${amount ?? 1}</td>`;
 					const probability = chance / total;
+
+					// In probability, the expected number of trials (rolls) to get a success is the reciprocal of the probability.
+					const expected_rolls = 1 / probability
+
 					// html += `<td title="${probability}">
 					// 			<div style="width:100%; position:relative;">
 					// 				<div style="height:20px; background-color:blue; width:${probability * 100}%;"></div>
@@ -281,6 +287,7 @@
 					html += `<td title="${probability}">
 								${chance} (${probability})
 							</td>`;
+					html += `<td title="${expected_rolls.toFixed(2).toLocaleString()}">${abbreviateNumber(expected_rolls.toFixed(2))}</td>`;
 					html += `<td>${current}</td>`;
 					html += `<td> ${normalize(current, 0, total)}</td>`;
 
@@ -320,7 +327,13 @@
 				// If you want to convert it back to an object:
 				rollsByItem = Object.fromEntries(sortedRollsByItem);
 
-				html = `<h1>Summery for ${ROLL_COUNT} exchanges</h1>`
+
+				const tokens = Object.entries(G.tokens)
+					.filter(([token, items]) => Object.keys(items).includes(tableKey))
+					.map(([token, items]) => `${abbreviateNumber(ROLL_COUNT * items[tableKey])} ${token}`)
+					.join(" | ");
+
+				html = `<h1>Summery for ${ROLL_COUNT} exchanges (${tokens})</h1>`
 				html += "<div id=\"rolls-summery\">"
 
 				for (const itemKey in rollsByItem) {
@@ -383,6 +396,36 @@
 
 				html += "</div>";
 				return html
+			}
+
+			const SI_SYMBOL = ["", "k", "M", "G", "T", "P", "E"];
+
+			function abbreviateNumber(number) {
+			if (!number) {
+				return number;
+			}
+
+			// what tier? (determines SI symbol)
+			const tier = (Math.log10(Math.abs(number)) / 3) | 0;
+
+			// if zero, we don't need a suffix
+			if (tier === 0) return number;
+
+			// get suffix and determine scale
+			const suffix = SI_SYMBOL[tier];
+			const scale = 10 ** (tier * 3);
+
+			// scale the number
+			const scaled = number / scale;
+
+			// format number and add suffix
+			//   return scaled.toFixed(1) + suffix;
+			return (
+				scaled.toLocaleString(undefined, {
+				minimumFractionDigits: 1,
+				maximumFractionDigits: 1,
+				}) + suffix
+			);
 			}
 		</script>
 		<style>

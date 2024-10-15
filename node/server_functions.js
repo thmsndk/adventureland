@@ -2555,8 +2555,12 @@ function event_loop_invasion(c) {
 		 */
 		let event = E[invasionMapKey];
 
+		const hasActiveEvent = event && event.stage !== undefined;
+
+		const nextEventTimerPassed = c > next_event;
+
 		// TODO: DEBUG visualize time for next event
-		if (!E[invasionMapKey] && c < next_event) {
+		if (!hasActiveEvent && !nextEventTimerPassed) {
 			E[invasionMapKey] = {
 				etype: "invasion",
 				map: mapName,
@@ -2567,7 +2571,7 @@ function event_loop_invasion(c) {
 			};
 		}
 
-		if (!E[invasionMapKey] && c > next_event) {
+		if (!hasActiveEvent && nextEventTimerPassed) {
 			// some monsters should probably be filtered out, spawning crabxx seems like a bad idea
 			const exclude = gMap.invasion.exclude;
 			const potentialInvaders = Object.values(gMap.monsters).filter((x) => !exclude || !exclude.includes(x.type));
@@ -2623,7 +2627,7 @@ function event_loop_invasion(c) {
 			instance.invasion.monsters = [];
 
 			broadcast("server_message", {
-				message: `Scout: ${G.monsters[event.mtype].name} seems to be up to something!`,
+				message: `${gMap.name} Scout: ${G.monsters[event.mtype].name} seems to be up to something!`,
 				color: "#4BB6E1",
 			});
 
@@ -2631,7 +2635,7 @@ function event_loop_invasion(c) {
 		}
 
 		// Bail out, no active event.
-		if (!event || event.stage === undefined) {
+		if (!hasActiveEvent) {
 			continue;
 		}
 
@@ -2673,8 +2677,10 @@ function event_loop_invasion(c) {
 				});
 			}
 
-			broadcast("notice", {
-				message: `Scout: ${G.monsters[event.mtype].name} has won, we have failed!`,
+			// TODO: notice says SERVER: what is the difference?
+			// broadcast("notice", {
+			broadcast("server_message", {
+				message: `${gMap.name} Scout: ${G.monsters[event.mtype].name} has won, we have failed!`,
 				color: "#e14b4b",
 			});
 		}
@@ -2741,7 +2747,7 @@ function event_loop_invasion(c) {
 				}
 			}
 			broadcast("server_message", {
-				message: `Scout: ${G.monsters[event.mtype].name} invasion is over, we won huzzah!`,
+				message: `${gMap.name} Scout: ${G.monsters[event.mtype].name} invasion is over, we won huzzah!`,
 				color: "#4be170",
 			});
 
@@ -2757,7 +2763,7 @@ function event_loop_invasion(c) {
 
 			// TODO: custom messages, chickens have gone mad and are running rampant!
 			broadcast("server_message", {
-				message: `Scout: ${G.monsters[event.mtype].name} are starting to move towards town!`,
+				message: `${gMap.name} Scout: ${G.monsters[event.mtype].name} are starting to move towards town!`,
 				color: "#4BB6E1",
 			});
 		}
