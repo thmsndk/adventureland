@@ -2746,7 +2746,7 @@ function event_loop_invasion(c) {
 
 			// TODO: custom messages, chickens have gone mad and are running rampant!
 			broadcast("server_message", {
-				message: `Scout: ${G.monsters[event.mtype].name} are starting to move towards town!`,
+				message: `${gMap.name} Scout: ${G.monsters[event.mtype].name} are starting to move towards town!`,
 				color: "#4BB6E1",
 			});
 		}

@@ -94,13 +94,13 @@
 				background-color: var(--dt-hover-cell-color);
 			}
 
-			/* table.sticky-header th {
+			table.sticky-header th {
 				position: sticky;
 				top: 0;
 				left: 0;
 				background-color: var(--dt-background-color-container);
 				z-index: 10;
-			} */
+			}
 
 			#container {
 				display: flex;
@@ -166,7 +166,8 @@
 			} */
 		</style>
 		<script>
-			const table = G.drops.{{table}};//G.drops.invasion_accessoriesbox_tier0;
+			const tableKey = "{{table}}";
+			const table = G.drops[tableKey];//G.drops.invasion_accessoriesbox_tier0;
 			const ROLL_COUNT = {{exchanges}};
 
 			function hide_row(element) {
@@ -326,7 +327,13 @@
 				// If you want to convert it back to an object:
 				rollsByItem = Object.fromEntries(sortedRollsByItem);
 
-				html = `<h1>Summery for ${ROLL_COUNT} exchanges</h1>`
+
+				const tokens = Object.entries(G.tokens)
+					.filter(([token, items]) => Object.keys(items).includes(tableKey))
+					.map(([token, items]) => `${abbreviateNumber(ROLL_COUNT * items[tableKey])} ${token}`)
+					.join(" | ");
+
+				html = `<h1>Summery for ${ROLL_COUNT} exchanges (${tokens})</h1>`
 				html += "<div id=\"rolls-summery\">"
 
 				for (const itemKey in rollsByItem) {

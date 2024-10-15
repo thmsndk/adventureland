@@ -1309,20 +1309,34 @@ drops["invasion_accessoriesbox_tier0"].append([0.5,"skullamulet"])
 drops["invasion_accessoriesbox_tier1"].append([0.5,"skullamulet"])
 drops["invasion_accessoriesbox_tier2"].append([0.3,"skullamulet"])
 
-# t2 => ctristone, cdarktristone, molesteeth, mbelt, ftrinket, tigerstone, solitaire? 
 
-drops["invasion_accessoriesbox_tier2"].append([0.001,"armorring"])
-drops["invasion_accessoriesbox_tier2"].append([0.001,"resistancering"])
-drops["invasion_accessoriesbox_tier2"].append([0.0001,"ringofluck"])
-drops["invasion_accessoriesbox_tier2"].append([0.0001,"suckerpunch"])
-drops["invasion_accessoriesbox_tier2"].append([0.000001,"mpxbelt"])
-drops["invasion_accessoriesbox_tier2"].append([0.000001,"sanguine"])
-drops["invasion_accessoriesbox_tier2"].append([0.000001,"amuletofm"])
-drops["invasion_accessoriesbox_tier2"].append([0.000001,"bfangamulet"])
-drops["invasion_accessoriesbox_tier2"].append([0.000001,"sbelt"])
-drops["invasion_accessoriesbox_tier2"].append([0.000001,"orbofsc"])
-drops["invasion_accessoriesbox_tier2"].append([0.000001,"rabbitsfoot"])
-drops["invasion_accessoriesbox_tier2"].append([0.000001,"mearring"])
+# mbelt Well-Crafted Belt, crypt loot
+# ftrinket Trinket of Faith, gift0, gift1, otherwise unobatainable
+# tigerstone Tiger Stone, only drops from tiger, and that was year of the tiger chineese newyear, unobtainable now
+# solitaire Solitaire Ring, pinkgoo 0.0005, valentine event
+# ctristone Tri-Stone, only craftable with one of each rings
+# cdarktristone Dark Tri-Stone, chance when compounding Tri-Stone +1 => +2
+
+# molesteeth Mole's Teeth, moles 2.0/100000=0.00002
+drops["invasion_accessoriesbox_tier1"].append([2.0/100000,"molesteeth"]) 
+drops["invasion_accessoriesbox_tier2"].append([2.0/100000,"molesteeth"]) 
+
+drops["invasion_accessoriesbox_tier2"].append([0.2,"armorring"]) # Only craftable 
+drops["invasion_accessoriesbox_tier2"].append([0.2,"resistancering"]) # Only craftable 
+
+drops["invasion_accessoriesbox_tier2"].append([4.0/10000,"suckerpunch"]) # crab 2.0/10000000=2e-7 crabx 4.0/10000000=4e-7 crabxx 4.0/10000=0.0004
+drops["invasion_accessoriesbox_tier2"].append([0.0001,"bfangamulet"]) # Ghastly Bat Fang, only craftable atm, and requires lots of effort
+
+drops["invasion_accessoriesbox_tier2"].append([1.0/80000,"sanguine"]) # Sanguine Amulet fvampire 1.0/50000 mvampire 1.0/80000
+drops["invasion_accessoriesbox_tier2"].append([0.001,"orbofsc"]) # Orb of Second Chances, currently unobtainable was mistletoe, candycane, ornament, should we only add it during christmas? because this is done on the game server, and we won't see it in G
+drops["invasion_accessoriesbox_tier2"].append([1.0/500000,"amuletofm"]) # Amulet of Mystery, only drops from oneeyes 1.0/500000
+drops["invasion_accessoriesbox_tier2"].append([1.0/3000000,"mpxbelt"]) # Belt of MP Reduction, only drops from oneeyes 1.0/3000000
+
+# drops["invasion_accessoriesbox_tier2"].append([0.001,"sbelt"]) # Belt of Hallowed Trials, crypt, slenderman, xmagex. not easily farmable, invasion should not give it 
+
+drops["invasion_accessoriesbox_tier2"].append([0.001,"rabbitsfoot"]) # +luck basketofeggs 0.001 / 120 x funtoken
+drops["invasion_accessoriesbox_tier2"].append([0.0001,"mearring"]) # Mistletoe Earring +luck event (mistletoe 0.0001 exchange)
+drops["invasion_accessoriesbox_tier2"].append([7.0/10000000,"ringofluck"]) # +luck  only drops from plantoid 7.0/10000000
 
 
 
