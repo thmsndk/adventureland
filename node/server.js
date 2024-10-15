@@ -12322,7 +12322,7 @@ function update_instance(instance) {
 					const polygonPoints = generatePolygon(monster, {
 						angle: monster.angle,
 						shape: abilityDefinition.polygon.shape,
-						radius: abilityDefinition.polygon.radius || ability.radius,
+						radius: abilityDefinition.polygon.radius || abilityDefinition.radius,
 						angleRange: abilityDefinition.polygon.angleRange,
 						angleOffset: abilityDefinition.polygon.angleOffset,
 					});
