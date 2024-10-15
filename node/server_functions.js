@@ -2719,6 +2719,16 @@ function add_condition(target, condition, args) {
 		C.fid = args.fid;
 		disappearing_text({}, target, "BURN!", { xy: 1, size: "huge", color: "burn", nv: 1 }); //target.is_player&&"huge"||undefined
 	}
+
+	if (condition == "wasteland") {
+		// C = { ...C, ...args };
+		C.damage = args.damage;
+		C.damage_increment = args.damage_increment;
+		C.damage_max = args.damage_max;
+		C.intensity = args.intensity;
+		// disappearing_text({}, target, "BURN!", { xy: 1, size: "huge", color: "burn", nv: 1 }); //target.is_player&&"huge"||undefined
+	}
+
 	if (condition == "woven") {
 		C.s = min((target.is_monster && 20) || 5, (target.s.woven && target.s.woven.s + 1) || 1);
 		C.speed = -3 * C.s;

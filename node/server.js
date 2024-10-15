@@ -362,6 +362,7 @@ function init_game() {
 					create_instance("winter_cave");
 					create_instance("winter_cove");
 					create_instance("desertland");
+					create_instance("wasteland")
 					create_instance("level1");
 					create_instance("level2");
 					create_instance("level2n");
@@ -12200,6 +12201,36 @@ function update_instance(instance) {
 						});
 						player_rip_logic(player);
 					}
+
+					if (name == "wasteland") {
+						// TODO: terrible naming, incdmg for the "current damage increment" and damage_increment for the increment each tick...
+						if (!ref.incdmg) {
+							ref.incdmg = 0;
+						}
+
+						const damage = Math.min(ref.damage_max, (ref.damage + ref.incdmg) * ref.intensity);
+
+						ref.incdmg += ref.damage_increment;
+
+						player.hp = max(0, player.hp - damage);
+
+						disappearing_text(player.socket, player, "-" + damage, { color: "red", xy: 1 });
+
+						xy_emit(player, "hit", {
+							source: "wasteland",
+							// hid: ref.fid, // TODO: not sure how important this is when it's the map that causes it
+							id: player.name,
+							damage: damage,
+							kill: player.hp <= 0,
+						});
+
+						if (player.hp <= 0) {
+							delete player.s.wasteland;
+						}
+
+						player_rip_logic(player);
+					}
+
 					resend(player, "u+cid+nc");
 				}
 			}
@@ -12677,6 +12708,40 @@ function update_instance(instance) {
 				if (is_point_inside([player.x, player.y], trap.polygon)) {
 					// player.s["debuffaura"]={"ms":200,"name":"Debuff","skin":"citizens","citizens":true,"speed":-40};
 					add_condition(player, "slowness", { duration: 200 });
+					resend(player, "u+cid");
+				}
+			}
+		}
+		// TODO: make a more generic handling of traps where you can configure things in G
+		// TODO: not sure looping all players for each trap is the best choice? :shrug:
+		else if (trap.type == "wasteland") {
+			for (const id in instance.players) {
+				const player = instance.players[id];
+
+				if (player.rip || player.npc) {
+					continue;
+				}
+
+				if (is_point_inside([player.x, player.y], trap.polygon)) {
+					const args = {
+						duration: trap.duration,
+						damage: trap.damage,
+						damage_increment: trap.damage_increment,
+						damage_max: trap.damage_max,
+						intensity: trap.intensity,
+					};
+
+					if (!player.s.wasteland) {
+						// add_condition(player, "burned", { duration: 200, intensity: trap.intensity });
+						add_condition(player, "wasteland", args);
+					} else {
+						// player entered a more toxic zone, apply new zone values
+						if (player.s.wasteland.intensity < trap.intensity) {
+							// player.s.wasteland.intensity = trap.intensity;
+							add_condition(player, "wasteland", args);
+						}
+					}
+
 					resend(player, "u+cid");
 				}
 			}
