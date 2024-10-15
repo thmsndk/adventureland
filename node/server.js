@@ -11653,10 +11653,10 @@ function update_instance(instance) {
 				}
 			}
 			if (monster.s[name].ms <= 0) {
-				const ability = monster.a[name];
-
-				if (ability && ability.cooldown) {
-					monster.s[name].ms = ability.cooldown;
+				const abilityDefinition = monster.a[name];
+				// If monster ability has a cooldown, reapply it here, else remove it
+				if (abilityDefinition && abilityDefinition.cooldown) {
+					monster.s[name].ms = abilityDefinition.cooldown;
 				} else {
 					delete monster.s[name];
 				}
@@ -11724,7 +11724,7 @@ function update_instance(instance) {
 					change = true;
 				}
 
-				if (ability && ability.polygon) {
+				if (abilityDefinition && abilityDefinition.polygon) {
 					// if (is_in_front(monster, player) && can_attack(monster, player)) {
 					console.log("monster angle", monster.angle);
 					// TODO: halt / freeze the monster so it does not move
@@ -11735,10 +11735,10 @@ function update_instance(instance) {
 					// Frontal Cone, using the monsters own angle
 					const polygonPoints = generatePolygon(monster, {
 						angle: monster.angle,
-						shape: ability.polygon.shape,
-						radius: ability.polygon.radius || ability.radius,
-						angleRange: ability.polygon.angleRange,
-						angleOffset: ability.polygon.angleOffset,
+						shape: abilityDefinition.polygon.shape,
+						radius: abilityDefinition.polygon.radius || abilityDefinition.radius,
+						angleRange: abilityDefinition.polygon.angleRange,
+						angleOffset: abilityDefinition.polygon.angleOffset,
 					});
 					// TODO: should the polygon handle collisions as "line of sight" so it can't effect them
 
@@ -11762,8 +11762,8 @@ function update_instance(instance) {
 							// TODO: this calculation seems kinda off when lookin at the client and the server decision
 							if (is_point_inside([player.x, player.y], polygon)) {
 								console.log(`${player.name} is inside the polygon!`);
-								if (ability.knockback) {
-									const knockbackPoints = knockback(player, monster, ability.knockback);
+								if (abilityDefinition.knockback) {
+									const knockbackPoints = knockback(player, monster, abilityDefinition.knockback);
 									// TODO: We can also supply an effect to transport?
 									transport_player_to(player, monster.map, knockbackPoints[knockbackPoints.length - 1]);
 									resend(player, "u+cid");
