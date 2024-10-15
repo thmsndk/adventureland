@@ -11763,7 +11763,7 @@ function update_instance(instance) {
 							if (is_point_inside([player.x, player.y], polygon)) {
 								console.log(`${player.name} is inside the polygon!`);
 								if (ability.knockback) {
-									const knockbackPoints = knockback(player, monster, 250);
+									const knockbackPoints = knockback(player, monster, ability.knockback);
 									// TODO: We can also supply an effect to transport?
 									transport_player_to(player, monster.map, knockbackPoints[knockbackPoints.length - 1]);
 									resend(player, "u+cid");
@@ -11775,7 +11775,7 @@ function update_instance(instance) {
 							} else {
 								console.log(`${player.name} NOT inside the polygon!`);
 							}
-						}, 1000);
+						}, 2000);
 						// if (distance(player, monster) < 480) {
 						// 	commence_attack(monster, player, "fireball");
 						// }
