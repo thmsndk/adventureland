@@ -911,6 +911,7 @@ npcs={
 			"main":9,
 			#"halloween":1,
 			"desertland":1,
+			"wasteland":0,
 			"cyberland":0,
 			"test":0,
 			"d_e":0,

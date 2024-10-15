@@ -362,6 +362,7 @@ function init_game() {
 					create_instance("winter_cave");
 					create_instance("winter_cove");
 					create_instance("desertland");
+					create_instance("wasteland");
 					create_instance("level1");
 					create_instance("level2");
 					create_instance("level2n");
@@ -12309,6 +12310,63 @@ function update_instance(instance) {
 					change = true;
 				}
 
+				if (abilityDefinition && abilityDefinition.polygon) {
+					// if (is_in_front(monster, player) && can_attack(monster, player)) {
+					console.log("monster angle", monster.angle);
+					// TODO: halt / freeze the monster so it does not move
+					monster.moving = false;
+					// const cone = generatePolygon(monster, 100, 270 /* south */);
+
+					// TODO: be able to offset the polygon start point by N lenght from the monster
+					// Frontal Cone, using the monsters own angle
+					const polygonPoints = generatePolygon(monster, {
+						angle: monster.angle,
+						shape: abilityDefinition.polygon.shape,
+						radius: abilityDefinition.polygon.radius || ability.radius,
+						angleRange: abilityDefinition.polygon.angleRange,
+						angleOffset: abilityDefinition.polygon.angleOffset,
+					});
+					// TODO: should the polygon handle collisions as "line of sight" so it can't effect them
+
+					// is_point_inside expects an array of tubles [[x1,y1],[x2,y2]]
+					const polygon = polygonPoints.map((p) => [p.x, p.y]);
+
+					// broadcast polygon to client to visualize where to GTFO from
+					// TODO: are theese events limited to the instance?
+					// xy_emit(player, "ui", { type: "polygon", name: monster.id, points: cone });
+					events.push(["ui", { type: "polygon", name: monster.id, points: polygonPoints }]);
+					// TODO: make the monster stand still
+					// TODO: commence attack after a timeout so players can move away
+					for (const id in instances[monster.in].players) {
+						const player = instances[monster.in].players[id];
+
+						if (player.rip || player.npc) {
+							continue;
+						}
+
+						setTimeout(() => {
+							// TODO: this calculation seems kinda off when lookin at the client and the server decision
+							if (is_point_inside([player.x, player.y], polygon)) {
+								console.log(`${player.name} is inside the polygon!`);
+								if (abilityDefinition.knockback) {
+									const knockbackPoints = knockback(player, monster, abilityDefinition.knockback);
+									// TODO: We can also supply an effect to transport?
+									transport_player_to(player, monster.map, knockbackPoints[knockbackPoints.length - 1]);
+									resend(player, "u+cid");
+								}
+
+								// TODO: ability damage? / conditions / other?
+
+								monster.moving = true;
+							} else {
+								console.log(`${player.name} NOT inside the polygon!`);
+							}
+						}, 2000);
+						// if (distance(player, monster) < 480) {
+						// 	commence_attack(monster, player, "fireball");
+						// }
+					}
+				}
 				if (name == "multi_freeze") {
 					for (var name in monster.points || {}) {
 						var player = get_player(name);
@@ -12890,6 +12948,36 @@ function update_instance(instance) {
 						});
 						player_rip_logic(player);
 					}
+
+					if (name == "wasteland") {
+						// TODO: terrible naming, incdmg for the "current damage increment" and damage_increment for the increment each tick...
+						if (!ref.incdmg) {
+							ref.incdmg = 0;
+						}
+
+						const damage = Math.min(ref.damage_max, (ref.damage + ref.incdmg) * ref.intensity);
+
+						ref.incdmg += ref.damage_increment;
+
+						player.hp = max(0, player.hp - damage);
+
+						disappearing_text(player.socket, player, "-" + damage, { color: "red", xy: 1 });
+
+						xy_emit(player, "hit", {
+							source: "wasteland",
+							// hid: ref.fid, // TODO: not sure how important this is when it's the map that causes it
+							id: player.name,
+							damage: damage,
+							kill: player.hp <= 0,
+						});
+
+						if (player.hp <= 0) {
+							delete player.s.wasteland;
+						}
+
+						player_rip_logic(player);
+					}
+
 					resend(player, "u+cid+nc");
 				}
 			}
@@ -13368,6 +13456,40 @@ function update_instance(instance) {
 				if (is_point_inside([player.x, player.y], trap.polygon)) {
 					// player.s["debuffaura"]={"ms":200,"name":"Debuff","skin":"citizens","citizens":true,"speed":-40};
 					add_condition(player, "slowness", { duration: 200 });
+					resend(player, "u+cid");
+				}
+			}
+		}
+		// TODO: make a more generic handling of traps where you can configure things in G
+		// TODO: not sure looping all players for each trap is the best choice? :shrug:
+		else if (trap.type == "wasteland") {
+			for (const id in instance.players) {
+				const player = instance.players[id];
+
+				if (player.rip || player.npc) {
+					continue;
+				}
+
+				if (is_point_inside([player.x, player.y], trap.polygon)) {
+					const args = {
+						duration: trap.duration,
+						damage: trap.damage,
+						damage_increment: trap.damage_increment,
+						damage_max: trap.damage_max,
+						intensity: trap.intensity,
+					};
+
+					if (!player.s.wasteland) {
+						// add_condition(player, "burned", { duration: 200, intensity: trap.intensity });
+						add_condition(player, "wasteland", args);
+					} else {
+						// player entered a more toxic zone, apply new zone values
+						if (player.s.wasteland.intensity < trap.intensity) {
+							// player.s.wasteland.intensity = trap.intensity;
+							add_condition(player, "wasteland", args);
+						}
+					}
+
 					resend(player, "u+cid");
 				}
 			}
